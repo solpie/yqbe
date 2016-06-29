@@ -1,0 +1,104 @@
+<style>
+    #player-grid {
+        padding-left: 290px;
+    }
+</style>
+<div>
+    <div class="row">
+        <div class="col s12 m4 l3" style="position: fixed;width: 300px;z-index: 2">
+            <!-- Note that "m4 l3" was added -->
+            <!-- Grey navigation panel
+                  This content will be:
+              3-columns-wide on large screens,
+              4-columns-wide on medium screens,
+              12-columns-wide on small screens  -->
+            <div class="jumbotron">
+                <p><span v-if="!isToday">{{today}}</span>........</p>
+                <search></search>
+                <!-- Modaler Trigger -->
+                <a class="modal-trigger waves-effect waves-light btn" @click="onAddPlayer">添加玩家</a>
+                <p class="lead">
+                </p>
+                <hr class="m-y-md">
+            </div>
+
+            <div id="pick">
+                <div id="pickPlayer">{{pickPlayerIdArr | json}}</div>
+                <li v-for="team in pickPlayerIdArrArr">
+                    <div>{{team | json}}</div>
+                </li>
+            </div>
+
+            <div class="col s3">
+                show
+            </div>
+            最近添加
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>date</th>
+                    <th>player</th>
+                    <th>...</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="message in messages">
+                    <td v-text="message.date"></td>
+                    <td v-text="message.text"></td>
+                    <td>
+                        <button type="button" class="btn btn-secondary btn-sm" @click="remove(message)">削除する</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div id="player-grid" class="col s24" style="position: relative;">
+            <!-- Note that "m8 l9" was added -->
+            <!-- Teal page content
+
+                  This content will be:
+              9-columns-wide on large screens,
+              8-columns-wide on medium screens,
+              12-columns-wide on small screens  -->
+
+            <ul class="pagination">
+                <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+                <!--<li class="active"><a href="#!">1</a></li>-->
+                <!--<li class="waves-effect"><a href="#!">2</a></li>-->
+                <!--<li class="waves-effect"><a href="#!">3</a></li>-->
+                <!--<li class="waves-effect"><a href="#!">4</a></li>-->
+                <!--<li class="waves-effect"><a href="#!">5</a></li>-->
+                <vue v-for="idx in countPage">
+                    <li class="waves-effect"><a href="#!">{{idx}}</a></li>
+                </vue>
+                <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+            </ul>
+
+            <div class="row" v-for="player in playerArr" style="display: inline-block;margin: 0">
+                <div class="col s12">
+                    <div class="card small" style="width:300px;height: 200px">
+                        <i class="material-icons left waves-effect waves-block waves-light"
+                           @click="onPickPlayer(player.id)">playlist_add</i>
+                        <div class="card-image waves-effect waves-block waves-light">
+                            <img class="activator" src="{{player.avatar}}">
+                        </div>
+                        <div class="card-content">
+                            <span class="card-title activator grey-text text-darken-4">{{player.name}}
+                                <i class="material-icons right" @click="onEdit(player.id,$event)">mode_edit</i></span>
+                            score:{{player.eloScore}}
+                            id:{{player.id}}
+                        </div>
+                        <div class="card-reveal">
+                            <span class="card-title grey-text text-darken-4">战绩<i class="material-icons right">close</i></span>
+                            <p>Here is some more information about this product that is only revealed once clicked
+                                on.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<Profile></Profile>
+

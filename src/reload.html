@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>YuanQiTV2</title>
+
+    <!--<style>-->
+    <!--/* fallback */-->
+    <!--@font-face {-->
+    <!--font-family: 'Material Icons';-->
+    <!--font-style: normal;-->
+    <!--font-weight: 400;-->
+    <!--src: local('Material Icons'), local('MaterialIcons-Regular'), url(static/font/material-design-icons/Material-Design-Icons.woff2) format('woff2');-->
+    <!--}-->
+
+    <!--.material-icons {-->
+    <!--font-family: 'Material Icons';-->
+    <!--font-weight: normal;-->
+    <!--font-style: normal;-->
+    <!--font-size: 24px;-->
+    <!--line-height: 1;-->
+    <!--letter-spacing: normal;-->
+    <!--text-transform: none;-->
+    <!--display: inline-block;-->
+    <!--white-space: nowrap;-->
+    <!--word-wrap: normal;-->
+    <!--direction: ltr;-->
+    <!-- -webkit-font-feature-settings: 'liga';-->
+    <!-- -webkit-font-smoothing: antialiased;-->
+    <!--}-->
+    <!--</style>-->
+    <link type="text/css" rel="stylesheet" href="static/css/materialize.min.css" media="screen,projection"/>
+    <!--<script src="static/js/jquery.min.js"></script>-->
+    <!--<script src="static/js/materialize.min.js"></script>-->
+    <style>
+        body {
+            margin: 0;
+            -webkit-app-region: drag;
+            background: black;
+        }
+
+        #dashboard {
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 2;
+            width: 950px;
+        }
+
+        .console {
+            /*overFlow-y: scroll;*/
+
+            color: #0acbfc;
+            overflow-y: hidden;
+            border: hidden;
+            width: 100%;
+            height: 410px;
+        }
+    </style>
+</head>
+<body>
+<img src="http://localhost/img/index.gif" style=" -webkit-app-region: no-drag;position: fixed;z-index: 1">
+<div id="dashboard">
+    <div style="color: #0acbfc">
+        YuanQiTV2
+        <!-- All of the Node.js APIs are available in this renderer process. -->
+        <script>document.write(process.versions.node)</script>
+        ,
+        <br>
+        Chromium
+        <script>document.write(process.versions.chrome)</script>
+        ,
+        <br>
+        Electron
+        <script>document.write(process.versions.electron)</script>
+        <br>
+        <script>
+            var isDev = process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath);
+            if (isDev)
+                document.write("dev version");
+            //            else
+            //                document.write("release");
+        </script>
+    </div>
+    .
+    <!--<input type="button" value="player" onclick="onClkPlayer()">-->
+    <!--<input type="button" value="watch" onclick="devWatch()">-->
+    <div class="row" style="margin: 0">
+        <div class="col" style="width: 500px">
+            <div class="console" id="consoleServer" style="opacity: .8"></div>
+            <!--<textarea class="console" id="consoleServer" style="opacity: .8" readonly></textarea>-->
+        </div>
+        <div class="col" style="width: 430px">
+            <div class="console" id="consoleView"></div>
+            <!--<textarea class="console" id="consoleView" readonly></textarea>-->
+        </div>
+    </div>
+    <!--<a class="waves-effect waves-light btn">watch</a>-->
+</div>
+</body>
+<script src="file:///app/static/js/createjs/createjs.min.js"></script>
+<script src="file:///app/static/js/createjs/easeljs.min.js"></script>
+<script src="file:///app/static/js/createjs/tweenjs.min.js"></script>
+<script src="file:///resources/app/static/js/createjs/createjs.min.js"></script>
+<script src="file:///resources/app/static/js/createjs/easeljs.min.js"></script>
+<script src="file:///resources/app/static/js/createjs/tweenjs.min.js"></script>
+<script>
+    //    var process = require('process');
+    var path = require('path');
+    console.log(process.getSystemMemoryInfo());
+    console.log(process.getProcessMemoryInfo());
+    //    var projectRoot = path.resolve(process.execPath, '../../../..');
+
+
+    const {shell} = require('electron');
+    function onClkPlayer() {
+        shell.showItemInFolder('.');
+//        shell.showItemInFolder('./resources/db');
+    }
+    //    const exec = require('child_process').exec;
+
+
+    const {remote} = require('electron');
+    const {Menu, MenuItem} = remote;
+
+
+    const {ipcRenderer} = require('electron');
+
+    const menu = new Menu();
+    menu.append(new MenuItem({
+        label: 'MenuItem1', click() {
+            console.log('item 1 clicked');
+        }
+    }));
+    menu.append(new MenuItem({type: 'separator'}));
+    menu.append(new MenuItem({label: 'MenuItem2', type: 'checkbox', checked: true}));
+
+    window.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+        menu.popup(remote.getCurrentWindow());
+    }, false);
+    window.addEventListener('keyup', function (e) {
+        console.log(window, "keyup", e.keyCode);
+        var keyCode = e.keyCode;
+        if (keyCode === 123) {//F12
+            ipcRenderer.send('open-devtool', keyCode);
+        }
+        else if (keyCode === 192) {
+            shell.openExternal('http://127.0.0.1');
+        }
+    }, false);
+    // You can also require other files to run in this process
+    var webServer = require('./Server.js');
+
+    function startDevWatch() {
+        var consoleView = document.getElementById('consoleView');
+        var consoleServer = document.getElementById('consoleServer');
+        var ansi2html = require('ansi2html');
+
+        function logView(data) {
+            consoleView.innerHTML += ansi2html(`${data}<br>`).replace('->', '<br>');
+            consoleView.scrollTop = consoleView.scrollHeight
+        }
+
+        function logServer(data) {
+            consoleServer.innerHTML += ansi2html(`${data}<br>`).replace('->', '<br>');
+            consoleServer.scrollTop = consoleServer.scrollHeight
+        }
+
+        ipcRenderer.send('devWatch');
+        ipcRenderer.on('logView', function (evt, arg) {
+            logView(arg);
+        });
+        ipcRenderer.on('logServer', function (evt, arg) {
+            logServer(arg);
+        });
+    }
+    if (isDev)
+        startDevWatch();
+
+
+    function test() {
+
+    }
+    test();
+</script>
+</html>

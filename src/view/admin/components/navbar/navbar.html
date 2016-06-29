@@ -1,0 +1,19 @@
+<div class="navbar-fixed" >
+    <nav>
+        <div class="nav-wrapper indigo">
+            <ul class="left hide-on-med-and-down" style="display: block">
+                <li :class="{active: active === ''}">
+                    <a v-link="{name: 'home'}">Home</a>
+                </li>
+                <li :class="{active: active === 'player'}">
+                    <a v-link="{name: 'player'}">玩家管理</a>
+                </li>
+            </ul>
+            <ul class="right hide-on-med-and-down">
+                <li :class="{active: active === 'settings'}">
+                    <a v-link="{name: 'settings'}">settings</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>

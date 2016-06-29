@@ -1,0 +1,96 @@
+<link href="/js/cropper/cropper.css" rel="stylesheet">
+<!-- Modaler Structure -->
+<div id="modal-player" class="modal modal-fixed-footer" style="max-height:1080px;top:5%;width: 85%;height: 85%">
+    <div class="modal-content">
+        <h4>球员信息</h4>
+        <div class="row">
+            <div class="col s6">
+                <div class="row">
+                    <canvas id="avatarPreview"></canvas>
+                </div>
+                <div class="row">
+                    <div class="input-field col s4">
+                        <input id="name" v-model="name" type="text" class="validate" length="5">
+                        <label for="name">显示ID</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s4">
+                        <input id="phone" v-model="phone" number type="text" class="validate" length="11">
+                        <label for="phone">手机</label>
+                    </div>
+                    <div class="input-field col s4">
+                        <input id="qq" v-model="qq" number type="text" class="validate">
+                        <label for="qq">QQ</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s2">
+                        <input id="height" v-model="height" number type="text" class="validate">
+                        <label for="height">身高(CM)</label>
+                    </div>
+
+                    <div class="input-field col s2">
+                        <input id="eloScore" v-model="eloScore" number type="text" class="validate">
+                        <label for="eloScore">天梯积分</label>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="input-field col s2">
+                        <input id="weight" v-model="weight" number type="text" class="validate">
+                        <label for="weight">体重(KG)</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="input-field col s2">
+                        <input id="size" v-model="size" number type="text" class="validate">
+                        <label for="size">球衣尺寸</label>
+                    </div>
+                </div>
+                <!--<div class="row">-->
+                <!--<div class="input-field col s12">-->
+                <!--<input id="password" type="password" class="validate">-->
+                <!--<label for="password">Password</label>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--<div class="row">-->
+                <!--<div class="input-field col s12">-->
+                <!--<input id="email" type="email" class="validate">-->
+                <!--<label for="email">Email</label>-->
+                <!--</div>-->
+                <!--</div>-->
+            </div>
+            <div class="col s6">
+                <div class="file-field input-field">
+                    <div class="btn">
+                        <span>选择文件</span>
+                        <input type="file" id="file1" @change="showFile($event)"/>
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text">
+                    </div>
+                </div>
+
+                <!--<input id="file1" type="file" value="..." onchange="showFile(this.files);">最小尺寸720x304-->
+                <!--<input type="button" value="更新头像" onclick="onClickUpdateAvatar()">-->
+                <div>
+                    <img id="image">
+                </div>
+                <br>
+                <!--</div>-->
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <a @click="onDeletePlayer" class="left modal-action modal-close waves-effect waves-green btn-flat">
+            <i class="material-icons">delete</i>
+        </a>
+        <a @click="onSubmitInfo($event)" class="modal-action waves-effect waves-green btn-flat">
+            <i class="material-icons">done</i>
+        </a>
+    </div>
+</div>
+
+
+        

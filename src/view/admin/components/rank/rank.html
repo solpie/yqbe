@@ -1,0 +1,28 @@
+<div>
+    <table class="table centered striped">
+        <thead>
+        <tr>
+            <th width="150px">头像</th>
+            <th width="150px">ID</th>
+            <th @click="onSortGameCount">场数</th>
+            <th @click="onSortWinPercent">胜率</th>
+            <th>mvp数</th>
+            <th>天梯分</th>
+            <th>段位</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="playerDoc in playerDocArr">
+            <td><img src="{{playerDoc.avatar}}" style="width: 100px"></td>
+            <td v-text="playerDoc.name"></td>
+            <td v-text="(playerDoc.winGameCount+playerDoc.loseGameCount)||0"></td>
+            <td v-text="(playerDoc.winGameCount/(playerDoc.winGameCount+playerDoc.loseGameCount)*100||0).toFixed(2)+'%'"></td>
+            <td v-text="0"></td>
+            <td v-text="playerDoc.eloScore"></td>
+            <td v-text="playerDoc.eloScore"></td>
+            <td v-text="$index+1"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>

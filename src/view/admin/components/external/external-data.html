@@ -1,0 +1,54 @@
+<style>
+    .playerCardMini {
+
+    }
+</style>
+<div class="content">
+    <ul class="pagination">
+        <li class="disabled">
+            <a href="#!"><i class="material-icons">chevron_left</i></a></li>
+        <vue v-for="idx in pageNumArr">
+            <li class="waves-effect" @click="onClkPageNum(idx)">
+                <a href="#!/external/{{idx}}">{{idx}}</a>
+            </li>
+        </vue>
+        <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+    </ul>
+
+    <!--<table class="table striped centered">-->
+    <!--<thead>-->
+    <!--<tr>-->
+    <!--<th>姓名</th>-->
+    <!--<th>天梯分</th>-->
+    <!--<th>地区</th>-->
+    <!--<th>电话</th>-->
+    <!--</tr>-->
+    <!--</thead>-->
+
+    <!--<tbody>-->
+    <!--<tr v-for="playerDoc in pageArr">-->
+    <!--<td v-text="playerDoc.name"></td>-->
+    <!--<td v-text="playerDoc.eloScore"></td>-->
+    <!--<td></td>-->
+    <!--<td v-text="playerDoc.phone"></td>-->
+    <!--</tr>-->
+    <!--</tbody>-->
+    <!--</table>-->
+
+    <div class="row" style="display: inline-block">
+        <div class="col" v-for="playerDoc in pageArr" style="width: 270px">
+            <ul class="collection">
+                <li class="collection-item avatar">
+                    <img src="/img/panel/stage/blue.png" alt="" class="circle">
+                    <span class="title">{{playerDoc.name}}</span>
+                    <p>score:{{playerDoc.eloScore}} <br>
+                        <i class="material-icons">contact_phone</i>
+                        {{playerDoc.phone}}
+                    </p>
+                    <a href="#!" class="secondary-content"><i class="material-icons">grade</i></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+

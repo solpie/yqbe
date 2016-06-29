@@ -1,0 +1,12 @@
+<div>
+    <input id="playerId" type="text" v-model="playerId" @change="onQueryPlayer($event)"
+           @keyup.enter="onQueryPlayer($event)" style="width: 75px">
+    <a class="waves-effect waves-light btn" @click="onAddPlayer">Add</a>
+    <a class="waves-effect waves-light btn" @click="onHighLowMode">HighLowMode</a>
+    <li v-for="team in teamArr">
+        <a class="waves-effect waves-light btn" @click="onPrintTeam($index)">print</a>
+    </li>
+    <div style="position: absolute;left: 650px;top: 0;zoom: .8;">
+        <canvas id="the-canvas"></canvas>
+    </div>
+</div>
