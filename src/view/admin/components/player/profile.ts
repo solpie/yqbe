@@ -12,62 +12,10 @@ var _this_:Profile;
         name: {
             type: String,
             required: true,
-            default: '斯蒂芬库里'
-        },
-        realName: {
-            type: String,
-            default: ""
-        },
-        size: {
-            type: String,
-            default: ""
-        },
-        phone: {
-            type: Number,
-        },
-        qq: {
-            type: Number,
-        },
-        height: {
-            type: Number,
-            default: 178
-        },
-        weight: {
-            type: Number,
-            default: 70
-        },
-        eloScore: {
-            type: Number,
-            required: true,
-            default: 2000
-        },
-        style: {
-            type: Number,
-            required: true,
-            default: 1
         }
     },
     watch: {
-        name: (val) => {
-            if (_this_.bluePlayerCard) {
-                _this_.bluePlayerCard.setName(val);
-                _this_.redPlayerCard.setName(val);
-            }
-
-        },
-        eloScore: (val) => {
-            if (_this_.bluePlayerCard) {
-                _this_.bluePlayerCard.setEloScore(val);
-                _this_.redPlayerCard.setEloScore(val);
-            }
-
-        },
-        style: (val) => {
-            if (_this_.bluePlayerCard) {
-                _this_.bluePlayerCard.setStyle(val);
-                _this_.redPlayerCard.setStyle(val);
-            }
-        },
+        name: 'onName'
     }
 })
 export class Profile extends VueEx {
@@ -117,14 +65,15 @@ export class Profile extends VueEx {
 
     setProp(data, toObj) {
         toObj.name = data.name;
-        toObj.realName = data.realName;
-        toObj.phone = data.phone;
-        toObj.qq = data.qq;
-        toObj.eloScore = data.eloScore;
-        toObj.style = data.style;
-        toObj.weight = data.weight;
-        toObj.height = data.height;
-        toObj['size'] = data.size;
+    }
+
+
+    onName(val) {
+        console.log('on name change', val);
+        if (_this_.bluePlayerCard) {
+            _this_.bluePlayerCard.setName(val);
+            _this_.redPlayerCard.setName(val);
+        }
     }
 
     onDeletePlayer() {

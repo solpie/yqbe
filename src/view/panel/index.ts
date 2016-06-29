@@ -1,9 +1,7 @@
 import {StagePanelView} from "./stage/StagePanelView";
-import {ActivityPanelView} from "./act/ActivityPanelView";
 import {PanelId} from "../../event/Const";
 import {VueEx} from "../VueEx";
 import {OpLinks} from "../admin/components/home/home";
-import {ScreenView} from "./screen/ScreenView";
 
 declare var io:any;
 declare var pid:string;
@@ -41,13 +39,6 @@ router.map({
     '/stage/:op': {
         component: StagePanelView,
         name: 'stage'
-    },
-    '/screen/:op': {
-        component: ScreenView,
-    },
-    '/act/:op': {
-        component: ActivityPanelView,
-        name: 'act'
     }
 });
 router.afterEach((transition) => {
