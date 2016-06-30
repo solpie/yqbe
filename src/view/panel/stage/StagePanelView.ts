@@ -34,7 +34,7 @@ import {ScorePanel} from "./ScorePanel";
         },
         playerInfoArr: {
             type: Array,
-            default: [1, 2, 3, 4, 5, 6, 7, 8]
+            default: [1, 2]
         }
     }
 })
@@ -262,6 +262,28 @@ export class StagePanelView extends BasePanelView {
                     alert('比赛结果已经提交过了');
                 }
             });
+        }
+    }
+
+    onAddBallNum(idx:number) {
+        if (idx == 0)//left
+        {
+            console.log('onAddBallNum left', idx);
+        }
+        else if (idx == 1) {
+            console.log('onAddBallNum right', idx);
+
+        }
+    }
+
+    onMinBallNum(idx:number) {
+        console.log('onMinBallNum', idx);
+        if (idx == 0)//left
+        {
+
+        }
+        else if (idx == 1) {
+
         }
     }
 
