@@ -15,11 +15,13 @@ export class GameDoc {
 }
 export class GameInfo {
     id:number = 0;
-    winScore:number = 7;
+    winScore:number = 99;
     leftScore:number = 0;
     rightScore:number = 0;
-    leftFoul:number = 0;
-    rightFoul:number = 0;
+    leftBall:number = 0;
+    rightBall:number = 0;
+    // leftFoul:number = 0;
+    // rightFoul:number = 0;
     time:number = 0;
     timerState:number = 0;
     data:Date;//开始时间
@@ -251,25 +253,22 @@ export class GameInfo {
         return this.getLeftTeam(4);
     }
 
-
-    ///foul 
-    addRightFoul() {
-        this.rightFoul++;
-        return this.rightFoul;
+    minLeftBall() {
+        this.leftBall--;
+        return this.leftBall;
     }
 
-    minRightFoul() {
-        this.rightFoul--;
-        return this.rightFoul;
+    minRightBall() {
+        this.rightBall--;
+        return this.rightBall;
+    }
+    addLeftBall() {
+        this.leftBall++;
+        return this.leftBall;
     }
 
-    addLeftFoul() {
-        this.leftFoul++;
-        return this.leftFoul;
-    }
-
-    minLeftFoul() {
-        this.leftFoul--;
-        return this.leftFoul;
+    addRightBall() {
+        this.rightBall++;
+        return this.rightBall;
     }
 }

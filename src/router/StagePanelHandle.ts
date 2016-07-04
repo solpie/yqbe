@@ -43,13 +43,13 @@ export class StagePanelHandle {
             cmdMap[`${CommandId.cs_minLeftScore}`] = () => {
                 this.gameInfo.minLeftScore();
                 this.io.emit(`${CommandId.updateLeftScore}`, ScParam({leftScore: this.gameInfo.leftScore}));
-                screenPanelHanle.io.emit(`${CommandId.updateLeftScore}`, ScParam({leftScore: this.gameInfo.leftScore}));
+                // screenPanelHanle.io.emit(`${CommandId.updateLeftScore}`, ScParam({leftScore: this.gameInfo.leftScore}));
             };
 
             cmdMap[`${CommandId.cs_minRightScore}`] = () => {
                 this.gameInfo.minRightScore();
                 this.io.emit(`${CommandId.updateRightScore}`, ScParam({rightScore: this.gameInfo.rightScore}));
-                screenPanelHanle.io.emit(`${CommandId.updateRightScore}`, ScParam({rightScore: this.gameInfo.rightScore}));
+                // screenPanelHanle.io.emit(`${CommandId.updateRightScore}`, ScParam({rightScore: this.gameInfo.rightScore}));
             };
 
             cmdMap[`${CommandId.cs_addLeftScore}`] = () => {
@@ -78,22 +78,25 @@ export class StagePanelHandle {
                 screenPanelHanle.io.emit(`${CommandId.updateRightScore}`, ScParam({rightScore: this.gameInfo.rightScore}));
             };
 
-            //// foul
-            cmdMap[`${CommandId.cs_addRightFoul}`] = () => {
-                var rightFoul:number = this.gameInfo.addRightFoul();
-                screenPanelHanle.io.emit(`${CommandId.updateRightFoul}`, ScParam({rightFoul: rightFoul}));
+
+            cmdMap[`${CommandId.cs_minLeftBall}`] = () => {
+                this.gameInfo.minLeftBall();
+                this.io.emit(`${CommandId.updateLeftBall}`, ScParam({leftBall: this.gameInfo.leftBall}));
             };
-            cmdMap[`${CommandId.cs_minRightFoul}`] = () => {
-                var rightFoul:number = this.gameInfo.minRightFoul();
-                screenPanelHanle.io.emit(`${CommandId.updateRightFoul}`, ScParam({rightFoul: rightFoul}));
+
+            cmdMap[`${CommandId.cs_minRightBall}`] = () => {
+                this.gameInfo.minRightBall();
+                this.io.emit(`${CommandId.updateRightBall}`, ScParam({rightBall: this.gameInfo.rightBall}));
             };
-            cmdMap[`${CommandId.cs_addLeftFoul}`] = () => {
-                var leftFoul:number = this.gameInfo.addLeftFoul();
-                screenPanelHanle.io.emit(`${CommandId.updateLeftFoul}`, ScParam({leftFoul: leftFoul}));
+
+            cmdMap[`${CommandId.cs_addLeftBall}`] = () => {
+                this.gameInfo.addLeftBall();
+                this.io.emit(`${CommandId.updateLeftBall}`, ScParam({leftBall: this.gameInfo.leftBall}));
             };
-            cmdMap[`${CommandId.cs_minLeftFoul}`] = () => {
-                var leftFoul:number = this.gameInfo.minLeftFoul();
-                screenPanelHanle.io.emit(`${CommandId.updateLeftFoul}`, ScParam({leftFoul: leftFoul}));
+
+            cmdMap[`${CommandId.cs_addRightBall}`] = () => {
+                this.gameInfo.addRightBall();
+                this.io.emit(`${CommandId.updateRightBall}`, ScParam({rightBall: this.gameInfo.rightBall}));
             };
 
             // cmdMap[`${CommandId.cs_fadeInComingActivity}`] = () => {

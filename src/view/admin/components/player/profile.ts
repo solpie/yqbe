@@ -147,7 +147,7 @@ export class Profile extends VueEx {
             this.stage = this.initCanvas(this.imagePath, 1);
 
             this.cropper = new Cropper(image, {
-                aspectRatio: 180 / 76,
+                aspectRatio: 180 / 180,
                 crop: (e) => {
                     // console.log(e.detail.x);
                     // console.log(e.detail.y);
