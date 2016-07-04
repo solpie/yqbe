@@ -33,7 +33,12 @@ export enum CommandId{
     updateRightFoul,
     cs_addRightFoul,
     cs_minRightFoul,
-        
+// skill        
+    cs_updateLeftSkill,
+    updateLeftSkill,
+    cs_updateRightSkill,
+    updateRightSkill,
+
     stageFadeOut,
     cs_fadeOut,
     playerScore,

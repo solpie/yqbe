@@ -1,9 +1,10 @@
 import {CommandId} from "../../../event/Command";
 import Component from "vue-class-component";
 import {BasePanelView} from "../BasePanelView";
-import {PanelId, ViewEvent, TimerState} from "../../../event/Const";
+import {PanelId, TimerState} from "../../../event/Const";
 import {PlayerInfo} from "../../../model/PlayerInfo";
 import {StagePanel} from "./StagePanel";
+import {SkillOP} from "../../../model/SkillOP";
 // import Text = createjs.Text;
 // import BitmapText = createjs.BitmapText;
 // import Container = createjs.Container;
@@ -82,14 +83,24 @@ export class StagePanelView extends BasePanelView {
             .on(`${CommandId.updateRightBall}`, (data) => {
                 this.stagePanel.setRightBall(data.rightBall);
             })
-            .on(`${CommandId.straightScore3}`, (param) => {
-                if (param.team === ViewEvent.STRAIGHT3_LEFT) {
-                    // this.eventPanel.fadeInStraight3(false);
-                }
-                else if (param.team === ViewEvent.STRAIGHT3_RIGHT) {
-                    // this.eventPanel.fadeInStraight3(true);
-                }
+
+            .on(`${CommandId.updateLeftSkill}`, (data) => {
+                var skillInfoArr = data.skillInfoArr;
+                console.log(skillInfoArr);
+                this.stagePanel.setLeftSkillInfoArr(skillInfoArr);
             })
+            .on(`${CommandId.updateRightSkill}`, (data) => {
+                var skillInfoArr = data.skillInfoArr;
+                this.stagePanel.setRightSkillInfoArr(skillInfoArr);
+            })
+            // .on(`${CommandId.straightScore3}`, (param) => {
+            //     if (param.team === ViewEvent.STRAIGHT3_LEFT) {
+            //         // this.eventPanel.fadeInStraight3(false);
+            //     }
+            //     else if (param.team === ViewEvent.STRAIGHT3_RIGHT) {
+            //         // this.eventPanel.fadeInStraight3(true);
+            //     }
+            // })
             .on(`${CommandId.toggleTimer}`, (data) => {
                 if (this.timerName === TimerState.START_STR)
                     this.timerName = TimerState.PAUSE_STR;
@@ -259,6 +270,75 @@ export class StagePanelView extends BasePanelView {
             this.opReq(`${CommandId.cs_minRightScore}`)
         }
     }
+
+    onAddSkillOne(idx:number) {
+        console.log('onMinScore', idx);
+        if (idx == 0)//left
+        {
+            var skillOP = new SkillOP();
+            skillOP.idx = 0;
+            skillOP.op = SkillOP.ADD;
+            this.opReq(`${CommandId.cs_updateLeftSkill}`, skillOP.toJson());
+        }
+        else if (idx == 1) {
+            var skillOP = new SkillOP();
+            skillOP.idx = 0;
+            skillOP.op = SkillOP.ADD;
+            this.opReq(`${CommandId.cs_updateRightSkill}`, skillOP.toJson());
+        }
+    }
+
+    onMinSkillOne(idx:number) {
+        console.log('onMinScore', idx);
+        if (idx == 0)//left
+        {
+            var skillOP = new SkillOP();
+            skillOP.idx = 0;
+            skillOP.op = SkillOP.MIN;
+            this.opReq(`${CommandId.cs_updateLeftSkill}`, skillOP.toJson());
+        }
+        else if (idx == 1) {
+            var skillOP = new SkillOP();
+            skillOP.idx = 0;
+            skillOP.op = SkillOP.MIN;
+            this.opReq(`${CommandId.cs_updateRightSkill}`, skillOP.toJson());
+        }
+    }
+
+    onAddSkillTwo(idx:number) {
+        console.log('onMinScore', idx);
+        if (idx == 0)//left
+        {
+            var skillOP = new SkillOP();
+            skillOP.idx = 1;
+            skillOP.op = SkillOP.ADD;
+            this.opReq(`${CommandId.cs_updateLeftSkill}`, skillOP.toJson());
+        }
+        else if (idx == 1) {
+            var skillOP = new SkillOP();
+            skillOP.idx = 1;
+            skillOP.op = SkillOP.ADD;
+            this.opReq(`${CommandId.cs_updateRightSkill}`, skillOP.toJson());
+        }
+    }
+
+    onMinSkillTwo(idx:number) {
+        console.log('onMinScore', idx);
+        if (idx == 0)//left
+        {
+            var skillOP = new SkillOP();
+            skillOP.idx = 1;
+            skillOP.op = SkillOP.MIN;
+            this.opReq(`${CommandId.cs_updateLeftSkill}`, skillOP.toJson());
+        }
+        else if (idx == 1) {
+            var skillOP = new SkillOP();
+            skillOP.idx = 1;
+            skillOP.op = SkillOP.MIN;
+            this.opReq(`${CommandId.cs_updateRightSkill}`, skillOP.toJson());
+        }
+    }
+
 
     onRefresh() {
         console.log('onRefresh');

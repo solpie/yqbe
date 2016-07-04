@@ -99,6 +99,16 @@ export class StagePanelHandle {
                 this.io.emit(`${CommandId.updateRightBall}`, ScParam({rightBall: this.gameInfo.rightBall}));
             };
 
+            cmdMap[`${CommandId.cs_updateLeftSkill}`] = (param) => {
+                this.gameInfo.updateLeftSkill(param);
+                this.io.emit(`${CommandId.updateLeftSkill}`, ScParam({skillInfoArr: this.gameInfo.leftSkillInfoArr}));
+            };
+
+            cmdMap[`${CommandId.cs_updateRightSkill}`] = (param) => {
+                this.gameInfo.updateRightSkill(param);
+                this.io.emit(`${CommandId.updateRightSkill}`, ScParam({skillInfoArr: this.gameInfo.rightSkillInfoArr}));
+            };
+
             // cmdMap[`${CommandId.cs_fadeInComingActivity}`] = () => {
             //     screenPanelHanle.io.emit(`${CommandId.fadeInComingActivity}`);
             // };

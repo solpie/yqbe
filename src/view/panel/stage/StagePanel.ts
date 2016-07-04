@@ -3,6 +3,7 @@ import Shape = createjs.Shape;
 import {loadImg} from "../../../utils/JsFunc";
 import {Skill} from "./Skill";
 import {PlayerInfo} from "../../../model/PlayerInfo";
+import {SkillInfo} from "../../../model/SkillOP";
 import Text = createjs.Text;
 class Avatar extends Container {
     avatarCtn:Container;
@@ -162,4 +163,17 @@ export class StagePanel extends Container {
         this.rightBallText.text = `剩余球数：${score}`;
     }
 
+    setLeftSkillInfoArr(skillInfoArr:any) {
+        for (var i = 0; i < skillInfoArr.length; i++) {
+            var skillInfo:SkillInfo = skillInfoArr[i];
+            this.skillArr[0].setSkillNum(i, skillInfo.count)
+        }
+    }
+
+    setRightSkillInfoArr(skillInfoArr:any) {
+        for (var i = 0; i < skillInfoArr.length; i++) {
+            var skillInfo:SkillInfo = skillInfoArr[i];
+            this.skillArr[1].setSkillNum(i, skillInfo.count)
+        }
+    }
 }

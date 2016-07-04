@@ -1,7 +1,9 @@
 import Container = createjs.Container;
+import BitmapText = createjs.BitmapText;
 
 class SkillIcon extends Container {
     iconCtn:Container;
+    skillCount:BitmapText;
 
     constructor() {
         super()
@@ -33,10 +35,11 @@ class SkillIcon extends Container {
         });
 
 
-        var skillNum = new createjs.BitmapText("0", sheet);
-        skillNum.x = 152;
-        skillNum.y = 40;
-        this.addChild(skillNum);
+        var skillCount = new createjs.BitmapText("0", sheet);
+        skillCount.x = 152;
+        skillCount.y = 40;
+        this.addChild(skillCount);
+        this.skillCount = skillCount;
     }
 
     setIcon(iconPath:string) {
@@ -47,6 +50,10 @@ class SkillIcon extends Container {
 
         //     loadImg(iconPath, ()=> {
         // });
+    }
+
+    setCount(count:number) {
+        this.skillCount.text = count + "";
     }
 }
 export class Skill extends Container {
@@ -70,8 +77,8 @@ export class Skill extends Container {
         }
     }
 
-    setSkillNum(idx:number, num:number) {
-
+    setSkillNum(idx:number, count:number) {
+        this.skillIconArr[idx].setCount(count);
     }
 
 }

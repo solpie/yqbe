@@ -2,6 +2,7 @@ import {TeamInfo} from "./TeamInfo";
 import {PlayerInfo} from "./PlayerInfo";
 import {setPropTo} from "./BaseInfo";
 import {TimerState} from "../event/Const";
+import {SkillOP, SkillInfo} from "./SkillOP";
 export class GameDoc {
     id:number = -1;
     playerDocArr:any;
@@ -41,6 +42,10 @@ export class GameInfo {
     _winTeam:TeamInfo;
     _loseTeam:TeamInfo;
 
+
+    leftSkillInfoArr:SkillInfo[] = [];
+    rightSkillInfoArr:SkillInfo[] = [];
+
     constructor(gameDoc?:any) {
         if (gameDoc) {
             setPropTo(gameDoc, this);
@@ -50,6 +55,11 @@ export class GameInfo {
                 this.playerInfoArr.push(new PlayerInfo(playerDocArr[i]));
             }
         }
+
+        this.leftSkillInfoArr.push(new SkillInfo());
+        this.leftSkillInfoArr.push(new SkillInfo());
+        this.rightSkillInfoArr.push(new SkillInfo());
+        this.rightSkillInfoArr.push(new SkillInfo());
     }
 
     getAvgEloScore() {
@@ -262,6 +272,7 @@ export class GameInfo {
         this.rightBall--;
         return this.rightBall;
     }
+
     addLeftBall() {
         this.leftBall++;
         return this.leftBall;
@@ -270,5 +281,27 @@ export class GameInfo {
     addRightBall() {
         this.rightBall++;
         return this.rightBall;
+    }
+
+    updateLeftSkill(param:SkillOP) {
+        this.leftSkillInfoArr[param.idx].idx = param.idx;
+        if (param.op == SkillOP.ADD) {
+            this.leftSkillInfoArr[param.idx].count++;
+        }
+        else if (param.op == SkillOP.MIN) {
+            this.leftSkillInfoArr[param.idx].count--;
+            this.leftSkillInfoArr[param.idx].used++;
+        }
+    }
+
+    updateRightSkill(param:SkillOP) {
+        this.rightSkillInfoArr[param.idx].idx = param.idx;
+        if (param.op == SkillOP.ADD) {
+            this.rightSkillInfoArr[param.idx].count++;
+        }
+        else if (param.op == SkillOP.MIN) {
+            this.rightSkillInfoArr[param.idx].count--;
+            this.rightSkillInfoArr[param.idx].used++;
+        }
     }
 }
