@@ -93,7 +93,6 @@ export class WebServer {
             res.redirect('/admin');
         });
 
-        
         app.use('/admin', adminRouter);
         app.use('/panel', panelRouter);
         app.use('/db', dbRouter);

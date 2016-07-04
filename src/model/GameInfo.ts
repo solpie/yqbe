@@ -240,7 +240,7 @@ export class GameInfo {
         for (var i = start; i < 4 + start; i++) {
             var pInfo = this.playerInfoArr[i];
             team.push(pInfo);
-            pInfo.isRed = (start > 0)
+            // pInfo.isRed = (start > 0)
         }
         return team;
     }

@@ -104,6 +104,7 @@ export class StagePanelView extends BasePanelView {
             .on(`${CommandId.updatePlayer}`, (data) => {
                 // this.getElem('#playerImg' + data.idx).src = data.playerDoc.avatar;
                 // this.playerPanel.setPlayer(data.idx, new PlayerInfo(data.playerDoc));
+                this.stagePanel.setPlayerInfo(data.idx, new PlayerInfo(data.playerDoc));
                 // this.scorePanel.setAvgEloScore(data.avgEloScore);
             })
             .on(`${CommandId.updatePlayerAll}`, (param) => {

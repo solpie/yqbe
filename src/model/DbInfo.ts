@@ -248,9 +248,9 @@ class ActivityDB extends BaseDB {
 }
 class GameDB extends BaseDB {
     startGame(gameData) {
-        this.ds().update({id: gameData.id}, gameData, {upsert: true}, (err, newDoc) => {
-            this.syncDataMap();
-        });
+        // this.ds().update({id: gameData.id}, gameData, {upsert: true}, (err, newDoc) => {
+        //     this.syncDataMap();
+        // });
     }
 
     restartGame(gameId, callback = null) {
@@ -272,21 +272,21 @@ class GameDB extends BaseDB {
      开始比赛之后换人
      */
     updatePlayerByPos(gameId, pos, playerId) {//开始比赛之后换人
-        if (!this.isGameFinish(gameId)) {
-            this.ds().findOne({id: gameId}, (err, doc)=> {
-                if (doc) {
-                    var oldPlayerId = doc.playerIdArr[pos];
-                    doc.playerIdArr[pos] = playerId;
-                    this.ds().update({id: gameId}, {$set: doc}, {}, ()=> {
-                        console.log('updatePlayerByPos', oldPlayerId, "=>", playerId);
-                        this.syncDataMap();
-                    });
-                }
-            });
-        }
-        else {
-            console.log('closed game can not modify!!!', gameId);
-        }
+        // if (!this.isGameFinish(gameId)) {
+        //     this.ds().findOne({id: gameId}, (err, doc)=> {
+        //         if (doc) {
+        //             var oldPlayerId = doc.playerIdArr[pos];
+        //             doc.playerIdArr[pos] = playerId;
+        //             this.ds().update({id: gameId}, {$set: doc}, {}, ()=> {
+        //                 console.log('updatePlayerByPos', oldPlayerId, "=>", playerId);
+        //                 this.syncDataMap();
+        //             });
+        //         }
+        //     });
+        // }
+        // else {
+        //     console.log('closed game can not modify!!!', gameId);
+        // }
     }
 
     submitGame(gameId, isBlueWin, mvp, blueScore, redScore, playerRecArr, callback) {

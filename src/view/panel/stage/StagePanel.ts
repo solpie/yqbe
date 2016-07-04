@@ -1,7 +1,8 @@
 import Container = createjs.Container;
 import Shape = createjs.Shape;
 import {loadImg} from "../../../utils/JsFunc";
-import {BallPlayer} from "../../../model/BallGame/BallPlayer";
+import {Skill} from "./Skill";
+import {PlayerInfo} from "../../../model/PlayerInfo";
 import Text = createjs.Text;
 class Avatar extends Container {
     avatarCtn:Container;
@@ -44,8 +45,9 @@ export class StagePanel extends Container {
     playerNameArr:Text[] = [];
     leftBallText:Text;
     rightBallText:Text;
-    leftNameText:Text;
-    rightNameText:Text;
+    skillArr:Skill[] = [];
+    // leftNameText:Text;
+    // rightNameText:Text;
     leftScoreText:Text;
     rightScoreText:Text;
 
@@ -89,14 +91,14 @@ export class StagePanel extends Container {
         leftNameText.y = 985;
         this.addChild(leftNameText);
         this.playerNameArr.push(leftNameText);
-        this.leftNameText = leftNameText;
+        // this.leftNameText = leftNameText;
 
         var rightNameText = new createjs.Text("昵称：" + "", "18px Arial", "#fff");
         rightNameText.x = 1685;
         rightNameText.y = leftNameText.y;
         this.addChild(rightNameText);
         this.playerNameArr.push(rightNameText);
-        this.rightNameText = rightNameText;
+        // this.rightNameText = rightNameText;
 
         var leftScoreText = new createjs.Text("9", "45px Roboto bold", "#ffe21f");
         leftScoreText.textAlign = 'center';
@@ -116,13 +118,24 @@ export class StagePanel extends Container {
         rightScoreText.y = sScoreText.y;
         this.addChild(rightScoreText);
         this.rightScoreText = rightScoreText;
+
+
+        var leftSkill = new Skill(true);
+        leftSkill.x = 400;
+        leftSkill.y = 905;
+        this.skillArr.push(leftSkill);
+        this.addChild(leftSkill);
+
+        var rightSkill = new Skill(false);
+        rightSkill.x = 1178;
+        rightSkill.y = leftSkill.y;
+        this.skillArr.push(rightSkill);
+        this.addChild(rightSkill);
     }
 
-    setPlayerInfo(playerInfoArr:BallPlayer[]) {
-        for (var i = 0; i < playerInfoArr.length; i++) {
-            var ballPlayer = playerInfoArr[i];
-            this.playerNameArr[i].text = '昵称：' + ballPlayer.name;
-        }
+    setPlayerInfo(idx:number, playerInfo:PlayerInfo) {
+        this.avatarArr[idx].setAvatar(playerInfo.avatar());
+        this.playerNameArr[idx].text = '昵称：' + playerInfo.name();
     }
 
     setAvatar(imgPathArr:string[]) {
