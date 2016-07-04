@@ -12,6 +12,11 @@ export class SkillOP {
 
 export class SkillInfo {
     idx:number = 0;
+    name:string;
     count:number = 0;
     used:number = 0;
+
+    constructor(name:string) {
+        this.name = name;
+    }
 }

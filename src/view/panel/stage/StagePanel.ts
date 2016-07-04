@@ -75,13 +75,13 @@ export class StagePanel extends Container {
         this.setAvatar(['/img/player/1001.png', '/img/player/1001.png']);
 
 
-        var leftBallText = new createjs.Text("剩余球数：" + "", "35px Arial", "#fff");
+        var leftBallText = new createjs.Text("剩余球数：" + "", "32px Arial", "#fff");
         leftBallText.x = 255;
         leftBallText.y = 846;
         this.addChild(leftBallText);
         this.leftBallText = leftBallText;
 
-        var rightBallText = new createjs.Text("剩余球数：" + "", "35px Arial", "#fff");
+        var rightBallText = new createjs.Text("剩余球数：" + "", "32px Arial", "#fff");
         rightBallText.x = 1450;
         rightBallText.y = leftBallText.y;
         this.addChild(rightBallText);
@@ -109,20 +109,20 @@ export class StagePanel extends Container {
         this.leftScoreText = leftScoreText;
 
         var sScoreText = new createjs.Text(":", "45px Roboto bold", "#ffe21f");
-        sScoreText.x = 960;
+        sScoreText.x = 955;
         sScoreText.y = 873;
         this.addChild(sScoreText);
 
         var rightScoreText = new createjs.Text("6", "45px Roboto bold", "#ffe21f");
         rightScoreText.textAlign = 'center';
         rightScoreText.x = 1025;
-        rightScoreText.y = sScoreText.y;
+        rightScoreText.y = leftScoreText.y;
         this.addChild(rightScoreText);
         this.rightScoreText = rightScoreText;
 
 
         var leftSkill = new Skill(true);
-        leftSkill.x = 400;
+        leftSkill.x = 327;
         leftSkill.y = 905;
         this.skillArr.push(leftSkill);
         this.addChild(leftSkill);
@@ -166,14 +166,16 @@ export class StagePanel extends Container {
     setLeftSkillInfoArr(skillInfoArr:any) {
         for (var i = 0; i < skillInfoArr.length; i++) {
             var skillInfo:SkillInfo = skillInfoArr[i];
-            this.skillArr[0].setSkillNum(i, skillInfo.count)
+            this.skillArr[0].setSkillNum(i, skillInfo.count);
+            this.skillArr[0].skillIconArr[i].setSkillName(skillInfo.name);
         }
     }
 
     setRightSkillInfoArr(skillInfoArr:any) {
         for (var i = 0; i < skillInfoArr.length; i++) {
             var skillInfo:SkillInfo = skillInfoArr[i];
-            this.skillArr[1].setSkillNum(i, skillInfo.count)
+            this.skillArr[1].setSkillNum(i, skillInfo.count);
+            this.skillArr[1].skillIconArr[i].setSkillName(skillInfo.name);
         }
     }
 }

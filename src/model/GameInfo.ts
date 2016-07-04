@@ -29,7 +29,7 @@ export class GameInfo {
     straightScoreLeft:number = 0;//连杀判定
     straightScoreStack:any = [];//history [{left,right}]
     straightScoreRight:number = 0;//连杀判定
-    playerInfoArr:PlayerInfo[] = new Array(8);
+    playerInfoArr:PlayerInfo[] = new Array(2);
     playerRecArr:any = [];
     _timer:number = 0;
     static GAME_STATE_ING = 0;
@@ -56,10 +56,10 @@ export class GameInfo {
             }
         }
 
-        this.leftSkillInfoArr.push(new SkillInfo());
-        this.leftSkillInfoArr.push(new SkillInfo());
-        this.rightSkillInfoArr.push(new SkillInfo());
-        this.rightSkillInfoArr.push(new SkillInfo());
+        this.leftSkillInfoArr.push(new SkillInfo('连杆'));
+        this.leftSkillInfoArr.push(new SkillInfo('恶魔时光机'));
+        this.rightSkillInfoArr.push(new SkillInfo('连杆'));
+        this.rightSkillInfoArr.push(new SkillInfo('恶魔时光机'));
     }
 
     getAvgEloScore() {
@@ -96,7 +96,7 @@ export class GameInfo {
             this.leftScore = (this.leftScore + 1) % (this.winScore + 1);
         // cmd.emit(CommandId.addLeftScore, this.gameInfo.leftScore, this.pid);
 
-        this.pushStraightScore()
+        this.pushStraightScore();
 
         this.straightScoreRight = 0;
         this.straightScoreLeft++;

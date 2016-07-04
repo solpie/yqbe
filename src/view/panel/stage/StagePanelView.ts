@@ -93,14 +93,6 @@ export class StagePanelView extends BasePanelView {
                 var skillInfoArr = data.skillInfoArr;
                 this.stagePanel.setRightSkillInfoArr(skillInfoArr);
             })
-            // .on(`${CommandId.straightScore3}`, (param) => {
-            //     if (param.team === ViewEvent.STRAIGHT3_LEFT) {
-            //         // this.eventPanel.fadeInStraight3(false);
-            //     }
-            //     else if (param.team === ViewEvent.STRAIGHT3_RIGHT) {
-            //         // this.eventPanel.fadeInStraight3(true);
-            //     }
-            // })
             .on(`${CommandId.toggleTimer}`, (data) => {
                 if (this.timerName === TimerState.START_STR)
                     this.timerName = TimerState.PAUSE_STR;
@@ -112,39 +104,42 @@ export class StagePanelView extends BasePanelView {
                 this.timerName = TimerState.START_STR;
                 // this.scorePanel.resetTimer();
             })
+            .on(`${CommandId.resetGame}`, (data) => {
+                window.location.reload();
+                // this.scorePanel.resetTimer();
+            })
             .on(`${CommandId.updatePlayer}`, (data) => {
                 // this.getElem('#playerImg' + data.idx).src = data.playerDoc.avatar;
                 // this.playerPanel.setPlayer(data.idx, new PlayerInfo(data.playerDoc));
                 this.stagePanel.setPlayerInfo(data.idx, new PlayerInfo(data.playerDoc));
                 // this.scorePanel.setAvgEloScore(data.avgEloScore);
             })
-            .on(`${CommandId.updatePlayerAll}`, (param) => {
-                //todo effect
-                for (var i = 0; i < param.playerInfoArr.length; i++) {
-                    var playerInfo:PlayerInfo = new PlayerInfo(param.playerInfoArr[i]);
-                    // this.playerPanel.setPlayer(i, playerInfo);
-                }
-                // this.scorePanel.setLeftScore(0);
-                // this.scorePanel.setRightScore(0);
-                // this.scorePanel.setAvgEloScore(param.avgEloScore);
-            })
-            .on(`${CommandId.fadeInWinPanel}`, (param) => {
-                var teamInfo = param.teamInfo;
-                var mvpIdx = param.mvpIdx;
-                var mvpId = param.mvpId;
-                // this.eventPanel.fadeInWinPanel(teamInfo, mvpIdx, mvpId);
-            })
-            .on(`${CommandId.fadeOutWinPanel}`, (param) => {
-                // this.eventPanel.fadeOutWinPanel();
-            })
-            .on(`${CommandId.updatePlayerBackNum}`, (param) => {
-                // this.playerPanel.playerCardArr[param.idx].setBackNumber(param.backNum);
-            })
+        // .on(`${CommandId.updatePlayerAll}`, (param) => {
+        //     //todo effect
+        //     for (var i = 0; i < param.playerInfoArr.length; i++) {
+        //         var playerInfo:PlayerInfo = new PlayerInfo(param.playerInfoArr[i]);
+        //         // this.playerPanel.setPlayer(i, playerInfo);
+        //     }
+        //     // this.scorePanel.setLeftScore(0);
+        //     // this.scorePanel.setRightScore(0);
+        //     // this.scorePanel.setAvgEloScore(param.avgEloScore);
+        // })
     }
 
     initStage(gameDoc:any) {
         this.isInit = true;
         this.stagePanel = new StagePanel(this.stage);
+        for (var i = 0; i < 2; i++) {
+            var playerInfo = gameDoc.playerInfoArr[i];
+            this.stagePanel.setPlayerInfo(i, new PlayerInfo(playerInfo));
+        }
+        this.stagePanel.setLeftBall(gameDoc.leftBall);
+        this.stagePanel.setRightBall(gameDoc.rightBall);
+
+        this.stagePanel.setLeftScore(gameDoc.leftScore);
+        this.stagePanel.setRightScore(gameDoc.rightScore);
+        this.stagePanel.setLeftSkillInfoArr(gameDoc.leftSkillInfoArr);
+        this.stagePanel.setRightSkillInfoArr(gameDoc.rightSkillInfoArr);
         // this.scorePanel = new ScorePanel(this);
         // this.scorePanel.init(gameDoc);
         // this.playerPanel = new PlayerPanel(this);
@@ -337,6 +332,10 @@ export class StagePanelView extends BasePanelView {
             skillOP.op = SkillOP.MIN;
             this.opReq(`${CommandId.cs_updateRightSkill}`, skillOP.toJson());
         }
+    }
+
+    onResetGame() {
+        this.opReq(`${CommandId.cs_resetGame}`);
     }
 
 

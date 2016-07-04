@@ -1,12 +1,15 @@
 import Container = createjs.Container;
 import BitmapText = createjs.BitmapText;
+import {blink} from "../../../utils/Fx";
+import Text = createjs.Text;
 
 class SkillIcon extends Container {
     iconCtn:Container;
     skillCount:BitmapText;
+    skillNameText:Text;
 
     constructor() {
-        super()
+        super();
         this.iconCtn = new createjs.Container();
         this.addChild(this.iconCtn);
 
@@ -34,12 +37,18 @@ class SkillIcon extends Container {
                 [75, 0, 24, 30]]
         });
 
-
         var skillCount = new createjs.BitmapText("0", sheet);
         skillCount.x = 152;
-        skillCount.y = 40;
+        skillCount.y = 42;
         this.addChild(skillCount);
         this.skillCount = skillCount;
+
+
+        var skillNameText = new createjs.Text("", "25px Arial", "#fff");
+        skillNameText.x = 115;
+        skillNameText.y = 2;
+        this.addChild(skillNameText);
+        this.skillNameText = skillNameText;
     }
 
     setIcon(iconPath:string) {
@@ -52,7 +61,16 @@ class SkillIcon extends Container {
         // });
     }
 
+    setSkillName(skillName:string) {
+        this.skillNameText.text = skillName;
+    }
+
     setCount(count:number) {
+        var curText = this.skillCount.text;
+        if (curText != `${count}`) {
+            blink(this.skillCount);
+            blink(this.iconCtn);
+        }
         this.skillCount.text = count + "";
     }
 }
@@ -80,5 +98,6 @@ export class Skill extends Container {
     setSkillNum(idx:number, count:number) {
         this.skillIconArr[idx].setCount(count);
     }
+    
 
 }

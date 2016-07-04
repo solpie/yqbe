@@ -109,6 +109,11 @@ export class StagePanelHandle {
                 this.io.emit(`${CommandId.updateRightSkill}`, ScParam({skillInfoArr: this.gameInfo.rightSkillInfoArr}));
             };
 
+            cmdMap[`${CommandId.cs_resetGame}`] = (param) => {
+                this.gameInfo = new GameInfo();
+                this.io.emit(`${CommandId.resetGame}`);
+            };
+
             // cmdMap[`${CommandId.cs_fadeInComingActivity}`] = () => {
             //     screenPanelHanle.io.emit(`${CommandId.fadeInComingActivity}`);
             // };

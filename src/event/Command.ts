@@ -55,7 +55,8 @@ export enum CommandId{
     updatePlayerBackNum,
     fadeInNotice,//小喇叭
     cs_fadeInNotice,
-    cs_resetGame,//重置比分 时间 player
+    cs_resetGame,//重置game
+    resetGame,//
     cs_unLimitScore,//不限制比分显示
     unLimitScore,//不限制比分显示
     //-----------------win panel
