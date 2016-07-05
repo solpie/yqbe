@@ -34,7 +34,14 @@ import {SkillOP} from "../../../model/SkillOP";
         playerInfoArr: {
             type: Array,
             default: [1, 2]
+        },
+        ballCountArr: {
+            type: Array,
+            default: [8, 8]
         }
+    },
+    watch: {
+        ballCountArr: 'onBallCountArr'
     }
 })
 export class StagePanelView extends BasePanelView {
@@ -346,4 +353,16 @@ export class StagePanelView extends BasePanelView {
         else
             alert('还没提交比赛结果');
     }
+
+    onBallCountArr(val) {
+        console.log('onLeftBallCount', val);
+        var leftBallCount:number = val[0];
+        var rightBallCount:number = val[1];
+        this.opReq(`${CommandId.cs_updateInitBallCount}`, {left: leftBallCount, right: rightBallCount});
+    }
+
+    // onRightBallCount(val) {
+    //     console.log('onRightBallCount', val);
+    //     this.opReq(`${CommandId.cs_updateRightBallCount}`);
+    // }
 }

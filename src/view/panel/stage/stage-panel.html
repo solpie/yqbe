@@ -17,6 +17,9 @@
                     <a class="waves-effect waves-light btn" style="width: 75px;height: 25px"
                        @click="onUpdatePlayer($index)">↓</a>
                 </div>
+                <div class="col">
+                    <input v-model="ballCountArr[$index]" placeholder="剩球数设置" style="width: 100px">
+                </div>
             </div>
             <div class="row">
                 <a class="waves-effect waves-light btn" @click="onAddBallNum($index)">剩球++</a>

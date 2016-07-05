@@ -21,6 +21,7 @@ export enum CommandId{
     cs_addRightBall,
     cs_minLeftBall,
     cs_minRightBall,
+    cs_updateInitBallCount,
 
     minLeftScore,
     cs_minLeftScore,//1000010

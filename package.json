@@ -1,5 +1,5 @@
 {
-  "name": "YuanQiTV2",
+  "name": "YuanQiTV-Billiard",
   "private": true,
   "version": "1.0.0",
   "description": "",
@@ -13,10 +13,10 @@
     "view-build": "webpack --progress --profile --colors --disZplay-error-details --display-cached --config webpack.config.view.js",
     "server": "webpack --watch --progress --profile --colors --display-error-details --display-cached --config webpack.config.server.js",
     "server-build": "webpack --progress --profile --colors --display-error-details --display-cached --config webpack.config.server.js",
-    "pack": "npm run electron-packager&&npm run copy-node_modules&&explorer YuanQiTV2-win32-x64",
+    "pack": "npm run electron-packager&&npm run copy-node_modules&&explorer YuanQiTV-Billiard-win32-x64",
     "app": "npm run build && electron app --enable-logging",
-    "electron-packager": "electron-packager app YuanQiTV2 --ignore=node_modules/electron-* --platform=win32 --arch=x64 --overwrite",
-    "copy-node_modules": "echo D|xcopy node_modules YuanQiTV2-win32-x64\\resources\\node_modules /EXCLUDE:node_modules.ignore /e /y",
+    "electron-packager": "electron-packager app YuanQiTV-Billiard --ignore=node_modules/electron-* --platform=win32 --arch=x64 --overwrite",
+    "copy-node_modules": "echo D|xcopy node_modules YuanQiTV-Billiard-win32-x64\\resources\\node_modules /EXCLUDE:node_modules.ignore /e /y",
     "copy-app": "node script/copy_app.js",
     "dtsm": "dtsm init",
     "dl": "npm install electron-prebuilt -g"

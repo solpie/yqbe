@@ -79,6 +79,12 @@ export class StagePanelHandle {
             };
 
 
+            cmdMap[`${CommandId.cs_updateInitBallCount}`] = (param) => {
+                this.gameInfo.leftBall = param.left;
+                this.gameInfo.rightBall = param.right;
+                this.io.emit(`${CommandId.updateLeftBall}`, ScParam({leftBall: this.gameInfo.leftBall}));
+                this.io.emit(`${CommandId.updateRightBall}`, ScParam({rightBall: this.gameInfo.rightBall}));
+            };
             cmdMap[`${CommandId.cs_minLeftBall}`] = () => {
                 this.gameInfo.minLeftBall();
                 this.io.emit(`${CommandId.updateLeftBall}`, ScParam({leftBall: this.gameInfo.leftBall}));
