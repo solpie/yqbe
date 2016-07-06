@@ -87,15 +87,17 @@ export class StagePanel extends Container {
         this.addChild(rightBallText);
         this.rightBallText = rightBallText;
 
-        var leftNameText = new createjs.Text("昵称：" + "", "18px Arial", "#fff");
-        leftNameText.x = 80;
-        leftNameText.y = 985;
+        var leftNameText = new createjs.Text("昵称：" + "", "40px Arial", "#fff");
+        leftNameText.textAlign = 'center';
+        leftNameText.x = 160;
+        leftNameText.y = 980;
         this.addChild(leftNameText);
         this.playerNameArr.push(leftNameText);
         // this.leftNameText = leftNameText;
 
-        var rightNameText = new createjs.Text("昵称：" + "", "18px Arial", "#fff");
-        rightNameText.x = 1685;
+        var rightNameText = new createjs.Text("昵称：" + "", "40px Arial", "#fff");
+        rightNameText.textAlign = 'center';
+        rightNameText.x = 1765;
         rightNameText.y = leftNameText.y;
         this.addChild(rightNameText);
         this.playerNameArr.push(rightNameText);
@@ -136,7 +138,7 @@ export class StagePanel extends Container {
 
     setPlayerInfo(idx:number, playerInfo:PlayerInfo) {
         this.avatarArr[idx].setAvatar(playerInfo.avatar());
-        this.playerNameArr[idx].text = '昵称：' + playerInfo.name();
+        this.playerNameArr[idx].text = playerInfo.name();
     }
 
     setAvatar(imgPathArr:string[]) {

@@ -38,6 +38,12 @@ import {SkillOP} from "../../../model/SkillOP";
         ballCountArr: {
             type: Array,
             default: [8, 8]
+        },
+        dmkArr: {
+            type: Array,
+        },
+        skillArr: {
+            type: Array,
         }
     },
     watch: {
@@ -50,7 +56,8 @@ export class StagePanelView extends BasePanelView {
     // eventPanel:EventPanel;
 
     stagePanel:StagePanel;
-
+    dmkArr:any[];
+    skillArr:any[];
     mvpIdx:number;
     timerName:string;
     isInit:boolean;
@@ -79,6 +86,17 @@ export class StagePanelView extends BasePanelView {
             .on(`${CommandId.updateLeftScore}`, (data) => {
                 console.log(`${CommandId.updateLeftScore}`, data);
                 this.stagePanel.setLeftScore(data.leftScore);
+            })
+            .on(`${CommandId.dmkPush}`, (data) => {
+                if (!this.dmkArr)
+                    this.dmkArr = [];
+                if (!this.skillArr)
+                    this.skillArr = [];
+                console.log('dmk push', data);
+                if (data.text)
+                    this.dmkArr.push(data);
+                else
+                    this.skillArr.push(data)
             })
             .on(`${CommandId.updateRightScore}`, (data) => {
                 this.stagePanel.setRightScore(data.rightScore);

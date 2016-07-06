@@ -1,11 +1,11 @@
 {
-  "name": "YuanQiTV2",
+  "name": "YuanQiTV Billiard",
   "version": "1.0.0",
-  "description": "YuanQiTV2",
+  "description": "YuanQiTV Billiard",
   "main": "main.js",
   "server": {
-    "port": 80,
+    "port": 5858,
     "host": "localhost",
-    "wsPort": "6969"
+    "wsPort": "9696"
   }
 }

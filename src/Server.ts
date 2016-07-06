@@ -6,6 +6,7 @@ import {SocketIOSrv} from "./SocketIOSrv";
 import {panelRouter} from "./router/PanelRouter";
 import {getIPAddress} from "./utils/NodeJsFunc";
 import {mobileRouter} from "./router/MobileRouter";
+import {dmkRouter} from "./router/DmkRouter";
 var colors = require('colors');
 
 var dataObj:any;
@@ -98,7 +99,7 @@ export class WebServer {
         app.use('/panel', panelRouter);
         app.use('/db', dbRouter);
         app.use('/m', mobileRouter);
-
+        app.use('/dmk', dmkRouter);
         app.listen(ServerConf.port, () => {
             this.initSocketIO();
             //and... we're live

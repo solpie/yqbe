@@ -1,5 +1,6 @@
 import {EventDispatcher} from "./EventDispatcher";
 export enum CommandId{
+    dmkPush,
     ShowConsoleWin = 100000,
     //
     toggleTracker,
