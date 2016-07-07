@@ -5,6 +5,7 @@ import {PanelId, TimerState} from "../../../event/Const";
 import {PlayerInfo} from "../../../model/PlayerInfo";
 import {StagePanel} from "./StagePanel";
 import {SkillOP} from "../../../model/SkillOP";
+import {Notice} from "./Notice";
 // import Text = createjs.Text;
 // import BitmapText = createjs.BitmapText;
 // import Container = createjs.Container;
@@ -65,13 +66,15 @@ export class StagePanelView extends BasePanelView {
     playerInfoArr:any;
 
     isSubmited:boolean = false;
-
-
+    notice:Notice;
+    // skillNameMap:string[] = ['连杆', '恶魔时光机'];
     ready(pid?:string, isInitCanvas:boolean = true) {
         if (!pid)
             pid = PanelId.stagePanel;
         var io = super.ready(pid, isInitCanvas);
         this.initIO(io);
+
+        this.notice = new Notice();
     }
 
     initIO(io:any) {
@@ -93,10 +96,27 @@ export class StagePanelView extends BasePanelView {
                 if (!this.skillArr)
                     this.skillArr = [];
                 console.log('dmk push', data);
-                if (data.text)
+                if (data.text) {
                     this.dmkArr.push(data);
-                else
-                    this.skillArr.push(data)
+                    this.notice.fadeInDmk(data.user, data.text);
+                }
+                else {
+                    var skillNameMap = ['连杆', '恶魔时光机'];
+                    this.skillArr.push(data);
+                    var skillIdx = data.skillIdx;
+                    var playerIdx = data.playerIdx;
+                    if(skillIdx==null)
+                        skillIdx = 0;
+                    var skillName = skillNameMap[skillIdx];
+                    var skillCount = data.skillCount;
+                    var user = data.user;
+                    if (playerIdx==null)
+                        playerIdx = 0;
+                    var playerInfo = this.playerInfoArr[playerIdx];
+                    if (playerInfo)
+                        var playerName = playerInfo.name();
+                    this.notice.fadeInSkill(user, skillCount, playerName, skillName);
+                }
             })
             .on(`${CommandId.updateRightScore}`, (data) => {
                 this.stagePanel.setRightScore(data.rightScore);
@@ -154,9 +174,11 @@ export class StagePanelView extends BasePanelView {
     initStage(gameDoc:any) {
         this.isInit = true;
         this.stagePanel = new StagePanel(this.stage);
+        this.playerInfoArr = [];
         for (var i = 0; i < 2; i++) {
-            var playerInfo = gameDoc.playerInfoArr[i];
-            this.stagePanel.setPlayerInfo(i, new PlayerInfo(playerInfo));
+            var playerInfo = new PlayerInfo(gameDoc.playerInfoArr[i]);
+            this.stagePanel.setPlayerInfo(i, playerInfo);
+            this.playerInfoArr.push(playerInfo);
         }
         this.stagePanel.setLeftBall(gameDoc.leftBall);
         this.stagePanel.setRightBall(gameDoc.rightBall);
@@ -174,7 +196,7 @@ export class StagePanelView extends BasePanelView {
         console.log('initStage', gameDoc);
         if (this.op) {
             for (var i = 0; i < gameDoc.playerInfoArr.length; i++) {
-                var playerInfo = gameDoc.playerInfoArr[i];
+                var playerInfo:PlayerInfo = gameDoc.playerInfoArr[i];
                 if (playerInfo)
                     this.getElem("#player" + i).value = playerInfo.playerData.id;
             }

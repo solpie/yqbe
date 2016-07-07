@@ -41,15 +41,16 @@
     <div class="row">
         <a class="waves-effect waves-light btn" @click="onResetGame">重置</a>
     </div>
-</div>
-<div style="overflow: scroll;width:1000px;height: 500px">
-    <div v-for="dmk in dmkArr">
-        <span>[{{dmk.user}}]:{{dmk.text}}</span>
+    <div style="overflow: scroll;width:1000px;height: 500px">
+        <div v-for="dmk in dmkArr">
+            <span>[{{dmk.user}}]:{{dmk.text}}</span>
+        </div>
+        <div v-for="skill in skillArr">
+            <span>[skill.user]:{{skill.skillIdx}}:{{skill.playerIdx}}</span>
+        </div>
     </div>
-    <div v-for="skill in skillArr">
-        <span>[skill.user]:{{skill.skillIdx}}:{{skill.playerIdx}}</span>
-    </div>
 </div>
+
 
 <div style="display: none">
     <img src="/img/panel/stage/newPlayer.png">
