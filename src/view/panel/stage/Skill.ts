@@ -8,22 +8,27 @@ class SkillIcon extends Container {
     skillCount:BitmapText;
     skillNameText:Text;
 
-    constructor() {
+    constructor(isLeft:boolean) {
         super();
         this.iconCtn = new createjs.Container();
         this.addChild(this.iconCtn);
 
-        var skillX = new createjs.Bitmap('/img/panel/stage/skill/skillX.png');
+        if (isLeft)
+            var skillX = new createjs.Bitmap('/img/panel/stage/skill/skillXRed.png');
+        else
+            var skillX = new createjs.Bitmap('/img/panel/stage/skill/skillX.png');
         skillX.x = 120;
         skillX.y = 50;
         this.addChild(skillX);
-
+        var numPath = '/img/panel/stage/skill/skillNum.png';
+        if(isLeft)
+            numPath = '/img/panel/stage/skill/skillNumRed.png';
         var sheet = new createjs.SpriteSheet({
             animations: {
                 "0": 0, "1": 1, "2": 2, "3": 3, "4": 4,
                 "5": 5, "6": 6, "7": 7, "8": 8, "9": 9
             },
-            images: ["/img/panel/stage/skill/skillNum.png"],
+            images: [numPath],
             frames: [
                 [0, 0, 24, 30],
                 [25, 0, 24, 30],
@@ -84,13 +89,16 @@ export class Skill extends Container {
         // bg.alpha = .5;
         // this.addChild(bg);
         for (var i = 0; i < 2; i++) {
-            var skillIcon = new SkillIcon();
+            var skillIcon = new SkillIcon(isLeft);
             if (isLeft)
                 skillIcon.x = i * 254;
             else
                 skillIcon.x = (1 - i) * 254;
             this.addChild(skillIcon);
-            skillIcon.setIcon(`/img/panel/stage/skill/icon_${i}.png`);
+            if (isLeft)
+                skillIcon.setIcon(`/img/panel/stage/skill/icon_${i}Red.png`);
+            else
+                skillIcon.setIcon(`/img/panel/stage/skill/icon_${i}.png`);
             this.skillIconArr.push(skillIcon);
         }
     }
@@ -98,6 +106,6 @@ export class Skill extends Container {
     setSkillNum(idx:number, count:number) {
         this.skillIconArr[idx].setCount(count);
     }
-    
+
 
 }

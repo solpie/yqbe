@@ -9,7 +9,7 @@ class Avatar extends Container {
     avatarCtn:Container;
     avatarMask:Shape;
 
-    constructor() {
+    constructor(isBlue:boolean) {
         super();
 
         var avatarCtn = new createjs.Container();
@@ -21,8 +21,10 @@ class Avatar extends Container {
         var avatarMask = new createjs.Shape();
         avatarMask.graphics.beginFill('#000').drawCircle(0, 0, 82);
         this.avatarMask = avatarMask;
-
-        var frame = new createjs.Bitmap('/img/panel/stage/frame.png');
+        if (isBlue)
+            var frame = new createjs.Bitmap('/img/panel/stage/frameBlue.png');
+        else
+            var frame = new createjs.Bitmap('/img/panel/stage/frameRed.png');
         this.addChild(frame);
     }
 
@@ -60,13 +62,13 @@ export class StagePanel extends Container {
         this.addChild(bg);
 
         this.avatarArr = [];
-        var leftAvatar = new Avatar();
+        var leftAvatar = new Avatar(false);
         leftAvatar.x = 85;
         leftAvatar.y = 812;
         this.addChild(leftAvatar);
         this.avatarArr.push(leftAvatar);
 
-        var rightAvatar = new Avatar();
+        var rightAvatar = new Avatar(true);
         rightAvatar.x = 1685;
         rightAvatar.y = leftAvatar.y;
         this.addChild(rightAvatar);
