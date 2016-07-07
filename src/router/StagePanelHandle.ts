@@ -120,6 +120,10 @@ export class StagePanelHandle {
                 this.io.emit(`${CommandId.resetGame}`);
             };
 
+            cmdMap[`${CommandId.cs_toggleDmk}`] = (param) => {
+                this.io.emit(`${CommandId.toggleDmk}`);
+            };
+
             // cmdMap[`${CommandId.cs_fadeInComingActivity}`] = () => {
             //     screenPanelHanle.io.emit(`${CommandId.fadeInComingActivity}`);
             // };

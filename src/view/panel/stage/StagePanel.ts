@@ -5,6 +5,7 @@ import {Skill} from "./Skill";
 import {PlayerInfo} from "../../../model/PlayerInfo";
 import {SkillInfo} from "../../../model/SkillOP";
 import Text = createjs.Text;
+import BitmapText = createjs.BitmapText;
 class Avatar extends Container {
     avatarCtn:Container;
     avatarMask:Shape;
@@ -51,8 +52,8 @@ export class StagePanel extends Container {
     skillArr:Skill[] = [];
     // leftNameText:Text;
     // rightNameText:Text;
-    leftScoreText:Text;
-    rightScoreText:Text;
+    leftScoreText:BitmapText;
+    rightScoreText:BitmapText;
 
     constructor(parent:any) {
         super();
@@ -105,9 +106,11 @@ export class StagePanel extends Container {
         this.playerNameArr.push(rightNameText);
         // this.rightNameText = rightNameText;
 
-        var leftScoreText = new createjs.Text("9", "45px Roboto bold", "#ffe21f");
-        leftScoreText.textAlign = 'center';
-        leftScoreText.x = 897;
+        var leftScoreText = this.newScoreNum();
+        // new createjs.Text("9", "45px Roboto bold", "#ffe21f");
+        // var leftScoreText = new createjs.Text("9", "45px Roboto bold", "#ffe21f");
+        // leftScoreText = 'center';
+        leftScoreText.x = 872;
         leftScoreText.y = 875;
         this.addChild(leftScoreText);
         this.leftScoreText = leftScoreText;
@@ -115,11 +118,11 @@ export class StagePanel extends Container {
         var sScoreText = new createjs.Text(":", "45px Roboto bold", "#ffe21f");
         sScoreText.x = 955;
         sScoreText.y = 873;
-        this.addChild(sScoreText);
+        // this.addChild(sScoreText);
 
-        var rightScoreText = new createjs.Text("6", "45px Roboto bold", "#ffe21f");
-        rightScoreText.textAlign = 'center';
-        rightScoreText.x = 1025;
+        var rightScoreText = this.newScoreNum();
+        // rightScoreText.textAlign = 'center';
+        rightScoreText.x = 1005;
         rightScoreText.y = leftScoreText.y;
         this.addChild(rightScoreText);
         this.rightScoreText = rightScoreText;
@@ -136,6 +139,36 @@ export class StagePanel extends Container {
         rightSkill.y = leftSkill.y;
         this.skillArr.push(rightSkill);
         this.addChild(rightSkill);
+    }
+
+
+    newScoreNum() {
+        var sheet = new createjs.SpriteSheet({
+            animations: {
+                "0": 1,
+                "1": 2,
+                "2": 3,
+                "3": 4,
+                "4": 5,
+                "5": 6,
+                "6": 7,
+                "7": 8,
+                "8": 9,
+                "9": 0
+            },
+            images: ["/img/panel/stage/scoreNum.png"],
+            frames: [[0, 0, 40, 54],
+                [41, 0, 40, 54],
+                [0, 55, 40, 54],
+                [41, 55, 40, 54],
+                [82, 0, 40, 54],
+                [82, 55, 40, 54],
+                [123, 0, 40, 54],
+                [123, 55, 40, 54],
+                [0, 110, 40, 54],
+                [41, 110, 40, 54]]
+        });
+        return new createjs.BitmapText("0", sheet);
     }
 
     setPlayerInfo(idx:number, playerInfo:PlayerInfo) {

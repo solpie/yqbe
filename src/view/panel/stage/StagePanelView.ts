@@ -105,12 +105,12 @@ export class StagePanelView extends BasePanelView {
                     this.skillArr.push(data);
                     var skillIdx = data.skillIdx;
                     var playerIdx = data.playerIdx;
-                    if(skillIdx==null)
+                    if (skillIdx == null)
                         skillIdx = 0;
                     var skillName = skillNameMap[skillIdx];
                     var skillCount = data.skillCount;
                     var user = data.user;
-                    if (playerIdx==null)
+                    if (playerIdx == null)
                         playerIdx = 0;
                     var playerInfo = this.playerInfoArr[playerIdx];
                     if (playerInfo)
@@ -151,7 +151,9 @@ export class StagePanelView extends BasePanelView {
             })
             .on(`${CommandId.resetGame}`, (data) => {
                 window.location.reload();
-                // this.scorePanel.resetTimer();
+            })
+            .on(`${CommandId.toggleDmk}`, (data) => {
+                this.notice.isShow = !this.notice.isShow;
             })
             .on(`${CommandId.updatePlayer}`, (data) => {
                 // this.getElem('#playerImg' + data.idx).src = data.playerDoc.avatar;
@@ -379,6 +381,10 @@ export class StagePanelView extends BasePanelView {
             skillOP.op = SkillOP.MIN;
             this.opReq(`${CommandId.cs_updateRightSkill}`, skillOP.toJson());
         }
+    }
+
+    onToggleDmk() {
+        this.opReq(`${CommandId.cs_toggleDmk}`);
     }
 
     onResetGame() {

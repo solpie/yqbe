@@ -58,6 +58,8 @@ export enum CommandId{
     fadeInNotice,//小喇叭
     cs_fadeInNotice,
     cs_resetGame,//重置game
+    cs_toggleDmk,//弹幕助手
+    toggleDmk,
     resetGame,//
     cs_unLimitScore,//不限制比分显示
     unLimitScore,//不限制比分显示
