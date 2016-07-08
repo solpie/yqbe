@@ -66,18 +66,17 @@
         <!-- All of the Node.js APIs are available in this renderer process. -->
         <script>document.write(process.versions.node)</script>
         ,
-        <br>
         Chromium
         <script>document.write(process.versions.chrome)</script>
         ,
-        <br>
         Electron
         <script>document.write(process.versions.electron)</script>
         <br>
         <script>
             var isDev = process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath);
             if (isDev)
-                document.write("dev version");
+                document.write("dev version<br>");
+//            document.write(`server ip:<input id="serverIP" placeholder="127.0.0.1" style="width: 120px"><input type="button" onclick="reloadServer()">`);
             //            else
             //                document.write("release");
         </script>
@@ -152,6 +151,10 @@
     // You can also require other files to run in this process
     var webServer = require('./Server.js');
 
+//    import serverConf from './Server.js';
+    function reloadServer() {
+
+    }
     function startDevWatch() {
         var consoleView = document.getElementById('consoleView');
         var consoleServer = document.getElementById('consoleServer');

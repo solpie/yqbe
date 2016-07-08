@@ -13,85 +13,86 @@ export function base64ToPng(imgPath2, base64Data, callback?) {
         else throw err;
     });
 }
-
-export function getIPAddress() {
-    // var interfaces = require('os').networkInterfaces({all: true});
-    // for (var devName in interfaces) {
-    //     console.log("interfaces:", devName);
-    //     var iface = interfaces[devName];
-    //     for (var i = 0; i < iface.length; i++) {
-    //         var alias = iface[i];
-    //         // console.log("ip:", JSON.stringify(alias));
-    //         if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal) {
-    //             return alias.address;
-    //         }
-    //     }
-    // }
-
-    var os = require('os');
+function getNetGate(callback) {
     var child_proc = require('child_process');
-    var ls:any;
-    var matches:Array<any> = [];
-    var pmHosts:Array<any> = [];
-    var filterRE:RegExp;
-    var pingResult = "";
-    var pmHost:Array<any>;
-
-    if ('win32' == os.platform()) {
-        ls = child_proc.spawn("ipconfig", {});
-        // only get the IPv4 address
-        filterRE = /\b(IPv4|IP\s)[^:\r\r\n]+:\s+([^\s]+)/g;
-    }
-    else {
-        // TODO: we need try to get the local IP for other os, such as unix/mac
-        return false;
-    }
-
+    var ls = child_proc.spawn("nslookup", {});
     ls.stdout.on('data', (data:any) => {
         // get ping result.
-        pingResult = pingResult + data.toString();
-        // console.log(`stdout: ${data}`);
+        var str = data.toString();
+        // console.log(`stdout: ${str}`);
+        // var match = str.match(/Address.+/);
+        var match = str.match(/Address:\s+(.+)/);
+
+        if (match.length == 2) {
+            var netGate = match[1];
+            callback(netGate);
+        }
+        // var match = str.match(/Address.+(\d.+\.\d.+\.\d.+\.\d+)/);
+        // console.log('match net gate:', netGate, match.length);
+        if (str == '>')
+            ls.kill();
     });
 
     ls.stderr.on('data', (data:any) => {
-        pingResult = pingResult + data.toString();
-        // console.log(`stderr: ${data}`);
+        data.toString();
+        console.log(`stderr: ${data}`);
     });
+    // ls.kill();
+}
+export function getIPAddress(callback) {
+    getNetGate((netGate)=> {
+        var os = require('os');
+        var child_proc = require('child_process');
+        var ls:any;
+        // var matches:Array<any> = [];
+        var pmHosts:Array<any> = [];
+        // var filterRE:RegExp;
 
-    ls.on('close', (code:any) => {
-        matches = pingResult.match(filterRE) || [];
-        for (var i = 0; i < matches.length; i++) {
-            var host = matches[i].split(':')[1];
-            console.log("host:", host);
-            // trim the spaces in the string's start/end position.
-            host = host.replace(/(^[\s]*)|([\s]*$)/g, "");
-            pmHosts.push(host);
+        // var ipRe:RegExp = new RegExp(`IPv4.+${netGate}`, 'g'); //
+        var pingResult = "";
+        var pmHost:Array<any>;
+
+        if ('win32' == os.platform()) {
+            ls = child_proc.spawn("ipconfig", {});
+            // only get the IPv4 address
+            // filterRE = /\b(IPv4|IP\s)[^:\r\r\n]+:\s+([^\s]+)/g;
+        }
+        else {
+            // TODO: we need try to get the local IP for other os, such as unix/mac
+            return false;
         }
 
-        if (pmHosts.length > 0)
-            pmHost = pmHosts[0];
+        ls.stdout.on('data', (data:any) => {
+            pingResult = pingResult + data.toString();
+        });
+
+        ls.stderr.on('data', (data:any) => {
+            pingResult = pingResult + data.toString();
+            // console.log(`stderr: ${data}`);
+        });
+
+        ls.on('close', (code:any) => {
+            // matches = pingResult.match(filterRE) || [];
+            // var matchIp = pingResult.match(ipRe);
+            var ipLines = pingResult.split('\n');
+            // console.log('matchIp', ipRe, matchIp);
+            for (var i = 0; i < ipLines.length; i++) {
+                var line = ipLines[i];
+                // console.log('l:', line);
+                if (line.search(netGate) > -1) {
+                    var ip = ipLines[i - 2].match(/IPv4.+\s+(.+)/);
+                    if (ip.length == 2) {
+                        console.log('ip:', ip[1]);
+                        callback(ip[1]);
+                    }
+                    else {
+                        callback('localhost');
+                    }
+                }
+            }
+        });
+
+        ls.on('exit', function (code:any, signal:any) {
+        });
     });
-
-    ls.on('exit', function (code:any, signal:any) {
-        matches = pingResult.match(filterRE) || [];
-        for (var i = 0; i < matches.length; i++) {
-            var host = matches[i].split(':')[1];
-
-            // trim the spaces in the string's start/end position.
-            host = host.replace(/(^[\s]*)|([\s]*$)/g, "");
-            pmHosts.push(host);
-        }
-
-        if (pmHosts.length > 0)
-            pmHost = pmHosts[0];
-
-        // do other things
-        console.log(pmHost);
-
-    });
-    //
-    // ls.stdout.on('data', function (data) {
-    //     // get ping result.
-    //     pingResult = pingResult + data.toString();
-    // });
 }

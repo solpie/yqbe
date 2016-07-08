@@ -15,7 +15,6 @@ export interface Settings extends vuejs.Vue { }
     }
 })
 export class Settings {
-
     status: boolean;
 
     data() {

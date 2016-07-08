@@ -6,6 +6,10 @@
         top: 80px;
         opacity: .8;
     }
+    .dmkStyle{
+        font-size: 15px;
+        opacity: 0.6;
+    }
 </style>
 <div id="stage-panel" class="card-panel grey lighten-3" v-if="op">
     <div class="row">
@@ -42,14 +46,19 @@
         <a class="waves-effect waves-light btn" @click="onResetGame">重置</a>
         <a class="waves-effect waves-light btn" @click="onToggleDmk">显示弹幕助手</a>
     </div>
-    <div style="overflow: scroll;width:1000px;height: 500px">
-        <div v-for="dmk in dmkArr">
-            <span>[{{dmk.user}}]:{{dmk.text}}</span>
+    <div class="row">
+        <div class="col s6" style="overflow: scroll;width:550px;height: 500px">
+            <div v-for="dmk in dmkArr">
+                <span>[{{dmk.user}}]:{{dmk.text}}</span>
+            </div>
         </div>
-        <div v-for="skill in skillArr">
-            <span>[skill.user]:{{skill.skillIdx}}:{{skill.playerIdx}}</span>
+        <div class="col s6" style="overflow: scroll;width:550px;height: 500px">
+            <div v-for="skill in skillArr">
+                <span>[skill.user]:{{skill.skillIdx}}:{{skill.playerIdx}}</span>
+            </div>
         </div>
     </div>
+
 </div>
 
 

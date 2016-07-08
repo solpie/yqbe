@@ -101,21 +101,23 @@ export class StagePanelView extends BasePanelView {
                     this.notice.fadeInDmk(data.user, data.text);
                 }
                 else {
-                    var skillNameMap = ['连杆', '恶魔时光机'];
                     this.skillArr.push(data);
+                    var skillNameMap = ['连杆', '恶魔时光机'];
                     var skillIdx = data.skillIdx;
                     var playerIdx = data.playerIdx;
-                    if (skillIdx == null)
-                        skillIdx = 0;
                     var skillName = skillNameMap[skillIdx];
                     var skillCount = data.skillCount;
                     var user = data.user;
-                    if (playerIdx == null)
-                        playerIdx = 0;
-                    var playerInfo = this.playerInfoArr[playerIdx];
+                    var playerInfo:PlayerInfo = this.playerInfoArr[playerIdx];
                     if (playerInfo)
                         var playerName = playerInfo.name();
                     this.notice.fadeInSkill(user, skillCount, playerName, skillName);
+
+                    if (skillIdx == 0)
+                        this.onAddSkillOne(playerIdx);
+                    else if (skillIdx == 1)
+                        this.onAddSkillTwo(playerIdx);
+
                 }
             })
             .on(`${CommandId.updateRightScore}`, (data) => {
