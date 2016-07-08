@@ -8,6 +8,10 @@ export interface OpLinks extends vuejs.Vue {
 export class OpLinks {
     links:{ title:string; url:string }[];
 
+    ready() {
+        
+    }
+
     data():any {
         return {
             links: [

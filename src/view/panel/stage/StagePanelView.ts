@@ -18,6 +18,11 @@ import {Notice} from "./Notice";
             required: true,
             default: false
         },
+        isShowDmk: {
+            type: Boolean,
+            required: true,
+            default: true
+        },
         timerName: {
             type: String,
             default: "start"
@@ -48,7 +53,8 @@ import {Notice} from "./Notice";
         }
     },
     watch: {
-        ballCountArr: 'onBallCountArr'
+        ballCountArr: 'onBallCountArr',
+        isShowDmk: 'onToggleDmk'
     }
 })
 export class StagePanelView extends BasePanelView {
@@ -64,7 +70,7 @@ export class StagePanelView extends BasePanelView {
     isInit:boolean;
     gameId:number;
     playerInfoArr:any;
-
+    isShowDmk:boolean;
     isSubmited:boolean = false;
     notice:Notice;
     // skillNameMap:string[] = ['连杆', '恶魔时光机'];
@@ -155,14 +161,16 @@ export class StagePanelView extends BasePanelView {
                 window.location.reload();
             })
             .on(`${CommandId.toggleDmk}`, (data) => {
-                this.notice.isShow = !this.notice.isShow;
+                this.isShowDmk = data.isShowDmk;
+                this.notice.toggleDmkShow(this.isShowDmk);
+                this.notice.isShowDmk = this.isShowDmk;
             })
             .on(`${CommandId.updatePlayer}`, (data) => {
-                // this.getElem('#playerImg' + data.idx).src = data.playerDoc.avatar;
+                this.getElem('#playerImg' + data.idx).src = data.playerDoc.avatar;
                 // this.playerPanel.setPlayer(data.idx, new PlayerInfo(data.playerDoc));
                 this.stagePanel.setPlayerInfo(data.idx, new PlayerInfo(data.playerDoc));
                 // this.scorePanel.setAvgEloScore(data.avgEloScore);
-            })
+            });
         // .on(`${CommandId.updatePlayerAll}`, (param) => {
         //     //todo effect
         //     for (var i = 0; i < param.playerInfoArr.length; i++) {
@@ -196,6 +204,7 @@ export class StagePanelView extends BasePanelView {
         // this.playerPanel = new PlayerPanel(this);
         // this.playerPanel.init(gameDoc);
         this.gameId = gameDoc.id;
+        this.isShowDmk = gameDoc.isShowDmk;
         // this.eventPanel = new EventPanel(this);
         console.log('initStage', gameDoc);
         if (this.op) {
@@ -386,7 +395,7 @@ export class StagePanelView extends BasePanelView {
     }
 
     onToggleDmk() {
-        this.opReq(`${CommandId.cs_toggleDmk}`);
+        this.opReq(`${CommandId.cs_toggleDmk}`, {isShowDmk: this.isShowDmk});
     }
 
     onResetGame() {

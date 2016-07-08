@@ -1,6 +1,6 @@
 declare var Materialize;
 export class Notice {
-    isShow:boolean = true;
+    isShowDmk:boolean = true;
 
     constructor() {
 
@@ -13,10 +13,17 @@ export class Notice {
         // }
     }
 
+    toggleDmkShow(isShow) {
+        if (isShow)
+            $('#toast-container').show();
+        else
+            $('#toast-container').hide();
+    }
+
     fadeInDmk(user, text) {
-        if (this.isShow) {
-            var $toastContent = $(`<span style="opacity: 0.6"><span style="color: #00a0ff">${user}</span>:${text}</span>`);
-            Materialize.toast($toastContent, 5000, 'rounded dmkStyle');
-        }
+        // if (this.isShowDmk) {
+        var $toastContent = $(`<span style="opacity: 0.6"><span style="color: #00a0ff">${user}</span>:${text}</span>`);
+        Materialize.toast($toastContent, 5000, 'rounded dmkStyle');
+        // }
     }
 }

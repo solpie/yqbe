@@ -3,10 +3,11 @@
         position: absolute;
         width: 1400px;
         left: 100px;
-        top: 80px;
+        top: 20px;
         opacity: .8;
     }
-    .dmkStyle{
+
+    .dmkStyle {
         font-size: 15px;
         opacity: 0.6;
     }
@@ -22,7 +23,7 @@
                        @click="onUpdatePlayer($index)">↓</a>
                 </div>
                 <div class="col">
-                    <input v-model="ballCountArr[$index]" placeholder="剩球数设置" style="width: 100px">
+                    剩球数设置:<input v-model="ballCountArr[$index]" placeholder="剩球数设置" style="width: 30px">
                 </div>
             </div>
             <div class="row">
@@ -43,16 +44,26 @@
     </div>
 
     <div class="row">
-        <a class="waves-effect waves-light btn" @click="onResetGame">重置</a>
-        <a class="waves-effect waves-light btn" @click="onToggleDmk">显示弹幕助手</a>
+        <div class="switch">
+            <label>
+                hide
+                <input type="checkbox" v-model="isShowDmk">
+                <span class="lever"></span>
+                show::::::::显示弹幕
+            </label>
+        </div>
+        <br>
+        <a class="waves-effect waves-light btn" @click="onResetGame">重置Game</a>
+
+        <!--<a class="waves-effect waves-light btn" @click="onToggleDmk">显示弹幕助手</a>-->
     </div>
     <div class="row">
-        <div class="col s6" style="overflow: scroll;width:550px;height: 500px">
+        <div class="col s6" style="overflow: scroll;width:550px;height: 450px">
             <div v-for="dmk in dmkArr">
                 <span>[{{dmk.user}}]:{{dmk.text}}</span>
             </div>
         </div>
-        <div class="col s6" style="overflow: scroll;width:550px;height: 500px">
+        <div class="col s6" style="overflow: scroll;width:550px;height: 450px">
             <div v-for="skill in skillArr">
                 <span>[skill.user]:{{skill.skillIdx}}:{{skill.playerIdx}}</span>
             </div>

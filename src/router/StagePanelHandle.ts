@@ -121,7 +121,8 @@ export class StagePanelHandle {
             };
 
             cmdMap[`${CommandId.cs_toggleDmk}`] = (param) => {
-                this.io.emit(`${CommandId.toggleDmk}`);
+                this.gameInfo.isShowDmk = param.isShowDmk;
+                this.io.emit(`${CommandId.toggleDmk}`,ScParam(param));
             };
 
             // cmdMap[`${CommandId.cs_fadeInComingActivity}`] = () => {

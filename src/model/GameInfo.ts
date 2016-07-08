@@ -45,6 +45,7 @@ export class GameInfo {
 
     leftSkillInfoArr:SkillInfo[] = [];
     rightSkillInfoArr:SkillInfo[] = [];
+    isShowDmk:boolean = true;
 
     constructor(gameDoc?:any) {
         if (gameDoc) {
