@@ -48,29 +48,29 @@ export class WebServer {
         fs.readFile(_path('app/package.json'), (err:any, data:any)=> {
             if (err) throw err;
             dataObj = JSON.parse(data);
-
             ServerConf.port = dataObj.server.port;
+            ServerConf.wsPort = dataObj.server.wsPort;
             if (dataObj.server.autoIP) {
                 getIPAddress((ip)=> {
                     localhost = ip;
                     ServerConf.host = ip;
                     console.log("autoIP:", ip);
+                    this.initServer();
                 });
-                // console.log('autoIP:', localhost);
             }
-            else
+            else {
                 ServerConf.host = dataObj.server.host;
-            ServerConf.wsPort = dataObj.server.wsPort;
+                this.initServer();
+            }
             this.serverConf = ServerConf;
             console.log("server config:", ServerConf);
-            this.initServer();
             if (callback)
                 callback(dataObj);
         });
     }
 
     initServer() {
-        var express = require('express');
+        var express:any = require('express');
         var app = express();
         // view engine setup
         app.set('views', _path("./app/view"));

@@ -50,7 +50,8 @@ import {Notice} from "./Notice";
         },
         skillArr: {
             type: Array,
-        }
+        },
+        skillInfoArr: {type: Array, default: ['', '']}
     },
     watch: {
         ballCountArr: 'onBallCountArr',
@@ -73,6 +74,8 @@ export class StagePanelView extends BasePanelView {
     isShowDmk:boolean;
     isSubmited:boolean = false;
     notice:Notice;
+
+    skillInfoArr:string[];
     // skillNameMap:string[] = ['连杆', '恶魔时光机'];
     ready(pid?:string, isInitCanvas:boolean = true) {
         if (!pid)
@@ -139,11 +142,22 @@ export class StagePanelView extends BasePanelView {
 
             .on(`${CommandId.updateLeftSkill}`, (data) => {
                 var skillInfoArr = data.skillInfoArr;
-                console.log(skillInfoArr);
+                this.skillInfoArr[0] = '';
+                for (var i = 0; i < skillInfoArr.length; i++) {
+                    var skillInfo = skillInfoArr[i];
+                    this.skillInfoArr[0] += `[${skillInfo.name}] 剩：${skillInfo.count} 用：${skillInfo.used}`
+                }
+                console.log(skillInfoArr, this.skillInfoArr);
                 this.stagePanel.setLeftSkillInfoArr(skillInfoArr);
             })
             .on(`${CommandId.updateRightSkill}`, (data) => {
                 var skillInfoArr = data.skillInfoArr;
+                this.skillInfoArr[1] = '';
+                for (var i = 0; i < skillInfoArr.length; i++) {
+                    var skillInfo = skillInfoArr[i];
+                    this.skillInfoArr[1] += `[${skillInfo.name}] 剩：${skillInfo.count} 用：${skillInfo.used}`
+                }
+                console.log(skillInfoArr, this.skillInfoArr);
                 this.stagePanel.setRightSkillInfoArr(skillInfoArr);
             })
             .on(`${CommandId.toggleTimer}`, (data) => {
