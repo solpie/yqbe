@@ -1,4 +1,3 @@
-/// <reference path="./BaseInfo.ts"/>
 import {BaseInfo, obj2Class, prop} from "./BaseInfo";
 class PlayerDoc {
     id:number = 0;
@@ -16,6 +15,7 @@ class PlayerDoc {
     winGameCount:number = 0;
     size:string;//衣服尺寸
 }
+
 export class PlayerInfo extends BaseInfo {
     playerData:PlayerDoc = new PlayerDoc();
     pos:number;

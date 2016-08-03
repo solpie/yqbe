@@ -36,7 +36,7 @@ export class ScorePanel {
 
         var bg;
         if (is2v2)
-            bg = new createjs.Bitmap('/img/panel/stage/scoreBg2v2.png');
+            bg = new createjs.Bitmap('/img/panel/stage/scoreBg1v1.png');
         else
             bg = new createjs.Bitmap('/img/panel/stage/scoreBg.png');
 
@@ -247,10 +247,10 @@ export class ScorePanel {
         }
     }
 
-    setGameTh(th:number) {
-        if (th == null)
-            th = 0;
-        this.gameThText.text = `第${th}场`;
+    setGameIdx(idx:number) {
+        if (idx == null)
+            idx = 0;
+        this.gameThText.text = `第${idx}场`;
     }
 
     init(gameInfo:any) {
@@ -258,6 +258,6 @@ export class ScorePanel {
         this.setRightScore(gameInfo.rightScore);
         var gameInfoClone:GameInfo = new GameInfo(gameInfo);
         this.setAvgEloScore(gameInfoClone.getAvgEloScore());
-        this.setGameTh(gameInfo.gameTh);
+        this.setGameIdx(gameInfo.gameTh);
     }
 }

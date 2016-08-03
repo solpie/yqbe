@@ -43,7 +43,6 @@ export class WebServer {
         var process = require("process");
         ServerConf.isDev = process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath);
         console.log(process.execPath, ServerConf.isDev);
-
         var fs = require('fs');
         fs.readFile(_path('app/package.json'), (err:any, data:any)=> {
             if (err) throw err;

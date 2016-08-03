@@ -1,7 +1,7 @@
 import {BasePanelView} from "../BasePanelView";
 import Component from "vue-class-component";
 import {PlayerInfo} from "../../../model/PlayerInfo";
-import {PanelId} from "../../../event/Const";
+import {PanelId, TimerState} from "../../../event/Const";
 import {CommandId} from "../../../event/Command";
 import {ScorePanel} from "./ScorePanel";
 import {PlayerPanel} from "./PlayerPanel";
@@ -11,16 +11,29 @@ import {EventPanel} from "./EventPanel";
     props: {
         op: {},
         gameId: {},
+        gameIdx: {},
+        timerName: {},
+        playerNumArr: {
+            type: Array,
+            default: ['0', '0']
+        },
         playerInfoArr: {
             type: Array,
             default: [1, 2]
         }
+    },
+    watch: {
+        playerNumArr: 'onPlayerNumArrChanged',
+        gameIdx: 'onGameIdxChanged'
     }
 })
 export class Stage1v1PanelView extends BasePanelView {
     op:boolean = false;
     playerInfoArr:PlayerInfo[];
+    playerNumArr:number[];
     gameId:number;
+    gameIdx:number;
+    timerName:string;
     scorePanel:ScorePanel;
     playerPanel:PlayerPanel;
     eventPanel:EventPanel;
@@ -48,6 +61,41 @@ export class Stage1v1PanelView extends BasePanelView {
             .on(`${CommandId.updateRightScore}`, (data) => {
                 console.log('updateRightScore', data);
                 this.scorePanel.setRightScore(data.rightScore);
+            })
+            .on(`${CommandId.updatePlayer}`, (data) => {
+                console.log('updatePlayer', data);
+                this.getElem('#playerImg' + data.idx).src = data.playerDoc.avatar;
+                // this.playerPanel.setPlayer(data.idx, new PlayerInfo(data.playerDoc));
+                this.playerPanel.setPlayer(data.idx, new PlayerInfo(data.playerDoc));
+            })
+            .on(`${CommandId.updatePlayerBackNum}`, (param) => {
+                var backNumArr = param.backNumArr;
+                for (var i = 0; i < backNumArr.length; i++) {
+                    var backNum = backNumArr[i];
+                    this.playerPanel.playerCardArr[i].setBackNumber(backNum);
+                }
+            })
+            .on(`${CommandId.setGameIdx}`, (param) => {
+                var gameIdx = param.gameIdx;
+                this.scorePanel.setGameIdx(gameIdx);
+            })
+
+            .on(`${CommandId.toggleTimer}`, (param) => {
+                if (param && param.hasOwnProperty('state')) {
+                    console.log('set Timer:', param);
+                    this.scorePanel.toggleTimer1(param.state);
+                }
+                else {
+                    if (this.timerName === TimerState.START_STR)
+                        this.timerName = TimerState.PAUSE_STR;
+                    else
+                        this.timerName = TimerState.START_STR;
+                    this.scorePanel.toggleTimer1();
+                }
+            })
+            .on(`${CommandId.resetTimer}`, (data) => {
+                this.timerName = TimerState.START_STR;
+                this.scorePanel.resetTimer();
             })
     }
 
@@ -92,5 +140,30 @@ export class Stage1v1PanelView extends BasePanelView {
         this.opReq(`${CommandId.cs_minLeftScore}`);
     }
 
+    onUpdatePlayer(idx) {
+        console.log('onUpdatePlayer', idx);
+        var queryId = Number(this.getElem("#player" + idx).value);
+        console.log('onQueryPlayer', idx, queryId);
+        this.opReq(`${CommandId.cs_updatePlayer}`, {idx: idx, playerId: queryId});
+    }
+
+    onToggleTimer() {
+        console.log('onToggleTimer');
+        this.opReq(`${CommandId.cs_toggleTimer}`);
+    }
+
+    onResetTimer() {
+        console.log('onResetTimer');
+        this.opReq(`${CommandId.cs_resetTimer}`);
+    }
+
+    onGameIdxChanged(val) {
+        console.log('onGameIdxChanged', val);
+        this.opReq(`${CommandId.cs_setGameIdx}`, {gameIdx: val});
+    }
+    onPlayerNumArrChanged(val) {
+        console.log('onPlayerNumArrChanged', val);
+        this.opReq(`${CommandId.cs_updatePlayerBackNum}`, {backNumArr:val});
+    }
 
 }

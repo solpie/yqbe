@@ -13,8 +13,8 @@
             <div class="col" style="width: 85px">
                 <img src="/img/panel/stage/blue.png" id="playerImg{{$index}}" style="width: 80px">
                 <input id="player{{$index}}" type="text" @keyup.enter="onQueryPlayer($index)" style="width: 75px">
-                <input id="playerNum{{$index}}" type="text" @keyup.enter="onUpdatePlayerNum($index)"
-                       style="width: 35px">
+                <input id="playerNum{{$index}}" v-model="playerNumArr[$index]" type="text"
+                       style="width: 35px" Number>
                 <a class="waves-effect waves-light btn" style="width: 75px;height: 25px"
                    @click="onUpdatePlayer($index)">↓</a>
                 <p>
@@ -31,8 +31,6 @@
         ````````````````````````````````````````
         <a class="waves-effect waves-light btn"
            @click="onStarting">starting line</a>
-        <a class="waves-effect waves-light btn"
-           @click="onUpdateBackNum">back num</a>
         ````````````````````````````````````````
     </div>
     <div class="row" style="display: inline-flex">
@@ -45,7 +43,7 @@
             </label>
         </div>
         <a class="waves-effect waves-light btn" @click="onResetTimer" style="height: 35px">Reset</a>
-        场次设置::::<input v-model="gameTh" style="width: 50px" placeholder="本轮场次">
+        场次设置::::<input v-model="gameIdx" style="width: 50px">
     </div>
     <div class="row">
         <a class="waves-effect waves-light btn" @click="onAddLeftScore">Left++</a>

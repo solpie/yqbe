@@ -30,8 +30,8 @@ export class StagePlayerCard extends Container {
         this.eloScoreText.text = eloScore.toString();
     }
 
-    setBackNumber(backNumber:number) {
-        this.backNumText.text = backNumber.toString();
+    setBackNumber(backNumber:string) {
+        this.backNumText.text = backNumber;
     }
 
     setStyle(style:number) {
