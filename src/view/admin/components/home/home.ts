@@ -16,6 +16,7 @@ export class OpLinks {
         return {
             links: [
                 {title: "stage op", url: "/panel/#!/stage/op"},
+                {title: "stage1v1 op", url: "/panel/#!/stage1v1/op"},
                 {title: "stage ob", url: "/panel/#!/stage/ob"},
                 {title: "stage op mobile", url: "/m/#!/panel/stage/op"}
             ]

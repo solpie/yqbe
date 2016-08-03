@@ -27,6 +27,7 @@ Vue.use(require('vue-resource'));
 
 import VueRouter = require('vue-router');
 import ComponentOption = vuejs.ComponentOption;
+import {Stage1v1PanelView} from "./stage1v1/Stage1v1PanelView";
 Vue.use(VueRouter);
 
 var router = new VueRouter<Panel>();
@@ -39,14 +40,22 @@ router.map({
     '/stage/:op': {
         component: StagePanelView,
         name: 'stage'
+    },
+    '/stage1v1/:op': {
+        component: Stage1v1PanelView,
+        name: 'stage1v1'
     }
 });
 router.afterEach((transition) => {
     var toPath = transition.to.path;
     router.app.isOp = /\/op/.test(toPath);
-    if (/\/stage/.test(toPath)) {
+    if (/\/stage1v1/.test(toPath)) {
+        router.app.pid = PanelId.stage1v1Panel;
+    }
+    else if (/\/stage/.test(toPath)) {
         router.app.pid = PanelId.stagePanel;
-    } else if (/\/act/.test(toPath)) {
+    }
+    else if (/\/act/.test(toPath)) {
         router.app.pid = PanelId.actPanel;
     } else if (/\/screen/.test(toPath)) {
         router.app.pid = PanelId.screenPanel;
