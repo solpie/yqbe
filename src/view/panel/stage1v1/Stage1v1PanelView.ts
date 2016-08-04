@@ -28,25 +28,25 @@ import {EventPanel} from "./EventPanel";
     }
 })
 export class Stage1v1PanelView extends BasePanelView {
-    op:boolean = false;
-    playerInfoArr:PlayerInfo[];
-    playerNumArr:number[];
-    gameId:number;
-    gameIdx:number;
-    timerName:string;
-    scorePanel:ScorePanel;
-    playerPanel:PlayerPanel;
-    eventPanel:EventPanel;
-    isInit:boolean = false;
+    op: boolean = false;
+    playerInfoArr: PlayerInfo[];
+    playerNumArr: number[];
+    gameId: number;
+    gameIdx: number;
+    timerName: string;
+    scorePanel: ScorePanel;
+    playerPanel: PlayerPanel;
+    eventPanel: EventPanel;
+    isInit: boolean = false;
 
-    ready(pid?:string, isInitCanvas:boolean = true) {
+    ready(pid?: string, isInitCanvas: boolean = true) {
         if (!pid)
             pid = PanelId.stage1v1Panel;
         var io = super.ready(pid, isInitCanvas);
         this.initIO(io);
     }
 
-    initIO(io:any) {
+    initIO(io: any) {
         io.on(`${CommandId.initPanel}`, (data) => {
             console.log(`${CommandId.initPanel}`, data);
             // ServerConf.isDev = data.isDev;
@@ -99,7 +99,7 @@ export class Stage1v1PanelView extends BasePanelView {
             })
     }
 
-    initStage(gameDoc:any) {
+    initStage(gameDoc: any) {
         // console.log('is2v2:', (this.$parent as any).is2v2);
         // this.is2v2 = (this.$parent as any).is2v2;
         this.isInit = true;
@@ -161,9 +161,46 @@ export class Stage1v1PanelView extends BasePanelView {
         console.log('onGameIdxChanged', val);
         this.opReq(`${CommandId.cs_setGameIdx}`, {gameIdx: val});
     }
+
     onPlayerNumArrChanged(val) {
         console.log('onPlayerNumArrChanged', val);
-        this.opReq(`${CommandId.cs_updatePlayerBackNum}`, {backNumArr:val});
+        this.opReq(`${CommandId.cs_updatePlayerBackNum}`, {backNumArr: val});
+    }
+
+
+    onSubmitGame() {
+        var isBlueWin = this.scorePanel.isBlueWin;
+        console.log("isBlueWin:", isBlueWin);
+
+        var date = new Date();
+        var dateTime = date.getTime();
+        this.opReq(`${CommandId.cs_saveGameRec}`, {date: dateTime}, (res) => {
+            console.log(res);
+            if (res) {
+                alert('比赛结果提交成功');
+            }
+            else {
+                alert('比赛结果已经提交过了');
+            }
+        });
+        // if (this.scorePanel.isBlueWin != isBlueMvp) {
+        //     alert('比赛结果与mvp不符')
+        // }
+        // else {
+        //     var date = new Date();
+        //     var dateTime = date.getTime();
+        //     console.log('onSubmitGame', dateTime);
+        //     this.opReq(`${CommandId.cs_saveGameRec}`, {date: dateTime}, (res) => {
+        //         console.log(res);
+        //         this.isSubmited = true;
+        //         if (res) {
+        //             alert('比赛结果提交成功');
+        //         }
+        //         else {
+        //             alert('比赛结果已经提交过了');
+        //         }
+        //     });
+        // }
     }
 
 }

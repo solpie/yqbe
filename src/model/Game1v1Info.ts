@@ -2,21 +2,21 @@ import {PlayerInfo} from "./PlayerInfo";
 import {setPropTo} from "./BaseInfo";
 import {TimerState} from "../event/Const";
 export class Game1v1Info {
-    id:number;
-    leftScore:number;
-    rightScore:number;
-    playerInfoArr:PlayerInfo[] = new Array(2);
-    gameIdx:number = 0;//场次
-    winScore:number = 2;
-    gameState:number = 0;//0 未确认胜负 1 确认胜负未录入数据 2确认胜负并录入数据
-    mvpPlayerId:number;
-    isFinish:boolean;
+    id: number;
+    leftScore: number;
+    rightScore: number;
+    playerInfoArr: PlayerInfo[] = new Array(2);
+    gameIdx: number = 0;//场次
+    winScore: number = 2;
+    gameState: number = 0;//0 未确认胜负 1 确认胜负未录入数据 2确认胜负并录入数据
+    mvpPlayerId: number;
 
-    _timer:any = null;
-    timerState:number = 0;
-    time:number = 0;
 
-    constructor(gameDoc?:any) {
+    _timer: any = null;
+    timerState: number = 0;
+    time: number = 0;
+
+    constructor(gameDoc?: any) {
         this.rightScore = 0;
         this.leftScore = 0;
         if (gameDoc) {
@@ -46,19 +46,37 @@ export class Game1v1Info {
     }
 
 
-    setPlayerInfoByIdx(pos, playerInfo:PlayerInfo) {
+    setPlayerInfoByIdx(pos, playerInfo: PlayerInfo) {
         this.playerInfoArr[pos] = playerInfo;
         return playerInfo;
     }
 
-    setGameResult(isBlueWin:boolean) {
-        if (isBlueWin) {
-            this.playerInfoArr[0];
+    saveGameResult() {
+        if (this.gameState === 0) {
+            var isBlueWin = this.leftScore > this.rightScore;
+            if (isBlueWin) {
+                PlayerInfo.addWinGameAmount(this.playerInfoArr[0].playerData);
+                PlayerInfo.addLoseGameAmount(this.playerInfoArr[1].playerData);
+            }
+            else {
+                PlayerInfo.addLoseGameAmount(this.playerInfoArr[0].playerData);
+                PlayerInfo.addWinGameAmount(this.playerInfoArr[1].playerData);
+            }
+            this.gameState = 1;
         }
-        else {
-            this.playerInfoArr[1];
+    }
 
+    get isFinish() {
+        return this.gameState != 0;
+    }
+
+
+    getPlayerDocArr() {
+        var a = [];
+        for (var i = 0; i < this.playerInfoArr.length; i++) {
+            a.push(this.playerInfoArr[i].playerData);
         }
+        return a;
     }
 
     toggleTimer(state?) {
@@ -80,6 +98,7 @@ export class Game1v1Info {
         }
 
     }
+
     resetTimer() {
         clearInterval(this._timer);
         this._timer = 0;

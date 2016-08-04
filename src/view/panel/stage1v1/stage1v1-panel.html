@@ -18,47 +18,51 @@
                 <a class="waves-effect waves-light btn" style="width: 75px;height: 25px"
                    @click="onUpdatePlayer($index)">↓</a>
                 <p>
-                    <input name="mvp" type="radio" id="mvp{{$index}}" value="{{$index}}" v-model="mvpIdx"/>
-                    <label for="mvp{{$index}}">mvp{{$index}}</label>
                     <!--<input id="eloScore{{$index}}" type="text" @keyup.enter="onSetEloScore($index)" style="width: 75px">-->
-
+            </div>
+        </div>
+        <div class="col">
+            <div class="row">
+                game id:{{gameId}}
+                ````````````````````````````````````````
+                <a class="waves-effect waves-light btn"
+                   @click="onStarting">出阵</a>
+                ````````````````````````````````````````
+            </div>
+            <div class="row" style="display: inline-flex">
+                <div class="switch">
+                    <label>
+                        pause
+                        <input type="checkbox" @click="onToggleTimer">
+                        <span class="lever"></span>
+                        start::::::::
+                    </label>
+                </div>
+                <a class="waves-effect waves-light btn" @click="onResetTimer" style="height: 35px">Reset</a>
+                场次设置::::<input v-model="gameIdx" style="width: 50px">
+            </div>
+            <div class="row">
+                <a class="waves-effect waves-light btn" @click="onAddLeftScore">蓝分++</a>
+                <a class="waves-effect waves-light btn" @click="onMinLeftScore">蓝分--</a>
+                <input type="checkbox" id="unlimitScore" v-model="isUnlimitScore"/>
+                <label for="unlimitScore">///////不限制分数\\\\\\\</label>
+                <a class="waves-effect waves-light btn" @click="onMinRightScore">红分--</a>
+                <a class="waves-effect waves-light btn" @click="onAddRightScore">红分++</a>
+            </div>
+            <div class="row">
+                <a class="waves-effect waves-light btn" @click="onShowWin">显示胜方</a>
+                <a class="waves-effect waves-light btn" @click="onHideWin">隐藏胜方</a>
+                <a class="waves-effect waves-light btn" @click="onSubmitGame">提交比赛结果</a>
+                <a class="waves-effect waves-light btn" @click="onRefresh">Refresh</a>
             </div>
         </div>
     </div>
 
     <div class="row">
-        game id:{{gameId}}
-        ````````````````````````````````````````
-        <a class="waves-effect waves-light btn"
-           @click="onStarting">starting line</a>
-        ````````````````````````````````````````
+        <a class="waves-effect waves-light btn" @click="onShowWin">赛况表</a>
     </div>
-    <div class="row" style="display: inline-flex">
-        <div class="switch">
-            <label>
-                pause
-                <input type="checkbox" @click="onToggleTimer">
-                <span class="lever"></span>
-                start::::::::
-            </label>
-        </div>
-        <a class="waves-effect waves-light btn" @click="onResetTimer" style="height: 35px">Reset</a>
-        场次设置::::<input v-model="gameIdx" style="width: 50px">
-    </div>
-    <div class="row">
-        <a class="waves-effect waves-light btn" @click="onAddLeftScore">Left++</a>
-        <a class="waves-effect waves-light btn" @click="onMinLeftScore">Left--</a>
-        <input type="checkbox" id="unlimitScore" v-model="isUnlimitScore"/>
-        <label for="unlimitScore">///////不限制分数\\\\\\\</label>
-        <a class="waves-effect waves-light btn" @click="onMinRightScore">Right--</a>
-        <a class="waves-effect waves-light btn" @click="onAddRightScore">Right++</a>
-    </div>
-    <div class="row">
-        <a class="waves-effect waves-light btn" @click="onShowWin">Show Win</a>
-        <a class="waves-effect waves-light btn" @click="onHideWin">Hide Win</a>
-        <a class="waves-effect waves-light btn" @click="onSubmitGame">Submit Game</a>
-        <a class="waves-effect waves-light btn" @click="onRefresh">Refresh</a>
-    </div>
+
+
 </div>
 <div style="display: none">
     <img src="/img/panel/stage/win/playerBgWinBlue.png">

@@ -5,15 +5,15 @@ import {EloConf} from "../utils/EloUtil";
 import {ExternalInfo} from "./external/ExternalInfo";
 import {GameInfo} from "./GameInfo";
 import {TeamInfo} from "./TeamInfo";
-export var db:any;
+export var db: any;
 var Datastore = require('nedb');
 
 export class BaseDB {
-    dataStore:any;
-    config:any;
-    dbPath:string;
-    dataMap:any;
-    indexName:string = 'id';
+    dataStore: any;
+    config: any;
+    dbPath: string;
+    dataMap: any;
+    indexName: string = 'id';
 
     constructor(option) {
         this.dbPath = option.filename;
@@ -34,8 +34,8 @@ export class BaseDB {
         this.onloaded();
     }
 
-    syncDataMap(callback?:any) {
-        this.dataStore.find({$not: {id: 0}}, (err:any, docs:Array<any>)=> {
+    syncDataMap(callback?: any) {
+        this.dataStore.find({$not: {id: 0}}, (err: any, docs: Array<any>)=> {
             this.dataMap = {};
             for (var i = 0; i < docs.length; i++) {
                 var doc = docs[i];
@@ -50,7 +50,7 @@ export class BaseDB {
         return this.dataMap[id];
     }
 
-    getDocArrByIdArr(idArr:number[]) {
+    getDocArrByIdArr(idArr: number[]) {
         var a = [];
         for (var id of idArr) {
             a.push(this.dataMap[id]);
@@ -116,6 +116,11 @@ export class BaseDB {
     //         // this.syncDataMap(callback);
     //     });
     // }
+    updateDocArr(docArr) {
+        this.ds().find({'$or': docArr}, (err, docs)=> {
+
+        })
+    }
 
     getDocArr(idArr) {
         var a = [];
@@ -184,7 +189,7 @@ class ActivityDB extends BaseDB {
                 if (!doc.gameDataArr)
                     doc.gameDataArr = [];
 
-                var gameData:any = {};
+                var gameData: any = {};
                 gameData.id = this.getGameIdBase(roundId) + doc.gameDataArr.length + 1;
                 gameData.playerIdArr = playerIdArr;
                 gameData.section = section;
@@ -315,7 +320,7 @@ class GameDB extends BaseDB {
         })
     }
 
-    saveGameRecToPlayer(gameInfo:GameInfo, callback) {
+    saveGameRecToPlayer(gameInfo: GameInfo, callback) {
         var gameId = gameInfo.id;
         // if (this.isUnsaved) {
         // if (this.gameState === GameInfo.GAME_STATE_ING) {
@@ -343,7 +348,7 @@ class GameDB extends BaseDB {
         }
 
         if (gameInfo.gameState < GameInfo.GAME_STATE_SAVE) {
-            var saveTeamPlayerData = (teamInfo:TeamInfo)=> {
+            var saveTeamPlayerData = (teamInfo: TeamInfo)=> {
                 for (var playerInfo of teamInfo.playerInfoArr) {
                     console.log("playerData", JSON.stringify(playerInfo));
                     if (!playerInfo.gameRec())
@@ -420,7 +425,7 @@ class PlayerDB extends BaseDB {
 
     }
 
-    getPlayerRank(playerIdArr:number[]) {
+    getPlayerRank(playerIdArr: number[]) {
         var playerDocArr = [];
         for (var i = 0; i < playerIdArr.length; i++) {
             var playerId = playerIdArr[i];
@@ -434,7 +439,7 @@ class PlayerDB extends BaseDB {
         return playerDocArr;
     }
 
-    getPlayerIdArrRank(playerIdArr:number[]):number[] {
+    getPlayerIdArrRank(playerIdArr: number[]): number[] {
         var playerDocArr = this.getPlayerRank(playerIdArr);
         var a = [];
         for (var playerDoc of playerDocArr) {
@@ -445,7 +450,7 @@ class PlayerDB extends BaseDB {
 
     getPlayerDataMapByIdArr(idArr, callback) {
         this.dataStore.find({'$or': idArr}, function (err, docs) {
-            var playerIdMap:any = {};
+            var playerIdMap: any = {};
             for (var playerData of docs) {
                 playerIdMap[playerData.id] = playerData;
             }
@@ -479,23 +484,35 @@ class PlayerDB extends BaseDB {
         return null;
     }
 
-    getPlayerArrEloScore(playerIdArr:number[]) {
+    getPlayerArrEloScore(playerIdArr: number[]) {
         var sum = 0;
         for (var playerId of playerIdArr) {
             sum += this.dataMap[playerId].eloScore;
         }
         return sum;
     }
+
+    updatePlayerDoc(docArr: Array<any>) {
+        var save1by1 = (docArr, i, callback)=> {
+            this.ds().update({id: docArr[i].id}, {$set: docArr[i]}, {}, (err, doc)=> {
+                if (i < docArr.length)
+                    save1by1(docArr, i + 1, callback);
+                else if (callback)
+                    callback();
+            });
+        };
+        save1by1(docArr, 0, null);
+    }
 }
 
 export function initDB() {
 // Fetch a collection to insert document into
-    var playerDb:string = _path('app/db/player.db');
-    var activityDb:string = _path('app/db/activity.db');
-    var gameDbPath:string = _path('app/db/game.db');
+    var playerDb: string = _path('app/db/player.db');
+    var activityDb: string = _path('app/db/activity.db');
+    var gameDbPath: string = _path('app/db/game.db');
 
-    var huitiDbPath:string = _path('app/db/gameHuiTi.db');
-    var huitiPlayerDbPath:string = _path('app/db/playerHuiTi.db');
+    var huitiDbPath: string = _path('app/db/gameHuiTi.db');
+    var huitiPlayerDbPath: string = _path('app/db/playerHuiTi.db');
 
     db = {};
     db.player = new PlayerDB({filename: playerDb, autoload: true});

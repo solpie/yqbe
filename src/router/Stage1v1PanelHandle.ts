@@ -12,19 +12,19 @@ import {Game1v1Info} from "../model/Game1v1Info";
 import Server = SocketIO.Server;
 import Socket = SocketIO.Socket;
 export class Stage1v1PanelHandle {
-    io:any;
-    gameInfo:Game1v1Info;
+    io: any;
+    gameInfo: Game1v1Info;
 
-    constructor(io:Server) {
+    constructor(io: Server) {
         console.log('StagePanelHandle!!');
         this.gameInfo = new Game1v1Info();
 
         this.io = io.of(`/${PanelId.stage1v1Panel}`);
         this.io
-            .on("connect", (socket:Socket) => {
+            .on("connect", (socket: Socket) => {
                 socket.emit(`${CommandId.initPanel}`, ScParam({gameInfo: this.gameInfo, isDev: ServerConf.isDev}));
             })
-            .on('disconnect', function (socket:Socket) {
+            .on('disconnect', function (socket: Socket) {
                 console.log('disconnect');
             });
         this.initOp();
@@ -32,12 +32,12 @@ export class Stage1v1PanelHandle {
 
     initOp() {
         //post /panel/stage/:cmd
-        panelRouter.post(`/stage1v1/:cmdId`, (req:Request, res:Response) => {
+        panelRouter.post(`/stage1v1/:cmdId`, (req: Request, res: Response) => {
             if (!req.body) return res.sendStatus(400);
             var cmdId = req.params.cmdId;
             var param = req.body;
             console.log(`/stage1v1/${cmdId}`);
-            var cmdMap:any = {};
+            var cmdMap: any = {};
 
 
             cmdMap[`${CommandId.cs_minLeftScore}`] = () => {
@@ -144,8 +144,10 @@ export class Stage1v1PanelHandle {
                     res.send(false);
                 }
                 else {
-                    db.game.saveGameRecToPlayer(this.gameInfo, () => {
-                    });
+                    console.log('bf:', this.gameInfo.getPlayerDocArr());
+                    this.gameInfo.saveGameResult();
+                    console.log('aft:', this.gameInfo.getPlayerDocArr());
+                    db.player.updatePlayerDoc(this.gameInfo.getPlayerDocArr());
                     res.send(true);
                 }
                 return ServerConst.SEND_ASYNC;
