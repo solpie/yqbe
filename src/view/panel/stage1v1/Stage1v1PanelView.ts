@@ -108,6 +108,9 @@ export class Stage1v1PanelView extends BasePanelView {
                     this.eventPanel.fadeInActPanel(data.playerDocArr, this.op, this.onChangePlayerState);
                 });
             })
+            .on(`${CommandId.fadeOutActivityPanel}`, (param) => {
+                this.eventPanel.fadeOutWinPanel();
+            })
             .on(`${CommandId.updatePlayerState}`, (param) => {
                 var playerDoc = param.playerDoc;
                 this.eventPanel.updatePlayerState(playerDoc);
@@ -236,6 +239,10 @@ export class Stage1v1PanelView extends BasePanelView {
     onShowAct() {
         console.log('onShowAct');
         this.opReq(`${CommandId.cs_fadeInActivityPanel}`)
+    }
+    onHideAct() {
+        console.log('onHideAct');
+        this.opReq(`${CommandId.cs_fadeOutActivityPanel}`)
     }
 
     onChangePlayerState(playerDoc) {

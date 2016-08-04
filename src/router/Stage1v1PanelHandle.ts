@@ -138,6 +138,7 @@ export class Stage1v1PanelHandle {
             };
 
             cmdMap[`${CommandId.cs_fadeOutActivityPanel}`] = (param) => {
+                this.io.emit(`${CommandId.fadeOutActivityPanel}`);
             };
 
             cmdMap[`${CommandId.cs_updatePlayerBackNum}`] = (param) => {
