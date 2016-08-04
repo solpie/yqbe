@@ -16,10 +16,10 @@ class PlayerDoc {
     size: string;//衣服尺寸
 }
 export var PlayerState1v1 = {
-    FIGHTING: 'fighting',
-    PIGEON: 'PIGEON',
-    WAITING: 'waiting',
-    Dead: 'dead'
+    FIGHTING: ' ',
+    PIGEON: '鸽子',
+    WAITING: '  ',
+    Dead: '淘汰'
 };
 export class PlayerInfo extends BaseInfo {
     playerData: PlayerDoc = new PlayerDoc();
@@ -97,7 +97,7 @@ export class PlayerInfo extends BaseInfo {
     }
 
     static winPercent(playerDoc) {
-        var p = playerDoc.winGameCount / PlayerInfo.gameCount(playerDoc)
+        var p = playerDoc.winGameCount / PlayerInfo.gameCount(playerDoc);
         if (!p)p = 0;
         return p;
     }

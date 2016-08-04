@@ -98,6 +98,10 @@ export class Stage1v1PanelHandle {
                     this.io.emit(`${CommandId.updatePlayer}`, ScParam(param))
                 }
             };
+            cmdMap[`${CommandId.cs_updatePlayerState}`] = (param) => {
+                db.player.updatePlayerDoc([param.playerDoc]);
+                this.io.emit(`${CommandId.updatePlayerState}`, ScParam(param))
+            };
 
             // cmdMap[`${CommandId.cs_updatePlayerAll}`] = (param) => {
             //     var playerInfoArr = [];

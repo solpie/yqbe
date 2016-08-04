@@ -2,12 +2,16 @@ import {loadImg} from "../../../utils/JsFunc";
 import {ViewConst} from "../../../event/Const";
 import {PlayerInfo, PlayerState1v1} from "../../../model/PlayerInfo";
 import {TeamInfo} from "../../../model/TeamInfo";
+import {blink} from "../../../utils/Fx";
+import {CreateJsEx} from "../CreateJsEx";
 import Container = createjs.Container;
 import Text = createjs.Text;
 import Bitmap = createjs.Bitmap;
+import SpriteContainer = createjs.SpriteContainer;
 export class EventPanel {
     ctn: Container;
     fireFx: any;
+    itemArr: Array<any>;
 
     constructor(parent: any) {
         var ctn = new createjs.Container();
@@ -16,7 +20,8 @@ export class EventPanel {
         this.ctn = ctn;
     }
 
-    fadeInActPanel(playerDocArr) {
+    fadeInActPanel(playerDocArr, isOp: boolean, eventCallback) {
+        this.itemArr = [];
         this.ctn.removeAllChildren();
         var modal = new createjs.Shape();
         modal.graphics.beginFill('#000').drawRect(0, 0, ViewConst.STAGE_WIDTH, ViewConst.STAGE_HEIGHT);
@@ -27,12 +32,20 @@ export class EventPanel {
             var ctn = new createjs.Container();
             var title = new createjs.Bitmap('/img/panel/stage1v1/actTitle.png');
             ctn.addChild(title);
+            ////            test
             var tmp = [PlayerState1v1.WAITING, PlayerState1v1.FIGHTING, PlayerState1v1.Dead, PlayerState1v1.PIGEON]
+            for (var i = 0; i < playerDocArrC.length; i++) {
+                playerDocArrC[i].state = tmp[i % 4];
+            }
+            ////////////////////
             for (var i = 0; i < 10; i++) {
                 var playerDoc = playerDocArrC[i];
                 if (playerDoc) {
+                    var itemCtn = new createjs.Container();
+                    this.itemArr.push(itemCtn);
+                    itemCtn.y = i * 95 + 95;
 
-                    var state = playerDoc.state || tmp[i % 4];
+                    var state = playerDoc.state;
                     var stateBg: Bitmap;
                     if (state == PlayerState1v1.FIGHTING) {
                         stateBg = new createjs.Bitmap('/img/panel/stage1v1/fighting.png');
@@ -46,36 +59,96 @@ export class EventPanel {
                     else if (state == PlayerState1v1.PIGEON) {
                         stateBg = new createjs.Bitmap('/img/panel/stage1v1/pigeon.png');
                     }
+                    stateBg.name = 'bg';
+                    (itemCtn as any).playerDoc = playerDoc;
+                    stateBg.addEventListener('click', (e: any)=> {
+                        var target = e.target;
+                        var playerDoc = e.target.parent.playerDoc;
+                        console.log('click sprite', e);
+                        if (playerDoc.state == PlayerState1v1.WAITING) {
+                            target.image.src = '/img/panel/stage1v1/fighting.png';
+                            playerDoc.state = PlayerState1v1.FIGHTING;
+                            blink(target);
+                        }
+                        else if (playerDoc.state == PlayerState1v1.FIGHTING) {
+                            target.image.src = '/img/panel/stage1v1/waiting.png';
+                            playerDoc.state = PlayerState1v1.WAITING;
+                        }
+                    });
+                    // stateBg.y = 95 + i * 95;
 
-
-                    stateBg.y = 95 + i * 95;
-
-                    ctn.addChild(stateBg);
-
+                    itemCtn.addChild(stateBg);
+                    ctn.addChild(itemCtn);
 
                     var avatar = new createjs.Bitmap(playerDoc.avatar);
                     avatar.x = 10;
-                    avatar.y = stateBg.y + 10;
+                    avatar.y = 10;
                     if (avatar.getBounds()) {
                         var scale = 70 / avatar.getBounds().height;
                         avatar.scaleX = avatar.scaleY = scale;
                     }
-                    ctn.addChild(avatar);
+                    itemCtn.addChild(avatar);
 
-                    var nameLabel = new createjs.Text(playerDoc.name, "28px Arial", "#fff");
-                    nameLabel.textAlign = 'center';
-                    nameLabel.x = 300;
-                    nameLabel.y = stateBg.y + 30;
-                    ctn.addChild(nameLabel);
+                    // var backNumBg = new createjs.Bitmap('/img/panel/stage1v1/backNumBg.png');
+                    // backNumBg.x = 122;
+                    // backNumBg.y = stateBg.y + 7;
+                    // ctn.addChild(backNumBg);
+                    //
+                    // var backNum = new createjs.Text(playerDoc.backNum || 30, "26px Arial", "#fff");
+                    // backNum.textAlign = 'center';
+                    // backNum.x = backNumBg.x + 27;
+                    // backNum.y = backNumBg.y + 35;
+                    // ctn.addChild(backNum);
 
 
-                    var winLoseText = new createjs.Text(playerDoc.winGameCount + '/' + playerDoc.loseGameCount, "28px Arial", "#fff");
+                    var nameText = new createjs.Text(playerDoc.name, "28px Arial", "#fff");
+                    nameText.textAlign = 'center';
+                    nameText.x = 300;
+                    nameText.y = 30;
+                    itemCtn.addChild(nameText);
+
+                    var winLoseText = new createjs.Text(playerDoc.winGameCount + '/' + playerDoc.loseGameCount, "32px Arial", "#fff");
                     winLoseText.textAlign = 'center';
                     winLoseText.x = 495;
-                    winLoseText.y = nameLabel.y;
-                    ctn.addChild(winLoseText);
-                }
+                    winLoseText.y = nameText.y;
+                    itemCtn.addChild(winLoseText);
 
+                    var stateText = new createjs.Text(state, "28px Arial", "#fff");
+                    stateText.name = 'stateText';
+                    stateText.textAlign = 'left';
+                    stateText.x = 675;
+                    stateText.y = nameText.y;
+                    itemCtn.addChild(stateText);
+
+                    if (isOp) {
+                        var waitingBtn = CreateJsEx.newBtn((e)=> {
+                            var item = e.target.parent.parent;
+                            item.playerDoc.state = PlayerState1v1.WAITING;
+                            eventCallback(item.playerDoc);
+                        }, '等待');
+                        waitingBtn.x = 500;
+                        waitingBtn.y = 15;
+                        itemCtn.addChild(waitingBtn);
+
+                        var deadBtn = CreateJsEx.newBtn((e)=> {
+                            var item = e.target.parent.parent;
+                            item.playerDoc.state = PlayerState1v1.Dead;
+                            eventCallback(item.playerDoc);
+                        }, '淘汰');
+                        deadBtn.x = 580;
+                        deadBtn.y = 15;
+                        itemCtn.addChild(deadBtn);
+
+                        var pigeonBtn = CreateJsEx.newBtn((e)=> {
+                            var item = e.target.parent.parent;
+                            item.playerDoc.state = PlayerState1v1.PIGEON;
+                            eventCallback(item.playerDoc);
+                        }, '鸽子');
+                        pigeonBtn.x = 660;
+                        pigeonBtn.y = deadBtn.y;
+                        itemCtn.addChild(pigeonBtn);
+                    }
+                }
             }
             return ctn;
         };
@@ -87,6 +160,21 @@ export class EventPanel {
         col2.y = col1.y;
         this.ctn.addChild(col1);
         this.ctn.addChild(col2);
+    }
+
+    updatePlayerState(newPlayerDoc: any) {
+        console.log('updatePlayerState', newPlayerDoc);
+        for (var i = 0; i < this.itemArr.length; i++) {
+            var itemCtn = this.itemArr[i];
+            if (itemCtn.playerDoc.id == newPlayerDoc.id) {
+                itemCtn.playerDoc.state = newPlayerDoc.state;
+                if (newPlayerDoc.state == PlayerState1v1.Dead) {
+                    itemCtn.getChildByName('bg').image.src = '/img/panel/stage1v1/dead.png';
+                    itemCtn.getChildByName('stateText').text = itemCtn.playerDoc.state;
+                }
+                break;
+            }
+        }
     }
 
     fadeInWinPanel(teamInfo: TeamInfo, mvpIdx, mpvId) {
@@ -422,4 +510,5 @@ export class EventPanel {
                 ctn.removeAllChildren();
             });
     }
+
 }

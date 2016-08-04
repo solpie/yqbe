@@ -6,6 +6,7 @@ import {CommandId} from "../../../event/Command";
 import {ScorePanel} from "./ScorePanel";
 import {PlayerPanel} from "./PlayerPanel";
 import {EventPanel} from "./EventPanel";
+import {loadImgArr} from "../../../utils/JsFunc";
 @Component({
     template: require('./stage1v1-panel.html'),
     props: {
@@ -99,7 +100,17 @@ export class Stage1v1PanelView extends BasePanelView {
             })
             .on(`${CommandId.fadeInActivityPanel}`, (data) => {
                 console.log("fade in act ", data);
-                this.eventPanel.fadeInActPanel(data.playerDocArr);
+                var pathArr = [];
+                for (var i = 0; i < data.playerDocArr.length; i++) {
+                    pathArr.push(data.playerDocArr[i].avatar);
+                }
+                loadImgArr(pathArr, ()=> {
+                    this.eventPanel.fadeInActPanel(data.playerDocArr, this.op, this.onChangePlayerState);
+                });
+            })
+            .on(`${CommandId.updatePlayerState}`, (param) => {
+                var playerDoc = param.playerDoc;
+                this.eventPanel.updatePlayerState(playerDoc);
             })
     }
 
@@ -119,6 +130,20 @@ export class Stage1v1PanelView extends BasePanelView {
                 var playerInfo = gameDoc.playerInfoArr[i];
                 if (playerInfo)
                     this.getElem("#player" + i).value = playerInfo.playerData.id;
+            }
+
+            document.onkeyup = (e)=> {
+                var currKey = e.keyCode;
+                // console.log('key:', currKey);
+                if (currKey == 192) {
+                    var $stagePanel = $('#stage-panel');
+                    var display = $stagePanel.css('display');
+                    if (display == 'none')
+                        $stagePanel.show();
+                    else
+                        $stagePanel.hide();
+                    // console.log('key:', display);
+                }
             }
         }
     }
@@ -213,5 +238,8 @@ export class Stage1v1PanelView extends BasePanelView {
         this.opReq(`${CommandId.cs_fadeInActivityPanel}`)
     }
 
-
+    onChangePlayerState(playerDoc) {
+        console.log('state changed', playerDoc);
+        this.opReq(`${CommandId.cs_updatePlayerState}`, {playerDoc: playerDoc});
+    }
 }

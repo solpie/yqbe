@@ -63,6 +63,9 @@ export enum CommandId{
     resetGame,//
     cs_unLimitScore,//不限制比分显示
     unLimitScore,//不限制比分显示
+    cs_updatePlayerState,//更新状态
+    updatePlayerState,
+
     cs_setGameIdx,//设置比赛场次
     setGameIdx,
     //-----------------win panel
