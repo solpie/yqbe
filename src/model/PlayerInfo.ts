@@ -15,7 +15,12 @@ class PlayerDoc {
     winGameCount: number = 0;
     size: string;//衣服尺寸
 }
-
+export var PlayerState1v1 = {
+    FIGHTING: 'fighting',
+    PIGEON: 'PIGEON',
+    WAITING: 'waiting',
+    Dead: 'dead'
+};
 export class PlayerInfo extends BaseInfo {
     playerData: PlayerDoc = new PlayerDoc();
     pos: number;

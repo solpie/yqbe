@@ -1,22 +1,95 @@
 import {loadImg} from "../../../utils/JsFunc";
 import {ViewConst} from "../../../event/Const";
-import {PlayerInfo} from "../../../model/PlayerInfo";
+import {PlayerInfo, PlayerState1v1} from "../../../model/PlayerInfo";
 import {TeamInfo} from "../../../model/TeamInfo";
 import Container = createjs.Container;
 import Text = createjs.Text;
+import Bitmap = createjs.Bitmap;
 export class EventPanel {
-    ctn:Container;
-    fireFx:any;
+    ctn: Container;
+    fireFx: any;
 
-    constructor(parent:any) {
+    constructor(parent: any) {
         var ctn = new createjs.Container();
         parent.stage.addChild(ctn);
 
         this.ctn = ctn;
     }
 
+    fadeInActPanel(playerDocArr) {
+        this.ctn.removeAllChildren();
+        var modal = new createjs.Shape();
+        modal.graphics.beginFill('#000').drawRect(0, 0, ViewConst.STAGE_WIDTH, ViewConst.STAGE_HEIGHT);
+        modal.alpha = .3;
+        this.ctn.addChild(modal);
+        //first column
+        var actColumn = (playerDocArrC)=> {
+            var ctn = new createjs.Container();
+            var title = new createjs.Bitmap('/img/panel/stage1v1/actTitle.png');
+            ctn.addChild(title);
+            var tmp = [PlayerState1v1.WAITING, PlayerState1v1.FIGHTING, PlayerState1v1.Dead, PlayerState1v1.PIGEON]
+            for (var i = 0; i < 10; i++) {
+                var playerDoc = playerDocArrC[i];
+                if (playerDoc) {
 
-    fadeInWinPanel(teamInfo:TeamInfo, mvpIdx, mpvId) {
+                    var state = playerDoc.state || tmp[i % 4];
+                    var stateBg: Bitmap;
+                    if (state == PlayerState1v1.FIGHTING) {
+                        stateBg = new createjs.Bitmap('/img/panel/stage1v1/fighting.png');
+                    }
+                    else if (state == PlayerState1v1.WAITING) {
+                        stateBg = new createjs.Bitmap('/img/panel/stage1v1/waiting.png');
+                    }
+                    else if (state == PlayerState1v1.Dead) {
+                        stateBg = new createjs.Bitmap('/img/panel/stage1v1/dead.png');
+                    }
+                    else if (state == PlayerState1v1.PIGEON) {
+                        stateBg = new createjs.Bitmap('/img/panel/stage1v1/pigeon.png');
+                    }
+
+
+                    stateBg.y = 95 + i * 95;
+
+                    ctn.addChild(stateBg);
+
+
+                    var avatar = new createjs.Bitmap(playerDoc.avatar);
+                    avatar.x = 10;
+                    avatar.y = stateBg.y + 10;
+                    if (avatar.getBounds()) {
+                        var scale = 70 / avatar.getBounds().height;
+                        avatar.scaleX = avatar.scaleY = scale;
+                    }
+                    ctn.addChild(avatar);
+
+                    var nameLabel = new createjs.Text(playerDoc.name, "28px Arial", "#fff");
+                    nameLabel.textAlign = 'center';
+                    nameLabel.x = 300;
+                    nameLabel.y = stateBg.y + 30;
+                    ctn.addChild(nameLabel);
+
+
+                    var winLoseText = new createjs.Text(playerDoc.winGameCount + '/' + playerDoc.loseGameCount, "28px Arial", "#fff");
+                    winLoseText.textAlign = 'center';
+                    winLoseText.x = 495;
+                    winLoseText.y = nameLabel.y;
+                    ctn.addChild(winLoseText);
+                }
+
+            }
+            return ctn;
+        };
+        var col1 = actColumn(playerDocArr.slice(0, 10));
+        col1.x = 120;
+        col1.y = 10;
+        var col2 = actColumn(playerDocArr.slice(10, 20));
+        col2.x = 1030;
+        col2.y = col1.y;
+        this.ctn.addChild(col1);
+        this.ctn.addChild(col2);
+    }
+
+    fadeInWinPanel(teamInfo: TeamInfo, mvpIdx, mpvId) {
         //todo 优化mvpId mvpIdx
         var mvp = Number(mvpIdx);
         console.log(this, "show fadeInWinPanel mvp:", mvp);
@@ -129,7 +202,7 @@ export class EventPanel {
         }
     }
 
-    fadeInWinPanel2v2(teamInfo:TeamInfo, mvpIdx, mpvId) {
+    fadeInWinPanel2v2(teamInfo: TeamInfo, mvpIdx, mpvId) {
         //todo 优化mvpId mvpIdx
         var mvp = Number(mvpIdx);
         console.log(this, "show fadeInWinPanel mvp:", mvp);
@@ -225,7 +298,7 @@ export class EventPanel {
         }
     }
 
-    getWinPlayerCard(p:PlayerInfo, callback):any {
+    getWinPlayerCard(p: PlayerInfo, callback): any {
         var isMvp = p.isMvp;
         var ctn = new createjs.Container();
         console.log("playerCard=======:", p.avatar());
@@ -311,7 +384,7 @@ export class EventPanel {
             }
             ctn.addChild(eloScoreDt);
 
-            var winpercent:Text = new createjs.Text("胜率" + p.getWinPercent(), "18px Arial", col);
+            var winpercent: Text = new createjs.Text("胜率" + p.getWinPercent(), "18px Arial", col);
             winpercent.textAlign = 'center';
             winpercent.x = name.x;
             winpercent.y = 320;

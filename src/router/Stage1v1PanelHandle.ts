@@ -120,19 +120,20 @@ export class Stage1v1PanelHandle {
                 this.gameInfo.gameIdx = param.gameIdx;
                 this.io.emit(`${CommandId.setGameIdx}`, ScParam(param));
             };
-            // cmdMap[`${CommandId.cs_fadeInWinPanel}`] = (param) => {
-            //     console.log('cs_fadeInWinPanel', param.mvpIdx, this.gameInfo);
-            //     var winTeam:TeamInfo = this.gameInfo.setWinByMvpIdx(param.mvpIdx);
-            //
-            //     this.io.emit(`${CommandId.fadeInWinPanel}`, ScParam({
-            //         teamInfo: winTeam,
-            //         mvpIdx: param.mvpIdx,
-            //         mvpId: this.gameInfo.mvpPlayerId
-            //     }));
-            // };
 
-            cmdMap[`${CommandId.cs_fadeOutWinPanel}`] = (param) => {
-                this.io.emit(`${CommandId.fadeOutWinPanel}`);
+            cmdMap[`${CommandId.cs_fadeInActivityPanel}`] = (param) => {
+                var playerIdArr;
+                for (var k in db.activity.dataMap) {
+                    if (db.activity.dataMap[k].activityId == 3) {
+                        playerIdArr = db.activity.dataMap[k].gameDataArr[0].playerIdArr;
+                        break;
+                    }
+                }
+                var playerDocArr = db.player.getDocArr(playerIdArr);
+                this.io.emit(`${CommandId.fadeInActivityPanel}`, ScParam({playerDocArr: playerDocArr}));
+            };
+
+            cmdMap[`${CommandId.cs_fadeOutActivityPanel}`] = (param) => {
             };
 
             cmdMap[`${CommandId.cs_updatePlayerBackNum}`] = (param) => {

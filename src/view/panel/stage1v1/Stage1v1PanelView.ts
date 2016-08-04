@@ -97,6 +97,10 @@ export class Stage1v1PanelView extends BasePanelView {
                 this.timerName = TimerState.START_STR;
                 this.scorePanel.resetTimer();
             })
+            .on(`${CommandId.fadeInActivityPanel}`, (data) => {
+                console.log("fade in act ", data);
+                this.eventPanel.fadeInActPanel(data.playerDocArr);
+            })
     }
 
     initStage(gameDoc: any) {
@@ -202,5 +206,12 @@ export class Stage1v1PanelView extends BasePanelView {
         //     });
         // }
     }
+
+
+    onShowAct() {
+        console.log('onShowAct');
+        this.opReq(`${CommandId.cs_fadeInActivityPanel}`)
+    }
+
 
 }
