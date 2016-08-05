@@ -77,8 +77,13 @@ export enum CommandId{
     cs_saveGameRec,
     //---------------- player panel
 
+    cs_createGame,
+    createGame,
     cs_startingLine,
     startingLine,
+
+    cs_hideStartingLine,
+    hideStartingLine,
 
     cs_queryPlayerByPos,
     fadeInPlayerPanel,
@@ -96,6 +101,14 @@ export enum CommandId{
 
     cs_fadeInActivityPanel,
     fadeInActivityPanel,
+
+    cs_fadeInActivityPanelNext,
+    fadeInActivityPanelNext,
+    cs_fadeInActivityPanelPre,
+    fadeInActivityPanelPre,
+
+
+
     cs_fadeInNextActivity,
     fadeInNextActivity,
     cs_fadeInActivityExGame,

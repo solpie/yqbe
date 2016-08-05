@@ -106,6 +106,17 @@ export class PlayerInfo extends BaseInfo {
         return (PlayerInfo.winPercent(playerDoc) * 100).toFixed(1) + "%"
     }
 
+    static weight(playerDoc) {
+        return playerDoc.weight || playerDoc.playerData.weight;
+    }
+
+    static height(playerDoc) {
+        return playerDoc.height || playerDoc.playerData.height;
+    }
+    static intro(playerDoc) {
+        return playerDoc.intro || playerDoc.playerData.intro;
+    }
+
     winpercent(val?: any) {
         return this.winGameCount() / this.gameCount();
     }

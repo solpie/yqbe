@@ -26,7 +26,11 @@
                 game id:{{gameId}}
                 ````````````````````````````````````````
                 <a class="waves-effect waves-light btn"
+                   @click="onCreateGame">创建比赛</a>
+                <a class="waves-effect waves-light btn"
                    @click="onStarting">出阵(球员信息)</a>
+                <a class="waves-effect waves-light btn" @click="onHideStarting">隐藏</a>
+
                 ````````````````````````````````````````
             </div>
             <div class="row" style="display: inline-flex">
@@ -59,12 +63,14 @@
     </div>
 
     <div class="row">
+        <a class="waves-effect waves-light btn" @click="onShowActPre">上一页</a>
         <a class="waves-effect waves-light btn" @click="onShowAct">赛况表</a>
+        <a class="waves-effect waves-light btn" @click="onShowActNext">下一页</a>
         <a class="waves-effect waves-light btn" @click="onHideAct">隐藏</a>
     </div>
-
-
 </div>
+
+
 <div style="display: none">
     <img src="/img/panel/stage/win/playerBgWinBlue.png">
     <img src="/img/panel/stage1v1/actTitle.png">

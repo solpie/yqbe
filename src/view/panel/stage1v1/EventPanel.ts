@@ -24,10 +24,10 @@ export class EventPanel {
     fadeInActPanel(playerDocArr, isOp: boolean, eventCallback) {
         this.itemArr = [];
         this.ctn.removeAllChildren();
-        var modal = new createjs.Shape();
-        modal.graphics.beginFill('#000').drawRect(0, 0, ViewConst.STAGE_WIDTH, ViewConst.STAGE_HEIGHT);
-        modal.alpha = .3;
-        this.ctn.addChild(modal);
+        // var modal = new createjs.Shape();
+        // modal.graphics.beginFill('#000').drawRect(0, 0, ViewConst.STAGE_WIDTH, ViewConst.STAGE_HEIGHT);
+        // modal.alpha = .3;
+        this.ctn.addChild(CreateJsEx.newModal());
         //first column
         var actColumn = (playerDocArrC)=> {
             var ctn = new createjs.Container();

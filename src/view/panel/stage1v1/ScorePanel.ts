@@ -9,8 +9,8 @@ import {TimerState} from "../../../event/Const";
 
 export class ScorePanel {
     timeText:Text;
-    leftAvgEloScoreText:Text;
-    rightAvgEloScoreText:Text;
+    // leftAvgEloScoreText:Text;
+    // rightAvgEloScoreText:Text;
     gameThText:Text;
 
     leftScoreText:BitmapText;
@@ -116,21 +116,21 @@ export class ScorePanel {
         }
 
         px = 770;
-        var lTxt = new createjs.Text("", "28px Arial", "#fff");
-        lTxt.text = '0';
-        lTxt.textAlign = 'center';
-        lTxt.x = px;
-        lTxt.y = 22;
-        this.leftAvgEloScoreText = lTxt;
-        scoreCtn.addChild(lTxt);
-
-        var rTxt = new createjs.Text("", "28px Arial", "#fff");
-        rTxt.text = '0';
-        rTxt.textAlign = 'center';
-        rTxt.x = lTxt.x + 385;
-        rTxt.y = lTxt.y;
-        this.rightAvgEloScoreText = rTxt;
-        scoreCtn.addChild(rTxt);
+        // var lTxt = new createjs.Text("", "28px Arial", "#fff");
+        // lTxt.text = '0';
+        // lTxt.textAlign = 'center';
+        // lTxt.x = px;
+        // lTxt.y = 22;
+        // this.leftAvgEloScoreText = lTxt;
+        // scoreCtn.addChild(lTxt);
+        //
+        // var rTxt = new createjs.Text("", "28px Arial", "#fff");
+        // rTxt.text = '0';
+        // rTxt.textAlign = 'center';
+        // rTxt.x = lTxt.x + 385;
+        // rTxt.y = lTxt.y;
+        // this.rightAvgEloScoreText = rTxt;
+        // scoreCtn.addChild(rTxt);
 
         var gameThText = new createjs.Text("第x场", "23px Arial", "#fff");
         gameThText.textAlign = 'center';
@@ -188,8 +188,8 @@ export class ScorePanel {
     }
 
     setAvgEloScore(data) {
-        this.leftAvgEloScoreText.text = (data.left || 0) + "";
-        this.rightAvgEloScoreText.text = (data.right || 0) + "";
+        // this.leftAvgEloScoreText.text = (data.left || 0) + "";
+        // this.rightAvgEloScoreText.text = (data.right || 0) + "";
 
         // this.leftAvgEloScoreText.text = "1969";
         // this.rightAvgEloScoreText.text = data.right + "";

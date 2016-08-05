@@ -1,3 +1,4 @@
+import {ViewConst} from "../../event/Const";
 export class CreateJsEx {
     static newBtn(func, text?) {
         var ctn = new createjs.Container();
@@ -17,5 +18,12 @@ export class CreateJsEx {
             ctn.addChild(txt);
         }
         return ctn;
+    }
+
+    static newModal(){
+        var modal = new createjs.Shape();
+        modal.graphics.beginFill('#000').drawRect(0, 0, ViewConst.STAGE_WIDTH, ViewConst.STAGE_HEIGHT);
+        modal.alpha = .3;
+        return modal;
     }
 }

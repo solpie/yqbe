@@ -146,7 +146,10 @@ export class Stage1v1PanelHandle {
             };
 
             cmdMap[`${CommandId.cs_startingLine}`] = (param) => {
-                this.io.emit(`${CommandId.startingLine}`, ScParam({playerDocArr:this.gameInfo.getPlayerDocArr()}));
+                this.io.emit(`${CommandId.startingLine}`, ScParam({playerDocArr: this.gameInfo.getPlayerDocArr()}));
+            };
+            cmdMap[`${CommandId.cs_hideStartingLine}`] = (param) => {
+                this.io.emit(`${CommandId.hideStartingLine}`);
             };
 
             cmdMap[`${CommandId.cs_saveGameRec}`] = (param) => {

@@ -14,6 +14,28 @@
                         <input id="name" v-model="name" type="text" class="validate" length="5">
                     </div>
                 </div>
+                <div class="row">
+                    <div class="input-field col s2">
+                        <input id="height" v-model="height"  type="text" class="validate">
+                        <label for="height">身高(CM)</label>
+                    </div>
+
+                    <div class="input-field col s2">
+                        <input id="weight" v-model="weight"  type="text" class="validate">
+                        <label for="weight">体重(KG)</label>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="size" v-model="intro"  type="text" class="validate">
+                        <label for="size">一句话介绍</label>
+                    </div>
+                    <!--<div class="input-field col s2">-->
+                        <!--<input id="backNumber" v-model="backNumber" number type="text" class="validate">-->
+                        <!--<label for="backNumber">球衣号码</label>-->
+                    <!--</div>-->
+                </div>
             </div>
             <div class="col s6">
                 <div class="file-field input-field">
@@ -26,8 +48,6 @@
                     </div>
                 </div>
 
-                <!--<input id="file1" type="file" value="..." onchange="showFile(this.files);">最小尺寸720x304-->
-                <!--<input type="button" value="更新头像" onclick="onClickUpdateAvatar()">-->
                 <div>
                     <img id="image">
                 </div>

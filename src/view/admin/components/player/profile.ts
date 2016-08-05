@@ -12,6 +12,18 @@ var _this_:Profile;
         name: {
             type: String,
             required: true,
+        },
+        intro: {
+            type: String,
+            required: true,
+        },
+        weight: {
+            type: String,
+            required: true,
+        },
+        height: {
+            type: String,
+            required: true,
         }
     },
     watch: {
@@ -31,8 +43,9 @@ export class Profile extends VueEx {
     realName:string;
     style:number;
     phone:number;
-    weight:number;
-    height:number;
+    intro:string;
+    weight:string;
+    height:string;
     qq:number;
     avatar:string;
     size:string;
@@ -64,7 +77,12 @@ export class Profile extends VueEx {
     }
 
     setProp(data, toObj) {
+        // 头像 虎扑ID  身高 体重 本场战绩 黑话
+
         toObj.name = data.name;
+        toObj.weight = data.weight;
+        toObj.height = data.height;
+        toObj.intro = data.intro;
     }
 
 

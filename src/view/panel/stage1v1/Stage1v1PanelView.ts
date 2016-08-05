@@ -119,6 +119,10 @@ export class Stage1v1PanelView extends BasePanelView {
                 var playerDocArr = param.playerDocArr;
                 this.eventPanel.playerInfoCard.fadeInfoPlayerInfoCard(playerDocArr);
             })
+
+            .on(`${CommandId.startingLine}`, (param) => {
+                this.eventPanel.playerInfoCard.fadeOutPlayerInfoCard();
+            })
     }
 
     initStage(gameDoc: any) {
@@ -155,8 +159,16 @@ export class Stage1v1PanelView extends BasePanelView {
         }
     }
 
+    onCreateGame() {
+        this.opReq(`${CommandId.cs_createGame}`);
+    }
+
     onStarting() {
         this.opReq(`${CommandId.cs_startingLine}`);
+    }
+
+    onHideStarting() {
+        this.opReq(`${CommandId.cs_hideStartingLine}`);
     }
 
     onAddLeftScore() {
@@ -229,6 +241,17 @@ export class Stage1v1PanelView extends BasePanelView {
     onShowAct() {
         console.log('onShowAct');
         this.opReq(`${CommandId.cs_fadeInActivityPanel}`)
+    }
+
+    onShowActPre() {
+        console.log('onShowActPre');
+        this.opReq(`${CommandId.cs_fadeInActivityPanelPre}`)
+
+    }
+
+    onShowActNext() {
+        console.log('onShowActNext');
+        this.opReq(`${CommandId.cs_fadeInActivityPanelNext}`)
     }
 
     onHideAct() {
