@@ -18,7 +18,6 @@ export function blink(target, time = 80, loop = false) {
 
 export function fadeOutCtn(ctn) {
     console.log(this, "show fade Out WinPanel");
-    var ctn = this.ctn;
     createjs.Tween.get(ctn).to({alpha: 0}, 200)
         .call(function () {
             ctn.alpha = 1;

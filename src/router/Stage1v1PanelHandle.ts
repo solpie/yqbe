@@ -91,11 +91,13 @@ export class Stage1v1PanelHandle {
                 if (this.gameInfo.gameState == GameInfo.GAME_STATE_ING) {
                     var playerId = param.playerId;
                     var playerIdx = param.idx;
-                    param.playerDoc = db.player.dataMap[playerId];
-                    this.gameInfo.setPlayerInfoByIdx(playerIdx, db.player.getPlayerInfoById(playerId));
-                    db.game.updatePlayerByPos(this.gameInfo.id, playerIdx, playerId);
-                    // param.avgEloScore = this.gameInfo.getAvgEloScore();
-                    this.io.emit(`${CommandId.updatePlayer}`, ScParam(param))
+                    db.player.syncDataMap(()=> {
+                        param.playerDoc = db.player.dataMap[playerId];
+                        this.gameInfo.setPlayerInfoByIdx(playerIdx, db.player.getPlayerInfoById(playerId));
+                        db.game.updatePlayerByPos(this.gameInfo.id, playerIdx, playerId);
+                        // param.avgEloScore = this.gameInfo.getAvgEloScore();
+                        this.io.emit(`${CommandId.updatePlayer}`, ScParam(param))
+                    });
                 }
             };
             cmdMap[`${CommandId.cs_updatePlayerState}`] = (param) => {
@@ -150,6 +152,20 @@ export class Stage1v1PanelHandle {
             };
             cmdMap[`${CommandId.cs_hideStartingLine}`] = (param) => {
                 this.io.emit(`${CommandId.hideStartingLine}`);
+            };
+
+            cmdMap[`${CommandId.cs_fadeInWinPanel}`] = (param) => {
+                var isBlueWin = this.gameInfo.leftScore > this.gameInfo.rightScore;
+                var playerDoc;
+                if (isBlueWin)
+                    playerDoc = this.gameInfo.getPlayerDocArr()[0];
+                else
+                    playerDoc = this.gameInfo.getPlayerDocArr()[1];
+                this.io.emit(`${CommandId.fadeInWinPanel}`, ScParam({isBlue: isBlueWin, playerDoc: playerDoc}));
+            };
+
+            cmdMap[`${CommandId.cs_fadeOutWinPanel}`] = (param) => {
+                this.io.emit(`${CommandId.fadeOutWinPanel}`);
             };
 
             cmdMap[`${CommandId.cs_saveGameRec}`] = (param) => {

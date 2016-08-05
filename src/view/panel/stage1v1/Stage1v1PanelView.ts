@@ -38,6 +38,8 @@ export class Stage1v1PanelView extends BasePanelView {
     scorePanel: ScorePanel;
     playerPanel: PlayerPanel;
     eventPanel: EventPanel;
+    isShowWinPlayer: boolean = false;
+    isSubmitGame: boolean = false;
     isInit: boolean = false;
 
     ready(pid?: string, isInitCanvas: boolean = true) {
@@ -120,9 +122,21 @@ export class Stage1v1PanelView extends BasePanelView {
                 this.eventPanel.playerInfoCard.fadeInfoPlayerInfoCard(playerDocArr);
             })
 
-            .on(`${CommandId.startingLine}`, (param) => {
+            .on(`${CommandId.hideStartingLine}`, (param) => {
                 this.eventPanel.playerInfoCard.fadeOutPlayerInfoCard();
             })
+            .on(`${CommandId.resetGame}`, (param) => {
+                window.location.reload();
+            })
+
+            .on(`${CommandId.fadeInWinPanel}`, (param) => {
+                this.eventPanel.playerInfoCard.fadeInWinPlayer(param.isBlue, param.playerDoc);
+            })
+
+            .on(`${CommandId.fadeOutWinPanel}`, (param) => {
+                this.eventPanel.playerInfoCard.fadeOutWinPlayer();
+            })
+
     }
 
     initStage(gameDoc: any) {
@@ -160,7 +174,16 @@ export class Stage1v1PanelView extends BasePanelView {
     }
 
     onCreateGame() {
-        this.opReq(`${CommandId.cs_createGame}`);
+        if (this.isShowWinPlayer) {
+            if (this.isSubmitGame)
+                this.opReq(`${CommandId.cs_resetGame}`);
+            else {
+                alert('还没提交比赛结果');
+            }
+        }
+        else {
+            this.opReq(`${CommandId.cs_resetGame}`);
+        }
     }
 
     onStarting() {
@@ -229,6 +252,7 @@ export class Stage1v1PanelView extends BasePanelView {
         this.opReq(`${CommandId.cs_saveGameRec}`, {date: dateTime}, (res) => {
             console.log(res);
             if (res) {
+                this.isSubmitGame = true;
                 alert('比赛结果提交成功');
             }
             else {
@@ -264,5 +288,13 @@ export class Stage1v1PanelView extends BasePanelView {
         this.opReq(`${CommandId.cs_updatePlayerState}`, {playerDoc: playerDoc});
     }
 
+    onShowWin() {
+        this.isShowWinPlayer = true;
+        this.opReq(`${CommandId.cs_fadeInWinPanel}`);
+    }
+
+    onHideWin() {
+        this.opReq(`${CommandId.cs_fadeOutWinPanel}`);
+    }
 
 }

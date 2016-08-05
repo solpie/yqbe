@@ -77,8 +77,6 @@ export enum CommandId{
     cs_saveGameRec,
     //---------------- player panel
 
-    cs_createGame,
-    createGame,
     cs_startingLine,
     startingLine,
 

@@ -497,8 +497,10 @@ class PlayerDB extends BaseDB {
             this.ds().update({id: docArr[i].id}, {$set: docArr[i]}, {}, (err, doc)=> {
                 if (i < docArr.length)
                     save1by1(docArr, i + 1, callback);
-                else if (callback)
+                else if (callback) {
+                    this.syncDataMap();
                     callback();
+                }
             });
         };
         save1by1(docArr, 0, null);

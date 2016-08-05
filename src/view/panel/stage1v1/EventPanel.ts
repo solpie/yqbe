@@ -2,18 +2,19 @@ import {loadImg} from "../../../utils/JsFunc";
 import {ViewConst} from "../../../event/Const";
 import {PlayerInfo, PlayerState1v1} from "../../../model/PlayerInfo";
 import {TeamInfo} from "../../../model/TeamInfo";
-import {blink} from "../../../utils/Fx";
+import {blink, fadeOutCtn} from "../../../utils/Fx";
 import {CreateJsEx} from "../CreateJsEx";
+import {PlayerInfoCard} from "./PlayerInfoCard";
 import Container = createjs.Container;
 import Text = createjs.Text;
 import Bitmap = createjs.Bitmap;
 import SpriteContainer = createjs.SpriteContainer;
-import {PlayerInfoCard} from "./PlayerInfoCard";
 export class EventPanel {
     ctn: Container;
     fireFx: any;
     itemArr: Array<any>;
     playerInfoCard: PlayerInfoCard;
+
     constructor(parent: any) {
         var ctn = new createjs.Container();
         parent.stage.addChild(ctn);
@@ -291,101 +292,6 @@ export class EventPanel {
         }
     }
 
-    fadeInWinPanel2v2(teamInfo: TeamInfo, mvpIdx, mpvId) {
-        //todo 优化mvpId mvpIdx
-        var mvp = Number(mvpIdx);
-        console.log(this, "show fadeInWinPanel mvp:", mvp);
-        var ctn = this.ctn;
-        var modal = new createjs.Shape();
-        modal.graphics.beginFill('#000').drawRect(0, 0, ViewConst.STAGE_WIDTH, ViewConst.STAGE_HEIGHT);
-        modal.alpha = .3;
-        ctn.addChild(modal);
-
-        var playerCtn = new createjs.Container();
-        ctn.addChild(playerCtn);
-
-        // if (this.verifyWin(paramDataArr, mvp)) {
-        var isBlue = (mvp < 4);
-
-        var titlePath = "/img/panel/stage/win/winPanelTitle";
-        if (isBlue)
-            titlePath += 'Blue.png';
-        else
-            titlePath += 'Red.png';
-        var titleCtn = new createjs.Container();
-
-        loadImg(titlePath, function () {
-            var title = new createjs.Bitmap(titlePath);
-            title.x = -419;//838 315
-            title.y = -158;
-            titleCtn.x = (ViewConst.STAGE_WIDTH) * .5;
-            titleCtn.y = 198;
-            titleCtn.scaleX = titleCtn.scaleY = 5;
-            titleCtn.alpha = 0;
-            createjs.Tween.get(titleCtn).to({scaleX: 1, scaleY: 1, alpha: 1}, 150);
-            titleCtn.addChild(title);
-            // console.log(title.getBounds());
-        });
-
-        ctn.addChild(titleCtn);
-
-        var prePlayerIsMvp = false;
-        playerCtn.x = (ViewConst.STAGE_WIDTH - 4 * 390) * .5;
-        playerCtn.y = 300;
-
-
-        var start = 0;
-        if (!isBlue) {
-            // start = 4;
-        }
-        var px = 400;
-        for (var i = start; i < start + 4; i++) {
-            if (i > 1) {
-                break;
-            }
-            var pInfo;
-            pInfo = new PlayerInfo(teamInfo.playerInfoArr[i].playerData);
-            pInfo.isRed = teamInfo.playerInfoArr[i].isRed;
-            pInfo.isBlue = isBlue;
-            pInfo.isMvp = pInfo.id() == mpvId;
-            var playerCard = this.getWinPlayerCard(pInfo, (isMvp)=> {
-                var bound = playerCard.getBounds();
-
-                if (bound)
-                    playerCard.cache(bound.x, bound.y, bound.width, bound.height);
-                if (isMvp) {
-                    // this.fireFx.parent.addChild(this.fireFx);
-                }
-            });
-            playerCard.x = i * 390 + px;
-            if (pInfo.isMvp) {
-                playerCard.y = -30;
-                // playerCard.addChild(this.fireFx)
-            }
-            else
-                playerCard.y = 0;
-            // console.log("new player card", paramDataArr[i], playerCard.x, playerCard.y, mvp);
-            playerCard.px = playerCard.x;
-            playerCard.py = playerCard.y;
-            playerCard.x = 500;
-            playerCard.scaleX = playerCard.scaleY = 0.01;
-            createjs.Tween.get(playerCard)
-                .to({x: playerCard.px, scaleX: 1.1, scaleY: 1.1}, 200)
-                .to({scaleX: 1, scaleY: 1}, 60).call(()=> {
-            });
-            playerCtn.addChild(playerCard);
-
-            prePlayerIsMvp = pInfo.isMvp;
-        }
-        function pad(num, n) {
-            var len = num.toString().length;
-            while (len < n) {
-                num = "0" + num;
-                len++;
-            }
-            return num;
-        }
-    }
 
     getWinPlayerCard(p: PlayerInfo, callback): any {
         var isMvp = p.isMvp;
@@ -511,5 +417,7 @@ export class EventPanel {
                 ctn.removeAllChildren();
             });
     }
+
+
 
 }
