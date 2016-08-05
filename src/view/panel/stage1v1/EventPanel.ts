@@ -8,16 +8,17 @@ import Container = createjs.Container;
 import Text = createjs.Text;
 import Bitmap = createjs.Bitmap;
 import SpriteContainer = createjs.SpriteContainer;
+import {PlayerInfoCard} from "./PlayerInfoCard";
 export class EventPanel {
     ctn: Container;
     fireFx: any;
     itemArr: Array<any>;
-
+    playerInfoCard: PlayerInfoCard;
     constructor(parent: any) {
         var ctn = new createjs.Container();
         parent.stage.addChild(ctn);
-
         this.ctn = ctn;
+        this.playerInfoCard = new PlayerInfoCard(parent.stage);
     }
 
     fadeInActPanel(playerDocArr, isOp: boolean, eventCallback) {

@@ -115,6 +115,10 @@ export class Stage1v1PanelView extends BasePanelView {
                 var playerDoc = param.playerDoc;
                 this.eventPanel.updatePlayerState(playerDoc);
             })
+            .on(`${CommandId.startingLine}`, (param) => {
+                var playerDocArr = param.playerDocArr;
+                this.eventPanel.playerInfoCard.fadeInfoPlayerInfoCard(playerDocArr);
+            })
     }
 
     initStage(gameDoc: any) {
@@ -149,6 +153,10 @@ export class Stage1v1PanelView extends BasePanelView {
                 }
             }
         }
+    }
+
+    onStarting() {
+        this.opReq(`${CommandId.cs_startingLine}`);
     }
 
     onAddLeftScore() {
@@ -215,24 +223,6 @@ export class Stage1v1PanelView extends BasePanelView {
                 alert('比赛结果已经提交过了');
             }
         });
-        // if (this.scorePanel.isBlueWin != isBlueMvp) {
-        //     alert('比赛结果与mvp不符')
-        // }
-        // else {
-        //     var date = new Date();
-        //     var dateTime = date.getTime();
-        //     console.log('onSubmitGame', dateTime);
-        //     this.opReq(`${CommandId.cs_saveGameRec}`, {date: dateTime}, (res) => {
-        //         console.log(res);
-        //         this.isSubmited = true;
-        //         if (res) {
-        //             alert('比赛结果提交成功');
-        //         }
-        //         else {
-        //             alert('比赛结果已经提交过了');
-        //         }
-        //     });
-        // }
     }
 
 
@@ -240,6 +230,7 @@ export class Stage1v1PanelView extends BasePanelView {
         console.log('onShowAct');
         this.opReq(`${CommandId.cs_fadeInActivityPanel}`)
     }
+
     onHideAct() {
         console.log('onHideAct');
         this.opReq(`${CommandId.cs_fadeOutActivityPanel}`)
@@ -249,4 +240,6 @@ export class Stage1v1PanelView extends BasePanelView {
         console.log('state changed', playerDoc);
         this.opReq(`${CommandId.cs_updatePlayerState}`, {playerDoc: playerDoc});
     }
+
+
 }

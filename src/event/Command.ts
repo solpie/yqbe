@@ -76,6 +76,10 @@ export enum CommandId{
     saveGameRec,
     cs_saveGameRec,
     //---------------- player panel
+
+    cs_startingLine,
+    startingLine,
+
     cs_queryPlayerByPos,
     fadeInPlayerPanel,
     cs_fadeInPlayerPanel,

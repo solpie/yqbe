@@ -145,14 +145,16 @@ export class Stage1v1PanelHandle {
                 this.io.emit(`${CommandId.updatePlayerBackNum}`, ScParam(param));
             };
 
+            cmdMap[`${CommandId.cs_startingLine}`] = (param) => {
+                this.io.emit(`${CommandId.startingLine}`, ScParam({playerDocArr:this.gameInfo.getPlayerDocArr()}));
+            };
+
             cmdMap[`${CommandId.cs_saveGameRec}`] = (param) => {
                 if (this.gameInfo.isFinish) {
                     res.send(false);
                 }
                 else {
-                    console.log('bf:', this.gameInfo.getPlayerDocArr());
                     this.gameInfo.saveGameResult();
-                    console.log('aft:', this.gameInfo.getPlayerDocArr());
                     db.player.updatePlayerDoc(this.gameInfo.getPlayerDocArr());
                     res.send(true);
                 }
