@@ -120,34 +120,21 @@ export class StagePlayerCard extends Container {
             backNumText.textAlign = "left";
             backNumText.x = 15;
         }
-        ctn.addChild(backNumText);
+        // ctn.addChild(backNumText);
 
-        var eloText = '';
-        if (playerInfo.gameRec().length >= 3)//3
-            eloText = playerInfo.eloScore();
-        else {
-            var newPlayerIcon = new createjs.Bitmap('/img/panel/stage/newPlayer.png');
-            if (isBlue)
-                newPlayerIcon.x = 37;
-            else
-                newPlayerIcon.x = 139;
-
-            newPlayerIcon.y = 61;
-            ctn.addChild(newPlayerIcon);
-        }
         console.log(`player${playerInfo.name()}game Count`, playerInfo.gameCount());
-        var eloScoreText = new createjs.Text(eloText, "18px Arial", "#fff");
-        eloScoreText.y = 59;
-        this.eloScoreText = eloScoreText;
+        var winLoseText = new createjs.Text(`${playerInfo.winGameCount()} / ${playerInfo.loseGameCount()}`, "18px Arial", "#fff");
+        winLoseText.y = 59;
+        this.eloScoreText = winLoseText;
         if (isBlue) {
-            eloScoreText.textAlign = "left";
-            eloScoreText.x = 31;
+            winLoseText.textAlign = "left";
+            winLoseText.x = 31;
         }
         else {
-            eloScoreText.textAlign = "right";
-            eloScoreText.x = 172;
+            winLoseText.textAlign = "right";
+            winLoseText.x = 172;
         }
-        ctn.addChild(eloScoreText);
+        ctn.addChild(winLoseText);
 
 
         var styleCtn = new createjs.Container();

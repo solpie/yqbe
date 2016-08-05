@@ -15,31 +15,6 @@
             left: 0;
             top: 0;
         }
-
-        #ex {
-            position: fixed;
-            z-index: 3;
-            left: 0;
-            top: 0;
-        }
-        .PlayerIntro{
-            position: absolute;
-            overflow: hidden;
-            display: none;
-            width: 230px;
-            height: 230px;
-            border: 0;
-            color: #ddd;
-            font-size: 18px;
-        }
-        .BlueIntro {
-            left: 437px;
-            top: 565px;
-        }
-        .RedIntro {
-            left: 1270px;
-            top: 565px;
-        }
     </style>
     <link type="text/css" rel="stylesheet" href="/css/materialize.min.css" media="screen,projection"/>
 </head>
@@ -48,9 +23,6 @@
     <canvas id="stage"></canvas>
     <div id="op">
         <router-view></router-view>
-    </div>
-    <div id="ex">
-
     </div>
 </div>
 <script type="text/javascript">

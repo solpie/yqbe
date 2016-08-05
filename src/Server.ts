@@ -100,10 +100,10 @@ export class WebServer {
             }
         });
 
+
         app.get('/', function (req:any, res:any) {
             res.redirect('/admin');
         });
-
 
         app.use('/admin', adminRouter);
         app.use('/panel', panelRouter);

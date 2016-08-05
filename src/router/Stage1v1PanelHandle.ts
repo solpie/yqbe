@@ -168,6 +168,11 @@ export class Stage1v1PanelHandle {
                 this.io.emit(`${CommandId.fadeOutWinPanel}`);
             };
 
+            cmdMap[`${CommandId.cs_fadeInFinalPlayer}`] = (param) => {
+                var playerDoc = db.player.dataMap[param.playerId];
+                this.io.emit(`${CommandId.fadeInFinalPlayer}`, ScParam({playerDoc: playerDoc}));
+            };
+
             cmdMap[`${CommandId.cs_saveGameRec}`] = (param) => {
                 if (this.gameInfo.isFinish) {
                     res.send(false);

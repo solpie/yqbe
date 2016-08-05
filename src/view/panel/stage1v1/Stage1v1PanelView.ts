@@ -137,6 +137,15 @@ export class Stage1v1PanelView extends BasePanelView {
                 this.eventPanel.playerInfoCard.fadeOutWinPlayer();
             })
 
+            .on(`${CommandId.fadeInFinalPlayer}`, (param) => {
+                this.eventPanel.playerInfoCard.fadeInFinalPlayer(param.playerDoc);
+
+            })
+
+            .on(`${CommandId.fadeOutFinalPlayer}`, (param) => {
+                this.eventPanel.playerInfoCard.fadeOutWinPlayer();
+            })
+
     }
 
     initStage(gameDoc: any) {
@@ -295,6 +304,12 @@ export class Stage1v1PanelView extends BasePanelView {
 
     onHideWin() {
         this.opReq(`${CommandId.cs_fadeOutWinPanel}`);
+    }
+
+    onFinalPlayer(idx) {
+        console.log('onUpdatePlayer', idx);
+        var playerId = Number(this.getElem("#player" + idx).value);
+        this.opReq(`${CommandId.cs_fadeInFinalPlayer}`, {playerId: playerId});
     }
 
 }

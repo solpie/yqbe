@@ -2,10 +2,10 @@ import {EventDispatcher} from "./EventDispatcher";
 export enum CommandId{
     dmkPush,
     ShowConsoleWin = 100000,
-    //
+        //
     toggleTracker,
     toggleBallRolling,
-    //stage panel
+        //stage panel
     toggleTimer,
     cs_toggleTimer,
     resetTimer,
@@ -15,7 +15,7 @@ export enum CommandId{
     cs_addLeftScore,//1000010
     updateRightScore,
     cs_addRightScore,
-        
+
     updateLeftBall,
     updateRightBall,
     cs_addLeftBall,
@@ -68,14 +68,19 @@ export enum CommandId{
 
     cs_setGameIdx,//设置比赛场次
     setGameIdx,
-    //-----------------win panel
+        //-----------------win panel
     fadeInWinPanel,
     cs_fadeInWinPanel,
     fadeOutWinPanel,
     cs_fadeOutWinPanel,
     saveGameRec,
     cs_saveGameRec,
-    //---------------- player panel
+    cs_fadeInFinalPlayer,
+    fadeInFinalPlayer,
+    cs_fadeOutFinalPlayer,
+    fadeOutFinalPlayer,
+
+        //---------------- player panel
 
     cs_startingLine,
     startingLine,
@@ -90,12 +95,12 @@ export enum CommandId{
     cs_fadeOutPlayerPanel,
     movePlayerPanel,
     cs_movePlayerPanel,
-    //自动三杀事件
+        //自动三杀事件
     straightScore3,
     straightScore5,
 
     initPanel,
-    /////activity panel
+        /////activity panel
 
     cs_fadeInActivityPanel,
     fadeInActivityPanel,
@@ -104,7 +109,6 @@ export enum CommandId{
     fadeInActivityPanelNext,
     cs_fadeInActivityPanelPre,
     fadeInActivityPanelPre,
-
 
 
     cs_fadeInNextActivity,
@@ -129,25 +133,25 @@ export enum CommandId{
 
     cs_fadeOutCountDown,
     fadeOutCountDown,
-    ///screen
+        ///screen
     cs_inScreenScore,
     inScreenScore,
-    // cs_fadeInComingActivity,
-    // fadeInComingActivity,
-    //db op
+        // cs_fadeInComingActivity,
+        // fadeInComingActivity,
+        //db op
     cs_findPlayerData,
 }
 class CommandItem {
-    id:number;
-    name:string;
-    desc:string;
+    id: number;
+    name: string;
+    desc: string;
 
     constructor(id) {
         this.id = id;
     }
 }
 export class Command extends EventDispatcher {
-    cmdArr:Array<CommandItem>;
+    cmdArr: Array<CommandItem>;
 
     constructor() {
         super();
@@ -163,7 +167,7 @@ export class Command extends EventDispatcher {
         // this.newCmd(CommandId.testSwapTrack, "test swap track");
     }
 
-    newCmd(id:number, name:string, desc?:string) {
+    newCmd(id: number, name: string, desc?: string) {
         var ci = new CommandItem(id);
         ci.name = name;
         ci.desc = desc;

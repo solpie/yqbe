@@ -90,12 +90,12 @@ export class ScorePanel {
         this.rightCircleArr = [];
         var px = 675;
         var py = 88;
-        for (var i = 0; i < 7; i++) {
-            var leftScoreBg = new createjs.Bitmap("/img/panel/stage/leftScoreBg.png");//694x132
-            leftScoreBg.x = px + i * 20;
+        for (var i = 0; i < 2; i++) {
+            var leftScoreBg = new createjs.Bitmap("/img/panel/stage1v1/leftScoreBg.png");//694x132
+            leftScoreBg.x = px + i * 80;
             leftScoreBg.y = py;
             scoreCtn.addChild(leftScoreBg);
-            var leftScore = new createjs.Bitmap("/img/panel/stage/leftScore.png");//694x132
+            var leftScore = new createjs.Bitmap("/img/panel/stage1v1/leftScore.png");//694x132
             leftScore.x = leftScoreBg.x;
             leftScore.y = leftScoreBg.y;
             scoreCtn.addChild(leftScore);
@@ -103,12 +103,12 @@ export class ScorePanel {
         }
         //right score
         px = 1090;
-        for (var i = 0; i < 7; i++) {
-            var rightScoreBg = new createjs.Bitmap("/img/panel/stage/rightScoreBg.png");//694x132
-            rightScoreBg.x = px + i * 20;
+        for (var i = 0; i < 2; i++) {
+            var rightScoreBg = new createjs.Bitmap("/img/panel/stage1v1/rightScoreBg.png");//694x132
+            rightScoreBg.x = px + i * 80;
             rightScoreBg.y = py;
             scoreCtn.addChild(rightScoreBg);
-            var rightScore = new createjs.Bitmap("/img/panel/stage/rightScore.png");//694x132
+            var rightScore = new createjs.Bitmap("/img/panel/stage1v1/rightScore.png");//694x132
             rightScore.x = rightScoreBg.x;
             rightScore.y = rightScoreBg.y;
             scoreCtn.addChild(rightScore);
@@ -116,21 +116,6 @@ export class ScorePanel {
         }
 
         px = 770;
-        // var lTxt = new createjs.Text("", "28px Arial", "#fff");
-        // lTxt.text = '0';
-        // lTxt.textAlign = 'center';
-        // lTxt.x = px;
-        // lTxt.y = 22;
-        // this.leftAvgEloScoreText = lTxt;
-        // scoreCtn.addChild(lTxt);
-        //
-        // var rTxt = new createjs.Text("", "28px Arial", "#fff");
-        // rTxt.text = '0';
-        // rTxt.textAlign = 'center';
-        // rTxt.x = lTxt.x + 385;
-        // rTxt.y = lTxt.y;
-        // this.rightAvgEloScoreText = rTxt;
-        // scoreCtn.addChild(rTxt);
 
         var gameThText = new createjs.Text("第x场", "23px Arial", "#fff");
         gameThText.textAlign = 'center';

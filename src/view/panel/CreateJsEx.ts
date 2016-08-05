@@ -20,10 +20,10 @@ export class CreateJsEx {
         return ctn;
     }
 
-    static newModal(){
+    static newModal(alpha=0.3){
         var modal = new createjs.Shape();
         modal.graphics.beginFill('#000').drawRect(0, 0, ViewConst.STAGE_WIDTH, ViewConst.STAGE_HEIGHT);
-        modal.alpha = .3;
+        modal.alpha = alpha;
         return modal;
     }
 }

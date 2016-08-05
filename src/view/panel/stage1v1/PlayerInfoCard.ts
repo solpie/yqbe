@@ -56,18 +56,32 @@ export class PlayerInfoCard {
             avatar.scaleX = avatar.scaleY = 1.2 * scale;
             avatar.x = (180 - 180 * 1.2) * .5 + 60;
             avatar.y = 50 + 30;
+            if (isFinal) {
+                avatar.scaleX = avatar.scaleY = 1.5 * scale;
+                avatar.x = (180 - 180 * 1.2) * .5 + 70;
+                avatar.y = 45 + 30;
+            }
             ctn.addChild(avatar);
 
 
+            var isFinal = (p as any).final;
             var bgPath = '/img/panel/stage/win/playerBgWin';
             if (p.isBlue)
                 bgPath += "Blue";
             else
                 bgPath += "Red";
+            if (isFinal) {
+                bgPath = '/img/panel/stage1v1/finalPlayerBg';
+            }
             bgPath += '.png';
             var bg = new createjs.Bitmap(bgPath);
             bg.x = -116;
             bg.y = -80;
+
+            if (isFinal) {
+                bg.x = -132;
+                bg.y = -105;
+            }
             ctn.addChild(bg);
 
 
@@ -83,6 +97,10 @@ export class PlayerInfoCard {
             nameText.textAlign = 'center';
             nameText.x = 90 + 60;
             nameText.y = 200;
+            if (isFinal) {
+                nameText.x += 20;
+                nameText.y = 215;
+            }
             ctn.addChild(nameText);
 
             var playerInfoText;
@@ -90,6 +108,10 @@ export class PlayerInfoCard {
             playerInfoText.textAlign = 'center';
             playerInfoText.x = nameText.x;
             playerInfoText.y = 245 + 30;
+            if (isFinal) {
+                // playerInfoText.x += 5;
+                playerInfoText.y += 15;
+            }
             ctn.addChild(playerInfoText);
 
             // var cnLength = function (text) {
@@ -119,6 +141,11 @@ export class PlayerInfoCard {
             winLoseText.textAlign = 'center';
             winLoseText.x = nameText.x;
             winLoseText.y = 410;
+
+            if (isFinal) {
+                winLoseText.x += 5;
+                winLoseText.y += 48;
+            }
             ctn.addChild(winLoseText);
             callback(p);
         });
@@ -135,6 +162,7 @@ export class PlayerInfoCard {
     fadeInWinPlayer(isBlue, playerDoc) {
         this.ctn.removeAllChildren();
         var ctn = this.ctn;
+        $('#ex').html("");
         ctn.addChild(CreateJsEx.newModal());
         ///////////
         var titlePath = "/img/panel/stage/win/winPanelTitle";
@@ -152,7 +180,7 @@ export class PlayerInfoCard {
             titleCtn.scaleX = titleCtn.scaleY = 5;
             titleCtn.alpha = 0;
             createjs.Tween.get(titleCtn).to({scaleX: 1, scaleY: 1, alpha: 1}, 150);
-            titleCtn.addChild(title);
+            titleCtn.addChildAt(title, 0);
             // console.log(title.getBounds());
         });
         ctn.addChild(titleCtn);
@@ -185,5 +213,48 @@ export class PlayerInfoCard {
     fadeOutWinPlayer() {
         $('.PlayerIntro').hide();
         fadeOutCtn(this.ctn);
+    }
+
+    fadeInFinalPlayer(playerDoc) {
+        this.ctn.removeAllChildren();
+        var ctn = this.ctn;
+        $('#ex').html("");
+        ctn.addChild(CreateJsEx.newModal(1));
+        ///////////
+        var titlePath = "/img/panel/stage1v1/finalPlayerTitle.png";
+        var titleCtn = new createjs.Container();
+        loadImg(titlePath, function () {
+            var title = new createjs.Bitmap(titlePath);
+            title.x = -(ViewConst.STAGE_WIDTH) * .5;
+            titleCtn.x = -title.x;
+            titleCtn.scaleX = titleCtn.scaleY = 5;
+            titleCtn.alpha = 0;
+            createjs.Tween.get(titleCtn).to({scaleX: 1, scaleY: 1, alpha: 1}, 150);
+            titleCtn.addChild(title);
+        });
+        ctn.addChild(titleCtn);
+
+        var playerInfo = new PlayerInfo(playerDoc);
+        var playerCard = this.getWinPlayerCard(playerInfo, (pInfo2)=> {
+            var bound = pInfo2.playerCard.getBounds();
+            if (bound)
+                pInfo2.playerCard.cache(bound.x, bound.y, bound.width, bound.height);
+        });
+
+        (playerInfo as any).playerCard = playerCard;
+        (playerInfo as any).final = true;
+        playerCard.x = 800;
+        playerCard.y = 250;
+        playerCard.px = playerCard.x;
+        playerCard.py = playerCard.y;
+        playerCard.x = 500;
+        playerCard.scaleX = playerCard.scaleY = 0.01;
+        createjs.Tween.get(playerCard)
+            .to({x: playerCard.px, scaleX: 1.1, scaleY: 1.1}, 200)
+            .to({scaleX: 1, scaleY: 1}, 60).call(()=> {
+            var $playerIntro = $('.PlayerIntro').css({left: '858px', top: '575px'});
+            $playerIntro.show();
+        });
+        ctn.addChild(playerCard);
     }
 }
