@@ -100,28 +100,18 @@ export class Stage1v1PanelHandle {
                     });
                 }
             };
+            cmdMap[`${CommandId.cs_updatePlayerAll}`] = (param) => {
+                this.gameInfo.playerDocArr = db.player.getDocArr(param.playerIdArr);
+                this.io.emit(`${CommandId.updatePlayerAll}`, ScParam({playerDocArr: this.gameInfo.playerDocArr}));
+
+            };
             cmdMap[`${CommandId.cs_updatePlayerState}`] = (param) => {
-                db.player.updatePlayerDoc([param.playerDoc]);
-                this.io.emit(`${CommandId.updatePlayerState}`, ScParam(param))
+                db.player.updatePlayerDoc([param.playerDoc], ()=> {
+                    console.log('cs_updatePlayerState', 'updatePlayerState');
+                    this.io.emit(`${CommandId.updatePlayerState}`, ScParam(param))
+                });
             };
 
-            // cmdMap[`${CommandId.cs_updatePlayerAll}`] = (param) => {
-            //     var playerInfoArr = [];
-            //     for (var i = 0; i < param.playerIdArr.length; i++) {
-            //         var playerId = param.playerIdArr[i];
-            //         var playerInfo = db.player.getPlayerInfoById(playerId);
-            //         console.log('cs_updatePlayerAll', playerInfo.gameCount(), playerInfo);
-            //         this.gameInfo.setPlayerInfoByIdx(i, playerInfo);
-            //         playerInfoArr.push(playerInfo);
-            //         if (param.backNumArr[i]) {
-            //             playerInfo.backNumber = param.backNumArr[i];
-            //         }
-            //     }
-            //     this.io.emit(`${CommandId.updatePlayerAll}`, ScParam({
-            //         avgEloScore: this.gameInfo.getAvgEloScore(),
-            //         playerInfoArr: playerInfoArr
-            //     }));
-            // };
             cmdMap[`${CommandId.cs_setGameIdx}`] = (param) => {
                 this.gameInfo.gameIdx = param.gameIdx;
                 this.io.emit(`${CommandId.setGameIdx}`, ScParam(param));
@@ -136,7 +126,10 @@ export class Stage1v1PanelHandle {
                     }
                 }
                 var playerDocArr = db.player.getDocArr(playerIdArr);
-                this.io.emit(`${CommandId.fadeInActivityPanel}`, ScParam({playerDocArr: playerDocArr}));
+                this.io.emit(`${CommandId.fadeInActivityPanel}`, ScParam({
+                    playerDocArr: playerDocArr,
+                    page: param.page
+                }));
             };
 
             cmdMap[`${CommandId.cs_fadeOutActivityPanel}`] = (param) => {

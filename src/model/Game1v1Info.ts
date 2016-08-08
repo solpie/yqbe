@@ -10,7 +10,7 @@ export class Game1v1Info {
     winScore: number = 2;
     gameState: number = 0;//0 未确认胜负 1 确认胜负未录入数据 2确认胜负并录入数据
     mvpPlayerId: number;
-
+    playerDocArr:Array<any>;
 
     _timer: any = null;
     timerState: number = 0;

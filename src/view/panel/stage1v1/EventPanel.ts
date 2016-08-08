@@ -2,7 +2,6 @@ import {loadImg} from "../../../utils/JsFunc";
 import {ViewConst} from "../../../event/Const";
 import {PlayerInfo, PlayerState1v1} from "../../../model/PlayerInfo";
 import {TeamInfo} from "../../../model/TeamInfo";
-import {blink, fadeOutCtn} from "../../../utils/Fx";
 import {CreateJsEx} from "../CreateJsEx";
 import {PlayerInfoCard} from "./PlayerInfoCard";
 import Container = createjs.Container;
@@ -14,6 +13,7 @@ export class EventPanel {
     fireFx: any;
     itemArr: Array<any>;
     playerInfoCard: PlayerInfoCard;
+    curPage: number = 0;
 
     constructor(parent: any) {
         var ctn = new createjs.Container();
@@ -22,7 +22,8 @@ export class EventPanel {
         this.playerInfoCard = new PlayerInfoCard(parent.stage);
     }
 
-    fadeInActPanel(playerDocArr, isOp: boolean, eventCallback) {
+    fadeInActPanel(playerDocArr, isOp: boolean, dtPage, eventCallback) {
+        this.curPage += dtPage;
         this.itemArr = [];
         this.ctn.removeAllChildren();
         // var modal = new createjs.Shape();
@@ -35,10 +36,10 @@ export class EventPanel {
             var title = new createjs.Bitmap('/img/panel/stage1v1/actTitle.png');
             ctn.addChild(title);
             ////            test
-            var tmp = [PlayerState1v1.WAITING, PlayerState1v1.FIGHTING, PlayerState1v1.Dead, PlayerState1v1.PIGEON]
-            for (var i = 0; i < playerDocArrC.length; i++) {
-                playerDocArrC[i].state = tmp[i % 4];
-            }
+            // var tmp = [PlayerState1v1.WAITING, PlayerState1v1.FIGHTING, PlayerState1v1.Dead, PlayerState1v1.PIGEON]
+            // for (var i = 0; i < playerDocArrC.length; i++) {
+            //     playerDocArrC[i].state = tmp[i % 4];
+            // }
             ////////////////////
             for (var i = 0; i < 10; i++) {
                 var playerDoc = playerDocArrC[i];
@@ -46,7 +47,10 @@ export class EventPanel {
                     var itemCtn = new createjs.Container();
                     this.itemArr.push(itemCtn);
                     itemCtn.y = i * 95 + 95;
-
+                    if (!playerDoc.state || playerDoc.state == PlayerState1v1.FIGHTING)
+                        playerDoc.state = PlayerState1v1.WAITING;
+                    // if (playerDoc.state == PlayerState1v1.FIGHTING)
+                    //     playerDoc.state = PlayerState1v1.WAITING;
                     var state = playerDoc.state;
                     var stateBg: Bitmap;
                     if (state == PlayerState1v1.FIGHTING) {
@@ -63,22 +67,6 @@ export class EventPanel {
                     }
                     stateBg.name = 'bg';
                     (itemCtn as any).playerDoc = playerDoc;
-                    stateBg.addEventListener('click', (e: any)=> {
-                        var target = e.target;
-                        var playerDoc = e.target.parent.playerDoc;
-                        console.log('click sprite', e);
-                        if (playerDoc.state == PlayerState1v1.WAITING) {
-                            target.image.src = '/img/panel/stage1v1/fighting.png';
-                            playerDoc.state = PlayerState1v1.FIGHTING;
-                            blink(target);
-                        }
-                        else if (playerDoc.state == PlayerState1v1.FIGHTING) {
-                            target.image.src = '/img/panel/stage1v1/waiting.png';
-                            playerDoc.state = PlayerState1v1.WAITING;
-                        }
-                    });
-                    // stateBg.y = 95 + i * 95;
-
                     itemCtn.addChild(stateBg);
                     ctn.addChild(itemCtn);
 
@@ -123,6 +111,15 @@ export class EventPanel {
                     itemCtn.addChild(stateText);
 
                     if (isOp) {
+                        var fightingBtn = CreateJsEx.newBtn((e)=> {
+                            var item = e.target.parent.parent;
+                            item.playerDoc.state = PlayerState1v1.FIGHTING;
+                            eventCallback(item.playerDoc);
+                        }, '战斗');
+                        fightingBtn.x = 420;
+                        fightingBtn.y = 15;
+                        itemCtn.addChild(fightingBtn);
+
                         var waitingBtn = CreateJsEx.newBtn((e)=> {
                             var item = e.target.parent.parent;
                             item.playerDoc.state = PlayerState1v1.WAITING;
@@ -141,23 +138,24 @@ export class EventPanel {
                         deadBtn.y = 15;
                         itemCtn.addChild(deadBtn);
 
+
                         var pigeonBtn = CreateJsEx.newBtn((e)=> {
                             var item = e.target.parent.parent;
                             item.playerDoc.state = PlayerState1v1.PIGEON;
                             eventCallback(item.playerDoc);
                         }, '鸽子');
                         pigeonBtn.x = 660;
-                        pigeonBtn.y = deadBtn.y;
+                        pigeonBtn.y = fightingBtn.y;
                         itemCtn.addChild(pigeonBtn);
                     }
                 }
             }
             return ctn;
         };
-        var col1 = actColumn(playerDocArr.slice(0, 10));
+        var col1 = actColumn(playerDocArr.slice(this.curPage * 10, (this.curPage + 1) * 10));
         col1.x = 120;
         col1.y = 10;
-        var col2 = actColumn(playerDocArr.slice(10, 20));
+        var col2 = actColumn(playerDocArr.slice((this.curPage + 1) * 10, (this.curPage + 2) * 10));
         col2.x = 1030;
         col2.y = col1.y;
         this.ctn.addChild(col1);
@@ -172,6 +170,18 @@ export class EventPanel {
                 itemCtn.playerDoc.state = newPlayerDoc.state;
                 if (newPlayerDoc.state == PlayerState1v1.Dead) {
                     itemCtn.getChildByName('bg').image.src = '/img/panel/stage1v1/dead.png';
+                    itemCtn.getChildByName('stateText').text = itemCtn.playerDoc.state;
+                }
+                else if (newPlayerDoc.state == PlayerState1v1.PIGEON) {
+                    itemCtn.getChildByName('bg').image.src = '/img/panel/stage1v1/pigeon.png';
+                    itemCtn.getChildByName('stateText').text = itemCtn.playerDoc.state;
+                }
+                else if (newPlayerDoc.state == PlayerState1v1.WAITING) {
+                    itemCtn.getChildByName('bg').image.src = '/img/panel/stage1v1/waiting.png';
+                    itemCtn.getChildByName('stateText').text = itemCtn.playerDoc.state;
+                }
+                else if (newPlayerDoc.state == PlayerState1v1.FIGHTING) {
+                    itemCtn.getChildByName('bg').image.src = '/img/panel/stage1v1/fighting.png';
                     itemCtn.getChildByName('stateText').text = itemCtn.playerDoc.state;
                 }
                 break;
@@ -417,7 +427,6 @@ export class EventPanel {
                 ctn.removeAllChildren();
             });
     }
-
 
 
 }

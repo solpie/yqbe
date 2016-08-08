@@ -11,7 +11,7 @@ export class CreateJsEx {
         // btn.addEventListener("mousedown", func);
         ctn.addChild(btn);
         if (text) {
-            var txt = new createjs.Text(text, "30px Arial", "#e2e2e2");
+            var txt = new createjs.Text(text, "18px Arial", "#e2e2e2");
             txt.x = (btnWidth - txt.getMeasuredWidth()) * .3;
             txt.y = (btnHeight - txt.getMeasuredHeight()) * .3 - 5;
             txt.mouseEnabled = false;

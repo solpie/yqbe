@@ -492,18 +492,18 @@ class PlayerDB extends BaseDB {
         return sum;
     }
 
-    updatePlayerDoc(docArr: Array<any>) {
+    updatePlayerDoc(docArr: Array<any>, callback) {
         var save1by1 = (docArr, i, callback)=> {
-            this.ds().update({id: docArr[i].id}, {$set: docArr[i]}, {}, (err, doc)=> {
-                if (i < docArr.length)
+            if (i < docArr.length) {
+                this.ds().update({id: docArr[i].id}, {$set: docArr[i]}, {}, (err, doc)=> {
                     save1by1(docArr, i + 1, callback);
-                else if (callback) {
-                    this.syncDataMap();
-                    callback();
-                }
-            });
+                });
+            }
+            else {
+                this.syncDataMap(callback);
+            }
         };
-        save1by1(docArr, 0, null);
+        save1by1(docArr, 0, callback);
     }
 }
 

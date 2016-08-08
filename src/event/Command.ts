@@ -105,10 +105,10 @@ export enum CommandId{
     cs_fadeInActivityPanel,
     fadeInActivityPanel,
 
-    cs_fadeInActivityPanelNext,
-    fadeInActivityPanelNext,
-    cs_fadeInActivityPanelPre,
-    fadeInActivityPanelPre,
+    // cs_fadeInActivityPanelNext,
+    // fadeInActivityPanelNext,
+    // cs_fadeInActivityPanelPre,
+    // fadeInActivityPanelPre,
 
 
     cs_fadeInNextActivity,

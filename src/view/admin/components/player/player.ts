@@ -8,9 +8,9 @@ import {ViewEvent} from "../../../../event/Const";
     template: require('./player.html'),
     components: {Search, Profile},
     route: {
-        data(transition:vuejs.Transition<any, any, any, any, any>) {
+        data(transition: vuejs.Transition<any, any, any, any, any>) {
             const date = new Date();
-            const messages:any[] = JSON.parse(localStorage.getItem(storageKey)) || []
+            const messages: any[] = JSON.parse(localStorage.getItem(storageKey)) || []
             transition.next({
                 year: date.getFullYear(),
                 month: date.getMonth() + 1,
@@ -21,19 +21,19 @@ import {ViewEvent} from "../../../../event/Const";
     }
 })
 export class Player extends VueEx {
-    year:number;
-    month:number;
-    date:number;
-    message:string;
-    messages:{ date:string; text:string }[];
-    playerArr:{}[];
+    year: number;
+    month: number;
+    date: number;
+    message: string;
+    messages: { date: string; text: string }[];
+    playerArr: {}[];
 
-    pickPlayerIdArr:number[] = [];
-    pickPlayerIdArrArr:Array<number[]> = [];
-    countPage:number[];
-    isOpen:boolean;
+    pickPlayerIdArr: number[] = [];
+    pickPlayerIdArrArr: Array<number[]> = [];
+    countPage: number[];
+    isOpen: boolean;
 
-    data():any {
+    data(): any {
         return {
             year: 2015,
             month: 12,
@@ -84,7 +84,7 @@ export class Player extends VueEx {
         if (this.pickPlayerIdArr.length == 4) {
             console.log('pick team');
             this.pickPlayerIdArrArr.push(this.pickPlayerIdArr);
-            this.pickPlayerIdArr=[];
+            this.pickPlayerIdArr = [];
         }
     }
 
@@ -102,7 +102,16 @@ export class Player extends VueEx {
         this.isOpen = true;
     }
 
-    onEdit(playerId, event):any {
+    onAddPlayerList() {
+        var a = [];
+        for (var i = 0; i < this.pickPlayerIdArr.length; i++) {
+            var playerIdArr = this.pickPlayerIdArr[i];
+            a = a.concat(playerIdArr);
+        }
+
+    }
+
+    onEdit(playerId, event): any {
         event.stopPropagation();
         console.log("onEdit", playerId);
         ($('#modal-player') as any).openModal();
@@ -111,11 +120,11 @@ export class Player extends VueEx {
     }
 
 
-    get today():string {
+    get today(): string {
         return `${this.year}/${this.month}/${this.date}`;
     }
 
-    get isToday():boolean {
+    get isToday(): boolean {
         return this.month === 12 && this.date === 4;
     }
 
@@ -145,8 +154,10 @@ export class Player extends VueEx {
         }, 0);
     }
 
-    remove(item:{ date:string, text:string }) {
+    remove(item: { date: string, text: string }) {
         this.messages.$remove(item);
         this.store();
     }
+
+
 }

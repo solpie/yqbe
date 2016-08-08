@@ -34,7 +34,9 @@
     }
 </style>
 <div id="stage-panel" class="card-panel grey lighten-3" v-if="op">
+
     <div class="row">
+
         <div class="col" v-for="playerInfo in playerInfoArr">
             <div class="col" style="width: 85px">
                 <img src="/img/panel/stage/blue.png" id="playerImg{{$index}}" style="width: 80px">
@@ -46,6 +48,9 @@
                 <p>
                     <a class="waves-effect waves-light btn" style="width: 75px;height: 25px"
                        @click="onFinalPlayer($index)">路人王</a>
+                <p>
+                    <a class="waves-effect waves-light btn" style="width: 75px;height: 25px"
+                       @click="onPickPlayer($index)">+</a>
                 <p>
                     <!--<input id="eloScore{{$index}}" type="text" @keyup.enter="onSetEloScore($index)" style="width: 75px">-->
             </div>

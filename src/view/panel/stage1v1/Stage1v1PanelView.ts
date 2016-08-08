@@ -31,6 +31,7 @@ import {loadImgArr} from "../../../utils/JsFunc";
 export class Stage1v1PanelView extends BasePanelView {
     op: boolean = false;
     playerInfoArr: PlayerInfo[];
+    playerDocList: any;
     playerNumArr: number[];
     gameId: number;
     gameIdx: number;
@@ -71,6 +72,9 @@ export class Stage1v1PanelView extends BasePanelView {
                 // this.playerPanel.setPlayer(data.idx, new PlayerInfo(data.playerDoc));
                 this.playerPanel.setPlayer(data.idx, new PlayerInfo(data.playerDoc));
             })
+            .on(`${CommandId.updatePlayerAll}`, (param) => {
+
+            })
             .on(`${CommandId.updatePlayerBackNum}`, (param) => {
                 var backNumArr = param.backNumArr;
                 for (var i = 0; i < backNumArr.length; i++) {
@@ -107,7 +111,7 @@ export class Stage1v1PanelView extends BasePanelView {
                     pathArr.push(data.playerDocArr[i].avatar);
                 }
                 loadImgArr(pathArr, ()=> {
-                    this.eventPanel.fadeInActPanel(data.playerDocArr, this.op, this.onChangePlayerState);
+                    this.eventPanel.fadeInActPanel(data.playerDocArr, this.op, data.page, this.onChangePlayerState);
                 });
             })
             .on(`${CommandId.fadeOutActivityPanel}`, (param) => {
@@ -273,18 +277,18 @@ export class Stage1v1PanelView extends BasePanelView {
 
     onShowAct() {
         console.log('onShowAct');
-        this.opReq(`${CommandId.cs_fadeInActivityPanel}`)
+        this.opReq(`${CommandId.cs_fadeInActivityPanel}`, {page: 0})
     }
 
     onShowActPre() {
         console.log('onShowActPre');
-        this.opReq(`${CommandId.cs_fadeInActivityPanelPre}`)
+        this.opReq(`${CommandId.cs_fadeInActivityPanel}`, {page: -1})
 
     }
 
     onShowActNext() {
         console.log('onShowActNext');
-        this.opReq(`${CommandId.cs_fadeInActivityPanelNext}`)
+        this.opReq(`${CommandId.cs_fadeInActivityPanel}`, {page: 1})
     }
 
     onHideAct() {
@@ -293,7 +297,7 @@ export class Stage1v1PanelView extends BasePanelView {
     }
 
     onChangePlayerState(playerDoc) {
-        console.log('state changed', playerDoc);
+        console.log('onChangePlayerState');
         this.opReq(`${CommandId.cs_updatePlayerState}`, {playerDoc: playerDoc});
     }
 
@@ -312,4 +316,7 @@ export class Stage1v1PanelView extends BasePanelView {
         this.opReq(`${CommandId.cs_fadeInFinalPlayer}`, {playerId: playerId});
     }
 
+    onPickPlayer(idx) {
+        console.log('onPickPlayer', idx);
+    }
 }
