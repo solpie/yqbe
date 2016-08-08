@@ -7,18 +7,20 @@ import {Response} from "express-serve-static-core";
 import {Request} from "express";
 import {ScParam, screenPanelHanle} from "../SocketIOSrv";
 import {db} from "../model/DbInfo";
-import {PlayerInfo} from "../model/PlayerInfo";
+import {PlayerInfo, PlayerState1v1} from "../model/PlayerInfo";
 import {Game1v1Info} from "../model/Game1v1Info";
 import Server = SocketIO.Server;
 import Socket = SocketIO.Socket;
+import {mapToArr} from "../utils/JsFunc";
 export class Stage1v1PanelHandle {
     io: any;
     gameInfo: Game1v1Info;
+    exPlayerIdMap: any;
 
     constructor(io: Server) {
         console.log('StagePanelHandle!!');
         this.gameInfo = new Game1v1Info();
-
+        this.exPlayerIdMap = {};
         this.io = io.of(`/${PanelId.stage1v1Panel}`);
         this.io
             .on("connect", (socket: Socket) => {
@@ -91,6 +93,9 @@ export class Stage1v1PanelHandle {
                 if (this.gameInfo.gameState == GameInfo.GAME_STATE_ING) {
                     var playerId = param.playerId;
                     var playerIdx = param.idx;
+                    if (!this.exPlayerIdMap[playerId]) {
+                        this.exPlayerIdMap[playerId] = playerId;
+                    }
                     db.player.syncDataMap(()=> {
                         param.playerDoc = db.player.dataMap[playerId];
                         this.gameInfo.setPlayerInfoByIdx(playerIdx, db.player.getPlayerInfoById(playerId));
@@ -107,7 +112,11 @@ export class Stage1v1PanelHandle {
             };
             cmdMap[`${CommandId.cs_updatePlayerState}`] = (param) => {
                 db.player.updatePlayerDoc([param.playerDoc], ()=> {
-                    console.log('cs_updatePlayerState', 'updatePlayerState');
+                    var playerDoc = param.playerDoc;
+                    if (playerDoc.state == PlayerState1v1.FIGHTING) {
+                        this.io.emit(`${CommandId.updatePlayer}`, ScParam(param))
+                    }
+                    console.log('cs_updatePlayerState', 'updatePlayerState', param);
                     this.io.emit(`${CommandId.updatePlayerState}`, ScParam(param))
                 });
             };
@@ -125,6 +134,7 @@ export class Stage1v1PanelHandle {
                         break;
                     }
                 }
+                playerIdArr = playerIdArr.concat(mapToArr(this.exPlayerIdMap));
                 var playerDocArr = db.player.getDocArr(playerIdArr);
                 this.io.emit(`${CommandId.fadeInActivityPanel}`, ScParam({
                     playerDocArr: playerDocArr,

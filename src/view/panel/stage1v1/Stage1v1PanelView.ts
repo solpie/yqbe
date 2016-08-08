@@ -68,7 +68,8 @@ export class Stage1v1PanelView extends BasePanelView {
             })
             .on(`${CommandId.updatePlayer}`, (data) => {
                 console.log('updatePlayer', data);
-                this.getElem('#playerImg' + data.idx).src = data.playerDoc.avatar;
+                if (this.op)
+                    this.getElem('#playerImg' + data.idx).src = data.playerDoc.avatar;
                 // this.playerPanel.setPlayer(data.idx, new PlayerInfo(data.playerDoc));
                 this.playerPanel.setPlayer(data.idx, new PlayerInfo(data.playerDoc));
             })
