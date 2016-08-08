@@ -111,6 +111,15 @@ export class EventPanel {
                     itemCtn.addChild(stateText);
 
                     if (isOp) {
+                        var idBtn = CreateJsEx.newBtn((e)=> {
+                            // var item = e.target.parent.parent;
+                            // item.playerDoc.state = PlayerState1v1.FIGHTING;
+                            // eventCallback(item.playerDoc);
+                        }, playerDoc.id + "");
+                        idBtn.x = 180;
+                        idBtn.y = 15;
+                        itemCtn.addChild(idBtn);
+
                         var fightingBtn = CreateJsEx.newBtn((e)=> {
                             var item = e.target.parent.parent;
                             item.playerDoc.state = PlayerState1v1.FIGHTING;

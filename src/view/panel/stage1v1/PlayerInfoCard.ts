@@ -51,20 +51,21 @@ export class PlayerInfoCard {
         var ctn = new createjs.Container();
         console.log("playerCard=======:", p.avatar());
         loadImg(p.avatar(), function () {
+            var isFinal = (p as any).final;
+
             var avatar = new createjs.Bitmap(p.avatar());
             var scale = 80 / avatar.getBounds().height;
             avatar.scaleX = avatar.scaleY = 1.2 * scale;
             avatar.x = (180 - 180 * 1.2) * .5 + 60;
             avatar.y = 50 + 30;
             if (isFinal) {
-                avatar.scaleX = avatar.scaleY = 1.5 * scale;
-                avatar.x = (180 - 180 * 1.2) * .5 + 70;
-                avatar.y = 45 + 30;
+                avatar.scaleX = avatar.scaleY = 100 / avatar.getBounds().height;
+                avatar.x = (180 - 180 * 1.2) * .5 + 63;
+                avatar.y = 79;
             }
             ctn.addChild(avatar);
 
 
-            var isFinal = (p as any).final;
             var bgPath = '/img/panel/stage/win/playerBgWin';
             if (p.isBlue)
                 bgPath += "Blue";

@@ -267,6 +267,7 @@ export class Stage1v1PanelView extends BasePanelView {
             console.log(res);
             if (res) {
                 this.isSubmitGame = true;
+                this.onShowWin();
                 alert('比赛结果提交成功');
             }
             else {

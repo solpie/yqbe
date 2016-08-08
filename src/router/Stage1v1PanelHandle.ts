@@ -9,9 +9,9 @@ import {ScParam, screenPanelHanle} from "../SocketIOSrv";
 import {db} from "../model/DbInfo";
 import {PlayerInfo, PlayerState1v1} from "../model/PlayerInfo";
 import {Game1v1Info} from "../model/Game1v1Info";
+import {mapToArr} from "../utils/JsFunc";
 import Server = SocketIO.Server;
 import Socket = SocketIO.Socket;
-import {mapToArr} from "../utils/JsFunc";
 export class Stage1v1PanelHandle {
     io: any;
     gameInfo: Game1v1Info;
@@ -88,13 +88,22 @@ export class Stage1v1PanelHandle {
                 this.gameInfo.resetTimer();
                 this.io.emit(`${CommandId.resetTimer}`);
             };
-
+            var actPlayerIdArr = ()=> {
+                for (var k in db.activity.dataMap) {
+                    if (db.activity.dataMap[k].activityId == 3) {
+                        return db.activity.dataMap[k].gameDataArr[0].playerIdArr;
+                    }
+                }
+            };
             cmdMap[`${CommandId.cs_updatePlayer}`] = (param) => {
                 if (this.gameInfo.gameState == GameInfo.GAME_STATE_ING) {
                     var playerId = param.playerId;
                     var playerIdx = param.idx;
                     if (!this.exPlayerIdMap[playerId]) {
-                        this.exPlayerIdMap[playerId] = playerId;
+                        if (actPlayerIdArr().indexOf(playerId) < 0) {
+                            this.exPlayerIdMap[playerId] = playerId;
+                            console.log('ex player');
+                        }
                     }
                     db.player.syncDataMap(()=> {
                         param.playerDoc = db.player.dataMap[playerId];
@@ -114,7 +123,7 @@ export class Stage1v1PanelHandle {
                 db.player.updatePlayerDoc([param.playerDoc], ()=> {
                     var playerDoc = param.playerDoc;
                     if (playerDoc.state == PlayerState1v1.FIGHTING) {
-                        this.io.emit(`${CommandId.updatePlayer}`, ScParam(param))
+                        // this.io.emit(`${CommandId.updatePlayer}`, ScParam(param))
                     }
                     console.log('cs_updatePlayerState', 'updatePlayerState', param);
                     this.io.emit(`${CommandId.updatePlayerState}`, ScParam(param))
