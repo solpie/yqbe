@@ -65,7 +65,10 @@ export class Stage1v1PanelHandle {
                 this.io.emit(`${CommandId.updateRightScore}`, ScParam({rightScore: this.gameInfo.rightScore}));
                 screenPanelHanle.io.emit(`${CommandId.updateRightScore}`, ScParam({rightScore: this.gameInfo.rightScore}));
             };
-
+            cmdMap[`${CommandId.cs_unLimitScore}`] = (param) => {
+                this.gameInfo.unLimitScore = param.unLimitScore;
+                this.io.emit(`${CommandId.unLimitScore}`, ScParam({unLimitScore: this.gameInfo.unLimitScore}));
+            };
 
             cmdMap[`${CommandId.cs_resetGame}`] = (param) => {
                 this.gameInfo = new Game1v1Info();

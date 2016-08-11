@@ -8,9 +8,10 @@ export class Game1v1Info {
     playerInfoArr: PlayerInfo[] = new Array(2);
     gameIdx: number = 0;//场次
     winScore: number = 2;
+    unLimitScore: any;
     gameState: number = 0;//0 未确认胜负 1 确认胜负未录入数据 2确认胜负并录入数据
     mvpPlayerId: number;
-    playerDocArr:Array<any>;
+    playerDocArr: Array<any>;
 
     _timer: any = null;
     timerState: number = 0;
@@ -30,11 +31,17 @@ export class Game1v1Info {
     }
 
     addLeftScore() {
-        this.leftScore = (this.leftScore + 1) % (this.winScore + 1);
+        if (this.unLimitScore === 1)
+            this.leftScore += 1;
+        else
+            this.leftScore = (this.leftScore + 1) % (this.winScore + 1);
     }
 
     addRightScore() {
-        this.rightScore = (this.rightScore + 1) % (this.winScore + 1);
+        if (this.unLimitScore === 1)
+            this.rightScore += 1;
+        else
+            this.rightScore = (this.rightScore + 1) % (this.winScore + 1);
     }
 
     minRightScore() {

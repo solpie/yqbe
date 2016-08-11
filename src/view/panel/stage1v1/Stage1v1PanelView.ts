@@ -14,6 +14,7 @@ import {loadImgArr} from "../../../utils/JsFunc";
         gameId: {},
         gameIdx: {},
         timerName: {},
+        isUnLimitScore: {},
         playerNumArr: {
             type: Array,
             default: ['0', '0']
@@ -24,6 +25,7 @@ import {loadImgArr} from "../../../utils/JsFunc";
         }
     },
     watch: {
+        isUnLimitScore: 'onIsUnLimitScoreChanged',
         playerNumArr: 'onPlayerNumArrChanged',
         gameIdx: 'onGameIdxChanged'
     }
@@ -285,7 +287,6 @@ export class Stage1v1PanelView extends BasePanelView {
     onShowActPre() {
         console.log('onShowActPre');
         this.opReq(`${CommandId.cs_fadeInActivityPanel}`, {page: -1})
-
     }
 
     onShowActNext() {
@@ -320,5 +321,11 @@ export class Stage1v1PanelView extends BasePanelView {
 
     onPickPlayer(idx) {
         console.log('onPickPlayer', idx);
+    }
+
+    onIsUnLimitScoreChanged(val) {
+        var unLimitScore = Number(val);
+        console.log('onIsUnlimitScoreChanged', val, unLimitScore);
+        this.opReq(`${CommandId.cs_unLimitScore}`, {unLimitScore: unLimitScore});
     }
 }
