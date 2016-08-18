@@ -16,6 +16,9 @@ export class Stage1v1PanelHandle {
     io: any;
     gameInfo: Game1v1Info;
     exPlayerIdMap: any;
+    lastWinnerId: number;
+    lastWinnerPlayerInfo: PlayerInfo;
+
 
     constructor(io: Server) {
         console.log('StagePanelHandle!!');
@@ -24,7 +27,12 @@ export class Stage1v1PanelHandle {
         this.io = io.of(`/${PanelId.stage1v1Panel}`);
         this.io
             .on("connect", (socket: Socket) => {
-                socket.emit(`${CommandId.initPanel}`, ScParam({gameInfo: this.gameInfo, isDev: ServerConf.isDev}));
+                socket.emit(`${CommandId.initPanel}`, ScParam({
+                    gameInfo: this.gameInfo,
+                    isDev: ServerConf.isDev,
+                    lastWinnerPlayerInfo: this.lastWinnerPlayerInfo,
+                    kingPlayer: ServerConf.king
+                }));
             })
             .on('disconnect', function (socket: Socket) {
                 console.log('disconnect');
@@ -101,6 +109,9 @@ export class Stage1v1PanelHandle {
             cmdMap[`${CommandId.cs_updatePlayer}`] = (param) => {
                 if (this.gameInfo.gameState == GameInfo.GAME_STATE_ING) {
                     var playerId = param.playerId;
+                    if (playerId == ServerConf.king) {
+                        param.isKing = true;
+                    }
                     var playerIdx = param.idx;
                     if (!this.exPlayerIdMap[playerId]) {
                         if (actPlayerIdArr().indexOf(playerId) < 0) {
@@ -117,11 +128,18 @@ export class Stage1v1PanelHandle {
                     });
                 }
             };
+
             cmdMap[`${CommandId.cs_updatePlayerAll}`] = (param) => {
                 this.gameInfo.playerDocArr = db.player.getDocArr(param.playerIdArr);
                 this.io.emit(`${CommandId.updatePlayerAll}`, ScParam({playerDocArr: this.gameInfo.playerDocArr}));
 
             };
+
+            cmdMap[`${CommandId.cs_updateKingPlayer}`] = (param) => {
+                this.gameInfo.kingPlayer = param.kingPlayer;
+                this.io.emit(`${CommandId.updateKingPlayer}`, ScParam({kingPlayer: this.gameInfo.kingPlayer}));
+            };
+
             cmdMap[`${CommandId.cs_updatePlayerState}`] = (param) => {
                 db.player.updatePlayerDoc([param.playerDoc], ()=> {
                     var playerDoc = param.playerDoc;
@@ -194,7 +212,8 @@ export class Stage1v1PanelHandle {
                 }
                 else {
                     this.gameInfo.saveGameResult();
-                    db.player.updatePlayerDoc(this.gameInfo.getPlayerDocArr());
+                    this.lastWinnerPlayerInfo = this.gameInfo.winnerPlayerInfo;
+                    db.player.updatePlayerDoc(this.gameInfo.getPlayerDocArr(), null);
                     res.send(true);
                 }
                 return ServerConst.SEND_ASYNC;

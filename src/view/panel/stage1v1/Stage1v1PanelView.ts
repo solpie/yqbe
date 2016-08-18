@@ -15,6 +15,7 @@ import {loadImgArr} from "../../../utils/JsFunc";
         gameIdx: {},
         timerName: {},
         isUnLimitScore: {},
+        cmdString: {},
         playerNumArr: {
             type: Array,
             default: ['0', '0']
@@ -27,6 +28,7 @@ import {loadImgArr} from "../../../utils/JsFunc";
     watch: {
         isUnLimitScore: 'onIsUnLimitScoreChanged',
         playerNumArr: 'onPlayerNumArrChanged',
+        // cmdString: 'onCmdStringChanged',
         gameIdx: 'onGameIdxChanged'
     }
 })
@@ -41,9 +43,11 @@ export class Stage1v1PanelView extends BasePanelView {
     scorePanel: ScorePanel;
     playerPanel: PlayerPanel;
     eventPanel: EventPanel;
+    isUnLimitScore: any;
     isShowWinPlayer: boolean = false;
     isSubmitGame: boolean = false;
     isInit: boolean = false;
+    cmdString: string;
 
     ready(pid?: string, isInitCanvas: boolean = true) {
         if (!pid)
@@ -56,8 +60,11 @@ export class Stage1v1PanelView extends BasePanelView {
         io.on(`${CommandId.initPanel}`, (data) => {
             console.log(`${CommandId.initPanel}`, data);
             // ServerConf.isDev = data.isDev;
-            if (!this.isInit && this.isInitCanvas)
+            if (!this.isInit && this.isInitCanvas) {
+                data.gameInfo.kingPlayer = data.kingPlayer;
+                data.gameInfo.lastWinnerPlayerInfo = data.lastWinnerPlayerInfo;
                 this.initStage(data.gameInfo);
+            }
         });
         io
             .on(`${CommandId.updateLeftScore}`, (data) => {
@@ -70,10 +77,12 @@ export class Stage1v1PanelView extends BasePanelView {
             })
             .on(`${CommandId.updatePlayer}`, (data) => {
                 console.log('updatePlayer', data);
-                if (this.op)
+                if (this.op) {
                     this.getElem('#playerImg' + data.idx).src = data.playerDoc.avatar;
-                // this.playerPanel.setPlayer(data.idx, new PlayerInfo(data.playerDoc));
-                this.playerPanel.setPlayer(data.idx, new PlayerInfo(data.playerDoc));
+                    this.getElem("#player" + data.idx).value = data.playerDoc.id;
+                }
+                this.playerPanel.setPlayer(data.idx, new PlayerInfo(data.playerDoc), data.isKing);
+
             })
             .on(`${CommandId.updatePlayerAll}`, (param) => {
 
@@ -124,6 +133,12 @@ export class Stage1v1PanelView extends BasePanelView {
                 var playerDoc = param.playerDoc;
                 this.eventPanel.updatePlayerState(playerDoc);
             })
+            .on(`${CommandId.updateKingPlayer}`, (param) => {
+                // var kingPlayer = param.kingPlayer;
+                //
+                // console.log('updateKingPlayer', param);
+                //
+            })
             .on(`${CommandId.startingLine}`, (param) => {
                 var playerDocArr = param.playerDocArr;
                 this.eventPanel.playerInfoCard.fadeInfoPlayerInfoCard(playerDocArr);
@@ -167,12 +182,20 @@ export class Stage1v1PanelView extends BasePanelView {
         this.eventPanel = new EventPanel(this);
         console.log('initStage', gameDoc);
         if (this.op) {
+
+            if (gameDoc.lastWinnerPlayerInfo.isBlue) {
+                this.getElem("#player0").value = gameDoc.lastWinnerPlayerInfo.playerData.id;
+            }
+            else {
+                this.getElem("#player1").value = gameDoc.lastWinnerPlayerInfo.playerData.id;
+            }
+
             for (var i = 0; i < gameDoc.playerInfoArr.length; i++) {
                 var playerInfo = gameDoc.playerInfoArr[i];
                 if (playerInfo)
                     this.getElem("#player" + i).value = playerInfo.playerData.id;
             }
-
+            this.isUnLimitScore = gameDoc.unLimitScore;
             document.onkeyup = (e)=> {
                 var currKey = e.keyCode;
                 // console.log('key:', currKey);
@@ -229,6 +252,15 @@ export class Stage1v1PanelView extends BasePanelView {
     onMinLeftScore() {
         console.log('onMinLeftScore');
         this.opReq(`${CommandId.cs_minLeftScore}`);
+    }
+
+    onChangeColor() {
+        var playerId0 = Number(this.getElem("#player0").value);
+        var playerId1 = Number(this.getElem("#player1").value);
+        if (playerId0 && playerId1) {
+            this.opReq(`${CommandId.cs_updatePlayer}`, {idx: 0, playerId: playerId1});
+            this.opReq(`${CommandId.cs_updatePlayer}`, {idx: 1, playerId: playerId0});
+        }
     }
 
     onUpdatePlayer(idx) {
@@ -327,5 +359,23 @@ export class Stage1v1PanelView extends BasePanelView {
         var unLimitScore = Number(val);
         console.log('onIsUnlimitScoreChanged', val, unLimitScore);
         this.opReq(`${CommandId.cs_unLimitScore}`, {unLimitScore: unLimitScore});
+    }
+
+    onCmdStringChanged(val) {
+
+    }
+
+    onCmdInput() {
+        var a = this.cmdString.split(' ');
+        if (a.length > 1) {
+            console.log('cmd', this.cmdString);
+            var cmd = a[0];
+
+            if (cmd == 'setking') {
+                var kingId = a[1];
+                this.opReq(`${CommandId.cs_updateKingPlayer}`, {kingPlayer: kingId});
+            }
+            this.cmdString = '';
+        }
     }
 }

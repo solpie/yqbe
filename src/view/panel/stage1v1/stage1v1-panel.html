@@ -6,6 +6,7 @@
         top: 80px;
         opacity: .8;
     }
+
     #ex {
         position: fixed;
         z-index: 3;
@@ -57,10 +58,11 @@
         </div>
         <div class="col">
             <div class="row">
-                game id:{{gameId}}
                 ```````````````````````````````
                 <a class="waves-effect waves-light btn"
                    @click="onCreateGame">创建比赛</a>
+                <a class="waves-effect waves-light btn"
+                   @click="onChangeColor">交换红蓝</a>
                 <a class="waves-effect waves-light btn"
                    @click="onStarting">出阵(球员信息)</a>
                 <a class="waves-effect waves-light btn" @click="onHideStarting">隐藏</a>
@@ -101,6 +103,7 @@
         <a class="waves-effect waves-light btn" @click="onShowAct">赛况表</a>
         <a class="waves-effect waves-light btn" @click="onShowActNext">下一页</a>
         <a class="waves-effect waves-light btn" @click="onHideAct">隐藏</a>
+        <input id="cmdInput" type="text" @keyup.enter="onCmdInput()" v-model="cmdString">
     </div>
 </div>
 <div id="ex">

@@ -9,18 +9,18 @@ import {mobileRouter} from "./router/MobileRouter";
 import {dmkRouter} from "./router/DmkRouter";
 var colors = require('colors');
 
-var dataObj:any;
+var dataObj: any;
 let localhost;
 
 /**
  * WebServer
  */
 export class WebServer {
-    _path:any;
-    serverConf:any;
-    socketIO:SocketIOSrv;
+    _path: any;
+    serverConf: any;
+    socketIO: SocketIOSrv;
 
-    constructor(callback?:any) {
+    constructor(callback?: any) {
         this.initEnv(callback);
         this.initGlobalFunc();
         this.initNedb();
@@ -28,6 +28,7 @@ export class WebServer {
     }
 
     test() {
+
         // ExternalInfo.importHuiTi();
     }
 
@@ -39,16 +40,17 @@ export class WebServer {
         this._path = _path;
     }
 
-    initEnv(callback:any) {
+    initEnv(callback: any) {
         var process = require("process");
         ServerConf.isDev = process.defaultApp || /[\\/]electron-prebuilt[\\/]/.test(process.execPath);
         console.log(process.execPath, ServerConf.isDev);
         var fs = require('fs');
-        fs.readFile(_path('app/package.json'), (err:any, data:any)=> {
+        fs.readFile(_path('app/package.json'), (err: any, data: any)=> {
             if (err) throw err;
             dataObj = JSON.parse(data);
             ServerConf.port = dataObj.server.port;
             ServerConf.wsPort = dataObj.server.wsPort;
+            ServerConf.king = dataObj.server.king;
             if (dataObj.server.autoIP) {
                 getIPAddress((ip)=> {
                     localhost = ip;
@@ -69,7 +71,7 @@ export class WebServer {
     }
 
     initServer() {
-        var express:any = require('express');
+        var express: any = require('express');
         var app = express();
         // view engine setup
         app.set('views', _path("./app/view"));
@@ -89,7 +91,7 @@ export class WebServer {
         app.use(bodyParser.json({limit: '50mb'}));
 
 
-        app.all("*", function (req:any, res:any, next:any) {
+        app.all("*", function (req: any, res: any, next: any) {
             res.header('Access-Control-Allow-Origin', '*');
             res.header("Access-Control-Allow-Headers", "Content-Type,Content-Length, Authorization, Accept,X-Requested-With");
             res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
@@ -101,7 +103,7 @@ export class WebServer {
         });
 
 
-        app.get('/', function (req:any, res:any) {
+        app.get('/', function (req: any, res: any) {
             res.redirect('/admin');
         });
 

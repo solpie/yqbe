@@ -13,9 +13,11 @@ export class Game1v1Info {
     mvpPlayerId: number;
     playerDocArr: Array<any>;
 
+    kingPlayer: number = 0;//擂主id
     _timer: any = null;
     timerState: number = 0;
     time: number = 0;
+    winnerPlayerInfo: PlayerInfo;
 
     constructor(gameDoc?: any) {
         this.rightScore = 0;
@@ -62,10 +64,14 @@ export class Game1v1Info {
         if (this.gameState === 0) {
             var isBlueWin = this.leftScore > this.rightScore;
             if (isBlueWin) {
+                this.winnerPlayerInfo = this.playerInfoArr[0];
+                this.winnerPlayerInfo.isBlue = true;
                 PlayerInfo.addWinGameAmount(this.playerInfoArr[0].playerData);
                 PlayerInfo.addLoseGameAmount(this.playerInfoArr[1].playerData);
             }
             else {
+                this.winnerPlayerInfo = this.playerInfoArr[1];
+                this.winnerPlayerInfo.isBlue = false;
                 PlayerInfo.addLoseGameAmount(this.playerInfoArr[0].playerData);
                 PlayerInfo.addWinGameAmount(this.playerInfoArr[1].playerData);
             }

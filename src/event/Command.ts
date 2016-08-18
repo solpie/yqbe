@@ -79,6 +79,9 @@ export enum CommandId{
     fadeInFinalPlayer,
     cs_fadeOutFinalPlayer,
     fadeOutFinalPlayer,
+//-----------------1v1
+    cs_updateKingPlayer,
+    updateKingPlayer,
 
         //---------------- player panel
 

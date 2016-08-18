@@ -2,13 +2,13 @@
 import {PlayerInfo} from "../../../model/PlayerInfo";
 import {StagePlayerCard} from "../render/PlayerRender";
 export class PlayerPanel {
-    playerCardArr:StagePlayerCard[];
+    playerCardArr: StagePlayerCard[];
 
-    constructor(parent:any, is2v2:boolean = false) {
+    constructor(parent: any, is2v2: boolean = false) {
         this.playerCardArr = [];
         var ctn = parent.scorePanel.ctn;
         var playerInfo = new PlayerInfo();
-        var px = 24;
+        var px = 25;
         var py = 12;
         var invert = 150;
 
@@ -23,7 +23,7 @@ export class PlayerPanel {
                 playerCard.x += 450;
             }
         }
-        px = 1247;
+        px = 1249;
         for (var i = 0; i < 1; i++) {
             var playerCard = new StagePlayerCard(playerInfo, 1, false, true);
             playerCard.delayShow((3 - i) * 600);
@@ -38,21 +38,40 @@ export class PlayerPanel {
         }
     }
 
-    setEloScore(idx:number, eloScore:number) {
+    setEloScore(idx: number, eloScore: number) {
         this.playerCardArr[idx].setEloScore(eloScore);
     }
 
-    setPlayer(idx:number, playerInfo:PlayerInfo) {
+    setPlayer(idx: number, playerInfo: PlayerInfo, isKing = false) {
         var playerCard = this.playerCardArr[idx];
         playerCard.setPlayerInfo(playerInfo, 1, playerCard.isBlue);
+        if (isKing) {
+            this.playerCardArr[idx].setKingLabel();
+        }
+
         // this.playerCardArr[idx].setPlayerInfo(playerInfo);
     }
+
+    // setKing(kingPlayer) {
+    //     for (var i = 0; i < this.playerCardArr.length; i++) {
+    //         var playerInfo = this.playerCardArr[i].playerInfo;
+    //         console.log('setKing: ', Number(kingPlayer), playerInfo);
+    //         if (Number(kingPlayer) == playerInfo.id()) {
+    //             this.playerCardArr[i].setKingLabel();
+    //             break;
+    //         }
+    //     }
+    // }
 
     init(gameDoc) {
         for (var i = 0; i < gameDoc.playerInfoArr.length; i++) {
             if (gameDoc.playerInfoArr[i]) {
                 // var playerInfo:PlayerInfo = new PlayerInfo(gameDoc.playerInfoArr[i]);
-                this.setPlayer(i, new PlayerInfo(gameDoc.playerInfoArr[i]));
+                var playerInfo = new PlayerInfo(gameDoc.playerInfoArr[i]);
+                this.setPlayer(i, playerInfo);
+                if (playerInfo.id() == gameDoc.kingPlayer) {
+                    this.playerCardArr[i].setKingLabel();
+                }
             }
         }
     }

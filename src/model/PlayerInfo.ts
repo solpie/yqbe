@@ -113,6 +113,7 @@ export class PlayerInfo extends BaseInfo {
     static height(playerDoc) {
         return playerDoc.height || playerDoc.playerData.height;
     }
+
     static intro(playerDoc) {
         return playerDoc.intro || playerDoc.playerData.intro;
     }

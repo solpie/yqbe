@@ -6,41 +6,60 @@ import Container = createjs.Container;
 import Bitmap = createjs.Bitmap;
 export class StagePlayerCard extends Container {
     // _ctn:Container;
-    nameText:Text;
-    eloScoreText:Text;
-    backNumText:Text;
-    _styleCtn:Container;
-    isBlue:boolean;
-    avatarBmp:Bitmap;
-    avatarCtn:Container;
-    isDelayShow:boolean;
-    _delayShowEnd:boolean = false;
+    nameText: Text;
+    eloScoreText: Text;
+    backNumText: Text;
+    _styleCtn: Container;
+    isBlue: boolean;
+    avatarBmp: Bitmap;
+    avatarCtn: Container;
+    isDelayShow: boolean;
+    _delayShowEnd: boolean = false;
+    playerInfo: PlayerInfo;
 
-    constructor(playerInfo:PlayerInfo, scale = 1, isBlue = true, isDelayShow = false) {
+    constructor(playerInfo: PlayerInfo, scale = 1, isBlue = true, isDelayShow = false) {
         super();
+        this.playerInfo = playerInfo;
         this.isDelayShow = isDelayShow;
         this.setPlayerInfo(playerInfo, scale, isBlue);
     }
 
-    setName(name:string) {
+    setName(name: string) {
         this.nameText.text = name;
     }
 
-    setEloScore(eloScore:number) {
+    setEloScore(eloScore: number) {
         this.eloScoreText.text = eloScore.toString();
     }
 
-    setBackNumber(backNumber:string) {
+    setBackNumber(backNumber: string) {
         this.backNumText.text = backNumber;
     }
 
-    setStyle(style:number) {
+    setStyle(style: number) {
         this._styleCtn.removeAllChildren();
         var styleIcon = new createjs.Bitmap(PlayerInfo.getStyleIcon(style));//694x132
         this._styleCtn.addChild(styleIcon);
     }
 
-    setPlayerInfo(playerInfo:PlayerInfo, scale = 1, isBlue = true) {
+    setKingLabel() {
+        var kingLabel: Bitmap;
+
+        if (this.isBlue) {
+            kingLabel = new createjs.Bitmap('/img/panel/stage1v1/kingLabelL.png');
+
+            kingLabel.x = -14
+        }
+        else {
+            kingLabel = new createjs.Bitmap('/img/panel/stage1v1/kingLabelR.png');
+            kingLabel.x = -10
+        }
+        kingLabel.y = -6;
+
+        this.addChild(kingLabel);
+    }
+
+    setPlayerInfo(playerInfo: PlayerInfo, scale = 1, isBlue = true) {
         this.isBlue = isBlue;
         //width 150
         var ctn = this;
