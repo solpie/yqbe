@@ -16,8 +16,7 @@ export class Stage1v1PanelHandle {
     io: any;
     gameInfo: Game1v1Info;
     exPlayerIdMap: any;
-    lastWinnerId: number;
-    lastWinnerPlayerInfo: PlayerInfo;
+    lastWinnerPlayerInfo: PlayerInfo = new PlayerInfo();
 
 
     constructor(io: Server) {
@@ -194,7 +193,14 @@ export class Stage1v1PanelHandle {
                     playerDoc = this.gameInfo.getPlayerDocArr()[0];
                 else
                     playerDoc = this.gameInfo.getPlayerDocArr()[1];
-                this.io.emit(`${CommandId.fadeInWinPanel}`, ScParam({isBlue: isBlueWin, playerDoc: playerDoc}));
+
+                if (playerDoc.id == ServerConf.king) {
+                    playerDoc.isKing = true;
+                }
+                this.io.emit(`${CommandId.fadeInWinPanel}`, ScParam({
+                    isBlue: isBlueWin,
+                    playerDoc: playerDoc
+                }));
             };
 
             cmdMap[`${CommandId.cs_fadeOutWinPanel}`] = (param) => {

@@ -171,6 +171,9 @@ export class PlayerInfoCard {
             titlePath += 'Blue.png';
         else
             titlePath += 'Red.png';
+        if (playerDoc.isKing)
+            titlePath = '/img/panel/stage1v1/win/winPanelTitleKing.png';
+
         var titleCtn = new createjs.Container();
         loadImg(titlePath, function () {
             var title = new createjs.Bitmap(titlePath);
@@ -188,6 +191,9 @@ export class PlayerInfoCard {
         /////////////////
 
         var playerInfo = new PlayerInfo(playerDoc);
+        // if (playerDoc.isKing)
+        //     (playerInfo as any).final = true;
+
         var playerCard = this.getWinPlayerCard(playerInfo, (pInfo2)=> {
             var bound = pInfo2.playerCard.getBounds();
             if (bound)

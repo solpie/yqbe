@@ -62,6 +62,7 @@ export class Stage1v1PanelView extends BasePanelView {
             // ServerConf.isDev = data.isDev;
             if (!this.isInit && this.isInitCanvas) {
                 data.gameInfo.kingPlayer = data.kingPlayer;
+                // if (data.lastWinnerPlayerInfo)
                 data.gameInfo.lastWinnerPlayerInfo = data.lastWinnerPlayerInfo;
                 this.initStage(data.gameInfo);
             }

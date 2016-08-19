@@ -28,7 +28,6 @@ export class WebServer {
     }
 
     test() {
-
         // ExternalInfo.importHuiTi();
     }
 
