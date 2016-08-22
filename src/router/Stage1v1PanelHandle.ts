@@ -77,6 +77,26 @@ export class Stage1v1PanelHandle {
                 this.io.emit(`${CommandId.unLimitScore}`, ScParam({unLimitScore: this.gameInfo.unLimitScore}));
             };
 
+
+            //// foul
+            cmdMap[`${CommandId.cs_addRightFoul}`] = () => {
+                var rightFoul:number = this.gameInfo.addRightFoul();
+                this.io.emit(`${CommandId.updateRightFoul}`, ScParam({rightFoul: rightFoul}));
+            };
+            cmdMap[`${CommandId.cs_minRightFoul}`] = () => {
+                var rightFoul:number = this.gameInfo.minRightFoul();
+                this.io.emit(`${CommandId.updateRightFoul}`, ScParam({rightFoul: rightFoul}));
+            };
+            cmdMap[`${CommandId.cs_addLeftFoul}`] = () => {
+                var leftFoul:number = this.gameInfo.addLeftFoul();
+                this.io.emit(`${CommandId.updateLeftFoul}`, ScParam({leftFoul: leftFoul}));
+            };
+            cmdMap[`${CommandId.cs_minLeftFoul}`] = () => {
+                var leftFoul:number = this.gameInfo.minLeftFoul();
+                this.io.emit(`${CommandId.updateLeftFoul}`, ScParam({leftFoul: leftFoul}));
+            };
+
+
             cmdMap[`${CommandId.cs_resetGame}`] = (param) => {
                 this.gameInfo = new Game1v1Info();
                 this.io.emit(`${CommandId.resetGame}`);

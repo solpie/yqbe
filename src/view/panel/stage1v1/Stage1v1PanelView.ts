@@ -263,6 +263,26 @@ export class Stage1v1PanelView extends BasePanelView {
         this.opReq(`${CommandId.cs_minLeftScore}`);
     }
 
+    onAddLeftFoul() {
+        console.log('onAddLeftFoul');
+        this.opReq(`${CommandId.cs_addLeftFoul}`);
+    }
+
+    onAddRightFoul() {
+        console.log('onAddRightFoul');
+        this.opReq(`${CommandId.cs_addRightFoul}`);
+    }
+
+    onMinRightFoul() {
+        console.log('onMinRightFoul');
+        this.opReq(`${CommandId.cs_minRightFoul}`);
+    }
+
+    onMinLeftFoul() {
+        console.log('onMinLeftFoul');
+        this.opReq(`${CommandId.cs_minLeftFoul}`);
+    }
+
     onChangeColor() {
         var playerId0 = Number(this.getElem("#player0").value);
         var playerId1 = Number(this.getElem("#player1").value);
