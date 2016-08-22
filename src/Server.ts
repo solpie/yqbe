@@ -28,6 +28,7 @@ export class WebServer {
     }
 
     test() {
+
         // ExternalInfo.importHuiTi();
     }
 
@@ -117,7 +118,6 @@ export class WebServer {
             console.log("server on:  ws port:");
         });
     }
-
 
     initSocketIO() {
         this.socketIO = new SocketIOSrv();

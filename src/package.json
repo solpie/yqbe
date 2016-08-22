@@ -5,7 +5,7 @@
   "main": "main.js",
   "server": {
     "autoIP": true,
-    "king": 1010,
+    "king": 21,
     "port": 5858,
     "host": "localhost",
     "wsPort": "9696"

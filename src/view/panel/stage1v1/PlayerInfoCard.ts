@@ -18,11 +18,12 @@ export class PlayerInfoCard {
         $('#ex').html("");
         this.ctn.addChild(CreateJsEx.newModal());
         for (var i = 0; i < playerDocArr.length; i++) {
-            var isBlue = (i < 1);
             var playerDoc = playerDocArr[i];
             var pInfo;
+            var isBlue = (i < 1);
             pInfo = new PlayerInfo(playerDoc);
             pInfo.isBlue = isBlue;
+            pInfo.isKing = playerDoc.isKing;
             var playerCard = this.getWinPlayerCard(pInfo, (pInfo2)=> {
                 var bound = pInfo2.playerCard.getBounds();
                 if (bound)
@@ -52,7 +53,7 @@ export class PlayerInfoCard {
         console.log("playerCard=======:", p.avatar());
         loadImg(p.avatar(), function () {
             var isFinal = (p as any).final;
-
+            var isKing = p['isKing'];
             var avatar = new createjs.Bitmap(p.avatar());
             var scale = 80 / avatar.getBounds().height;
             avatar.scaleX = avatar.scaleY = 1.2 * scale;
@@ -74,6 +75,9 @@ export class PlayerInfoCard {
             if (isFinal) {
                 bgPath = '/img/panel/stage1v1/finalPlayerBg';
             }
+            if (isKing) {
+                bgPath = '/img/panel/stage1v1/win/playerBgKing';
+            }
             bgPath += '.png';
             var bg = new createjs.Bitmap(bgPath);
             bg.x = -116;
@@ -91,6 +95,9 @@ export class PlayerInfoCard {
                 col = "#1ac3fa";
             } else {
                 col = "#e23f6b";
+            }
+            if (isKing) {
+                col = '#f1c236';
             }
             var nameCol = "#ddd";
             var nameText: Text;

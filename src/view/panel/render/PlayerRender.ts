@@ -71,7 +71,7 @@ export class StagePlayerCard extends Container {
             return p + "Red.png";
         }
 
-        var avatarFrame = new createjs.Bitmap(_isBluePath('/img/panel/stage/avatarFrame'));//694x132
+        var avatarFrame = new createjs.Bitmap(_isBluePath('/img/panel/stage1v1/avatarFrame'));//694x132
 
         var avatarCtn = new createjs.Container();
         this.avatarCtn = avatarCtn;

@@ -218,7 +218,7 @@ export class Stage1v1PanelHandle {
                 }
                 else {
                     this.gameInfo.saveGameResult();
-                    this.lastWinnerPlayerInfo = this.gameInfo.winnerPlayerInfo;
+                    this.lastWinnerPlayerInfo = this.gameInfo.loserPlayerInfo;
                     db.player.updatePlayerDoc(this.gameInfo.getPlayerDocArr(), null);
                     res.send(true);
                 }

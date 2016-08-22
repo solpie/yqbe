@@ -5,6 +5,10 @@ export class Game1v1Info {
     id: number;
     leftScore: number;
     rightScore: number;
+
+    leftFoul:number = 0;
+    rightFoul:number = 0;
+
     playerInfoArr: PlayerInfo[] = new Array(2);
     gameIdx: number = 0;//场次
     winScore: number = 2;
@@ -17,7 +21,7 @@ export class Game1v1Info {
     _timer: any = null;
     timerState: number = 0;
     time: number = 0;
-    winnerPlayerInfo: PlayerInfo;
+    loserPlayerInfo: PlayerInfo;
 
     constructor(gameDoc?: any) {
         this.rightScore = 0;
@@ -64,14 +68,16 @@ export class Game1v1Info {
         if (this.gameState === 0) {
             var isBlueWin = this.leftScore > this.rightScore;
             if (isBlueWin) {
-                this.winnerPlayerInfo = this.playerInfoArr[0];
-                this.winnerPlayerInfo.isBlue = true;
+                this.loserPlayerInfo = this.playerInfoArr[1];
+                this.loserPlayerInfo.isBlue = false;
+
                 PlayerInfo.addWinGameAmount(this.playerInfoArr[0].playerData);
                 PlayerInfo.addLoseGameAmount(this.playerInfoArr[1].playerData);
             }
             else {
-                this.winnerPlayerInfo = this.playerInfoArr[1];
-                this.winnerPlayerInfo.isBlue = false;
+                this.loserPlayerInfo = this.playerInfoArr[0];
+                this.loserPlayerInfo.isBlue = true;
+
                 PlayerInfo.addLoseGameAmount(this.playerInfoArr[0].playerData);
                 PlayerInfo.addWinGameAmount(this.playerInfoArr[1].playerData);
             }
@@ -116,5 +122,27 @@ export class Game1v1Info {
         clearInterval(this._timer);
         this._timer = 0;
         this.timerState = 0;
+    }
+
+
+    ///foul
+    addRightFoul() {
+        this.rightFoul++;
+        return this.rightFoul;
+    }
+
+    minRightFoul() {
+        this.rightFoul--;
+        return this.rightFoul;
+    }
+
+    addLeftFoul() {
+        this.leftFoul++;
+        return this.leftFoul;
+    }
+
+    minLeftFoul() {
+        this.leftFoul--;
+        return this.leftFoul;
     }
 }

@@ -48,6 +48,7 @@ export class Stage1v1PanelView extends BasePanelView {
     isSubmitGame: boolean = false;
     isInit: boolean = false;
     cmdString: string;
+    kingPlayer: number;
 
     ready(pid?: string, isInitCanvas: boolean = true) {
         if (!pid)
@@ -62,6 +63,7 @@ export class Stage1v1PanelView extends BasePanelView {
             // ServerConf.isDev = data.isDev;
             if (!this.isInit && this.isInitCanvas) {
                 data.gameInfo.kingPlayer = data.kingPlayer;
+                this.kingPlayer = data.kingPlayer;
                 // if (data.lastWinnerPlayerInfo)
                 data.gameInfo.lastWinnerPlayerInfo = data.lastWinnerPlayerInfo;
                 this.initStage(data.gameInfo);
@@ -142,6 +144,12 @@ export class Stage1v1PanelView extends BasePanelView {
             })
             .on(`${CommandId.startingLine}`, (param) => {
                 var playerDocArr = param.playerDocArr;
+                for (var i = 0; i < playerDocArr.length; i++) {
+                    var playerDoc = playerDocArr[i];
+                    if (playerDoc.id == this.kingPlayer) {
+                        playerDoc.isKing = true;
+                    }
+                }
                 this.eventPanel.playerInfoCard.fadeInfoPlayerInfoCard(playerDocArr);
             })
 
