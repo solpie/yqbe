@@ -4,6 +4,7 @@ import {VueEx} from "../VueEx";
 import {OpLinks} from "../admin/components/home/home";
 import {Stage1v1PanelView} from "./stage1v1/Stage1v1PanelView";
 import {ScreenView} from "./screen1v1/ScreenView";
+import {BracketView} from "./bracket/BracketView";
 
 declare var io: any;
 declare var pid: string;
@@ -45,6 +46,10 @@ router.map({
     '/screen1v1/:ob': {
         component: ScreenView,
         name: 'screen1v1'
+    },
+    '/bracket/:ob': {
+        component: BracketView,
+        name: 'bracket'
     },
     '/stage1v1/:op': {
         component: Stage1v1PanelView,

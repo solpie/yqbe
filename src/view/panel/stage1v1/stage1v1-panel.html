@@ -85,12 +85,16 @@
                 <a class="waves-effect waves-light btn" @click="onAddLeftScore">蓝分++</a>
                 <a class="waves-effect waves-light btn" @click="onMinLeftScore">蓝分--</a>
 
-                <a class="waves-effect waves-light btn" @click="onAddLeftFoul">蓝规++</a>
-                <a class="waves-effect waves-light btn" @click="onMinLeftFoul">蓝规--</a>
                 <input type="checkbox" id="unlimitScore" v-model="isUnLimitScore"/>
                 <label for="unlimitScore">///////不限制分数\\\\\\\</label>
                 <a class="waves-effect waves-light btn" @click="onMinRightScore">红分--</a>
                 <a class="waves-effect waves-light btn" @click="onAddRightScore">红分++</a>
+
+            </div>
+            <div class="row">
+                <a class="waves-effect waves-light btn" @click="onAddLeftFoul">蓝规++</a>
+                <a class="waves-effect waves-light btn" @click="onMinLeftFoul">蓝规--</a>
+                <label>///////口口口口口\\\\\\\</label>
                 <a class="waves-effect waves-light btn" @click="onMinRightFoul">红规--</a>
                 <a class="waves-effect waves-light btn" @click="onAddRightFoul">红规++</a>
             </div>
@@ -108,7 +112,6 @@
         <a class="waves-effect waves-light btn" @click="onShowAct">赛况表</a>
         <a class="waves-effect waves-light btn" @click="onShowActNext">下一页</a>
         <a class="waves-effect waves-light btn" @click="onHideAct">隐藏</a>
-        <input id="cmdInput" type="text" @keyup.enter="onCmdInput()" v-model="cmdString">
     </div>
 </div>
 <div id="ex">

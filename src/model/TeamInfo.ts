@@ -11,10 +11,10 @@ export class TeamInfo {
 
     setPlayer(player:PlayerInfo, pos?:number) {
         // if (pos) {
-        //     this.playerArr.splice(player,0,pos)
+        //     this.playerSvgArr.splice(player,0,pos)
         // }
         // else {
-        //     this.playerArr.push(player);
+        //     this.playerSvgArr.push(player);
         // }
     }
 

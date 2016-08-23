@@ -103,6 +103,8 @@ export class WebServer {
         });
 
 
+
+
         app.get('/', function (req: any, res: any) {
             res.redirect('/admin');
         });
@@ -112,6 +114,8 @@ export class WebServer {
         app.use('/db', dbRouter);
         app.use('/m', mobileRouter);
         app.use('/dmk', dmkRouter);
+
+
         app.listen(ServerConf.port, () => {
             this.initSocketIO();
             //and... we're live
