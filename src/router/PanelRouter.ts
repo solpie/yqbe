@@ -1,10 +1,11 @@
 import {ServerConf} from "../Env";
+import {ascendingProp} from "../utils/JsFunc";
 export var panelRouter = require('express').Router();
 
 class PlayerSvg {
     seed: number;//八强排位
     name: string;//
-    score: number;//
+    score: number = 2;//
 }
 class MatchSvg {
     x: number;
@@ -13,7 +14,10 @@ class MatchSvg {
     idx: number;//场次
     playerSvgArr: Array<PlayerSvg>;
 
-    constructor() {
+    constructor(x, y, idx) {
+        this.x = x;
+        this.y = y;
+        this.idx = idx;
         this.playerSvgArr = [new PlayerSvg, new PlayerSvg];
     }
 }
@@ -30,36 +34,35 @@ panelRouter.get('/bracket', function (req, res) {
     }
 
     var matchArr = [];
-    for (var i = 0; i < 4; i++) {
-        var ms: MatchSvg = new MatchSvg();// new MatchSvg();
-        ms.playerSvgArr[0] = playerArr[i * 2];
-        ms.playerSvgArr[1] = playerArr[i * 2 + 1];
-        ms.x = 0;
-        ms.y = 35 + 54 * i;
-        ms.idx = i + 1;
-        matchArr.push(ms);
+    for (var i = 0; i < 15; i++) {
+        matchArr.push(new MatchSvg(0, 0, i + 1));
     }
-    // 5  6
-    for (var i = 0; i < 2; i++) {
-        var ms: MatchSvg = new MatchSvg();// new MatchSvg();
-        ms.playerSvgArr[0] = playerArr[i * 2];
-        ms.playerSvgArr[1] = playerArr[i * 2 + 1];
-        ms.x = 0;
-        ms.y = 340 + 54 * i;
-        ms.idx = i + 5;//5 6
-        matchArr.push(ms);
-    }
-    // 7  8
-    for (var i = 0; i < 2; i++) {
-        var ms: MatchSvg = new MatchSvg();// new MatchSvg();
-        ms.playerSvgArr[0] = playerArr[i * 2];
-        ms.playerSvgArr[1] = playerArr[i * 2 + 1];
-        ms.x = 244;
-        ms.y = 62 + (170 - 62) * i;
-        ms.idx = i + 7;//5 6
-        matchArr.push(ms);
-    }
-    // x="244" y="62"
+    // //12    x="488" y="116"
+    // matchArr.push(new MatchSvg(488, 116, 12));
+    //
+    //
+    // //14    x="732" y="143"
+    // matchArr.push(new MatchSvg(732, 143, 14));
+    // //15    x="976" y="143"
+    // matchArr.push(new MatchSvg(976, 143, 15));
+    //
+    //
+    // //loser section
+    // var py = 10;
+    // // 9
+    // matchArr.push(new MatchSvg(244, py + 377, 9));
+    // // 10
+    // matchArr.push(new MatchSvg(244, py + 323, 10));
+    //
+    // //11    x="488" y="340"
+    // matchArr.push(new MatchSvg(488, py + 340, 11));
+    //
+    // //13    x="732" y="313"
+    // matchArr.push(new MatchSvg(732, py + 313, 13));
+
+    matchArr.sort(ascendingProp('idx'));
+
+
     res.render('panel/bracket/index',
         {matchArr: matchArr});
 });
