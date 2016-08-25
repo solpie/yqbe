@@ -26,13 +26,6 @@ class MatchSvg {
 
 panelRouter.get('/bracket', function (req, res) {
     console.log('get bracket:');
-    // var playerArr = [];
-    // for (var i = 0; i < 8; i++) {
-    //     var ps = new PlayerSvg();
-    //     ps.seed = i + 1;
-    //     ps.name = '路人' + ps.seed;
-    //     playerArr.push(ps)
-    // }
     var actDoc = db.activity.getDocArr([3])[0];
 
     var matchArr = [];

@@ -12084,17 +12084,6 @@ table.score-sets td.score {
     font-size: 12px
 }
 
-.match--player-name.-placeholder {
-    font-style: italic;
-    font-size: 11px;
-    fill: #BBB
-}
-
-.match--player-score {
-    fill: #111;
-    font-size: 12px;
-    text-shadow: none
-}
 
 .match--player-background {
     fill: #626262

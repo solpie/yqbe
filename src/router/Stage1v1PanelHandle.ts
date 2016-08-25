@@ -267,7 +267,7 @@ export class Stage1v1PanelHandle {
                             ]
                         }
                     }
-                    for (var i = 4; i < 10; i++) {
+                    for (var i = 4; i < 14; i++) {
                         if (actDoc.bracket[i + 1]) {
                             delete actDoc.bracket[i + 1];
                         }
