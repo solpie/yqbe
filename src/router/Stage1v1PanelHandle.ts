@@ -136,7 +136,7 @@ export class Stage1v1PanelHandle {
                     if (!this.exPlayerIdMap[playerId]) {
                         if (actPlayerIdArr().indexOf(playerId) < 0) {
                             this.exPlayerIdMap[playerId] = playerId;
-                            console.log('ex player');
+                            console.log('ex player', playerId);
                         }
                     }
                     db.player.syncDataMap(()=> {
@@ -235,14 +235,16 @@ export class Stage1v1PanelHandle {
             cmdMap[`${CommandId.cs_getBracketPlayerByIdx}`] = (param) => {
                 var actDoc = db.activity.getDocArr([3])[0];
                 var bracketIdx = param.bracketIdx;
-                if (actDoc.bracket[bracketIdx]) {
+                var bracketDoc = actDoc.bracket[bracketIdx];
+                console.log('bracketDoc', bracketDoc);
+                if (bracketDoc) {
                     cmdMap[`${CommandId.cs_updatePlayer}`]({
                         idx: 0,
-                        playerId: actDoc.bracket[bracketIdx].gameInfoArr[0].id
+                        playerId: bracketDoc.gameInfoArr[0].id
                     });
                     cmdMap[`${CommandId.cs_updatePlayer}`]({
                         idx: 1,
-                        playerId: actDoc.bracket[bracketIdx].gameInfoArr[1].id
+                        playerId: bracketDoc.gameInfoArr[1].id
                     });
                 }
             };
@@ -280,31 +282,45 @@ export class Stage1v1PanelHandle {
                 var bracketIdx = param.bracketIdx;
                 var actDoc = db.activity.getDocArr([3])[0];
                 var getLoserInfo = (isLoser: boolean = true)=> {
-
-                    if ((this.gameInfo.leftScore < this.gameInfo.rightScore) && isLoser)
-                        return {
-                            name: this.gameInfo.playerInfoArr[0].name(),
-                            avatar: this.gameInfo.playerInfoArr[0].avatar(),
-                            score: this.gameInfo.leftScore
-                        };
-                    else
-                        return {
-                            name: this.gameInfo.playerInfoArr[1].name(),
-                            avatar: this.gameInfo.playerInfoArr[1].avatar(),
-                            score: this.gameInfo.rightScore
-                        }
+                    var winner;
+                    var loser;
+                    var bluePlayer = {
+                        id: this.gameInfo.playerInfoArr[0].id(),
+                        name: this.gameInfo.playerInfoArr[0].name(),
+                        avatar: this.gameInfo.playerInfoArr[0].avatar(),
+                        score: this.gameInfo.leftScore
+                    };
+                    var redPlayer = {
+                        id: this.gameInfo.playerInfoArr[1].id(),
+                        name: this.gameInfo.playerInfoArr[1].name(),
+                        avatar: this.gameInfo.playerInfoArr[1].avatar(),
+                        score: this.gameInfo.rightScore
+                    };
+                    if (this.gameInfo.leftScore < this.gameInfo.rightScore) {
+                        winner = redPlayer;
+                        loser = bluePlayer;
+                    }
+                    else {
+                        winner = bluePlayer;
+                        loser = redPlayer;
+                    }
+                    return isLoser ? loser : winner;
                 };
+
                 var getWinnerInfo = ()=> {
                     return getLoserInfo(false);
                 };
+
                 actDoc.bracket[bracketIdx] = {
                     gameInfoArr: [
                         {
+                            id: this.gameInfo.playerInfoArr[0].id(),
                             name: this.gameInfo.playerInfoArr[0].name(),
                             avatar: this.gameInfo.playerInfoArr[0].avatar(),
                             score: this.gameInfo.leftScore
                         },
                         {
+                            id: this.gameInfo.playerInfoArr[1].id(),
                             name: this.gameInfo.playerInfoArr[1].name(),
                             avatar: this.gameInfo.playerInfoArr[1].avatar(),
                             score: this.gameInfo.rightScore
@@ -314,12 +330,46 @@ export class Stage1v1PanelHandle {
 
                 db.activity.ds().update({id: actDoc.id}, actDoc, ()=> {
                 });
-                if (bracketIdx == "1") {
-                    actDoc.bracket[5] = {gameInfoArr: [getLoserInfo(), null]};
-                }
-                else if (bracketIdx == "2") {
-                    actDoc.bracket[5] = {gameInfoArr: [null, getLoserInfo()]};
-                }
+                var bracketMap = {
+                    "1": {'loser': [5, 0], 'winner': [7, 0]},
+                    "2": {'loser': [5, 1], 'winner': [7, 1]},
+                    "3": {'loser': [6, 0], 'winner': [8, 0]},
+                    "4": {'loser': [6, 1], 'winner': [8, 1]},
+                    "5": {'loser': [-1, 0], 'winner': [10, 1]},
+                    "6": {'loser': [-1, 0], 'winner': [9, 1]},
+                    "7": {'loser': [9, 0], 'winner': [12, 0]},
+                    "8": {'loser': [10, 0], 'winner': [12, 1]},
+                    "9": {'loser': [-1, 0], 'winner': [11, 1]},
+                    "10": {'loser': [-1, 0], 'winner': [11, 0]},
+                    "11": {'loser': [-1, 0], 'winner': [13, 1]},
+                    "12": {'loser': [13, 0], 'winner': [14, 0]},
+                    "13": {'loser': [-1, 0], 'winner': [14, 1]}
+                };
+
+                var setBracketPlayer = (idx)=> {
+                    var map = bracketMap[idx];
+                    var bracketIdx = map.loser[0];
+                    var playerPos = map.loser[1];
+                    if (bracketIdx > 0) {
+                        if (!actDoc.bracket[bracketIdx])
+                            actDoc.bracket[bracketIdx] = {gameInfoArr: [{}, {}]};
+                        actDoc.bracket[bracketIdx].gameInfoArr[playerPos] = getLoserInfo();
+                        actDoc.bracket[bracketIdx].gameInfoArr[playerPos].score = 0;
+                    }
+
+
+                    bracketIdx = map.winner[0];
+                    playerPos = map.winner[1];
+
+                    if (bracketIdx > 0) {
+                        if (!actDoc.bracket[bracketIdx])
+                            actDoc.bracket[bracketIdx] = {gameInfoArr: [{}, {}]};
+                        actDoc.bracket[bracketIdx].gameInfoArr[playerPos] = getWinnerInfo();
+                        actDoc.bracket[bracketIdx].gameInfoArr[playerPos].score = 0;
+                    }
+                };
+
+                setBracketPlayer(bracketIdx);
 
                 ////////////////////////////////
 

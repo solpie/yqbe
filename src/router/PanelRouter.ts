@@ -26,8 +26,6 @@ class MatchSvg {
 
 panelRouter.get('/bracket', function (req, res) {
     console.log('get bracket:');
-
-
     // var playerArr = [];
     // for (var i = 0; i < 8; i++) {
     //     var ps = new PlayerSvg();
