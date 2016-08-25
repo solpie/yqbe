@@ -24,12 +24,14 @@
 
     .match--player-name2 {
         font-family: '微软雅黑';
-        font-size: 14px;
+        font-size: 32px;
         /*font-weight: bold;*/
         fill: #ffeed1;
         text-shadow: 1px 0 1px #8B4513, 0 1px 1px #8B4513,
         0 -1px 1px #8B4513, -1px 0 1px #8B4513;
     }
+
+    /*style="filter: grayscale(100%);"*/
 
 </style>
 <div class="bracket">
@@ -86,6 +88,17 @@
             <stop stop-opacity="1" stop-color="#E3A820" offset=".3"/>
             <stop stop-opacity="0" stop-color="#FFFFFF" offset=".4"/>
         </linearGradient>
+
+
+        <defs>
+            <clipPath id="theSVGPath">
+                <rect x="26" y="0" stroke="#000000" stroke-miterlimit="10" width="60" height="60" rx="5" ry="5"/>
+            </clipPath>
+
+            <clipPath id="theSVGPath2">
+                <rect x="26" y="60" stroke="#000000" stroke-miterlimit="10" width="60" height="60" rx="5" ry="5"/>
+            </clipPath>
+        </defs>
         <g>
             <!--first col-->
             <svg x="0" y="<%= matchArr[0].y + playerHeight %>" data-path="1-7">
@@ -140,20 +153,56 @@
                       class="match--identifier"><%= match.idx %>
                 </text>
 
-                <rect x="24" y="3" width="204" height="<%= playerHeight + 4 %>" rx="3" ry="3"
+                <rect x="24" y="3" width="254" height="<%= playerHeight + 4 %>" rx="3" ry="3"
                       class="match--wrapper-background "></rect>
-                <rect x="26" y="5" width="200" height="<%= playerHeight * 2 %>" rx="3" ry="3"
+                <rect x="26" y="5" width="250" height="<%= playerHeight * 2 %>" rx="3" ry="3"
                       class="match--base-background"></rect>
-                <rect x="26" y="5" width="33" height="<%= playerHeight * 2 %>" rx="3" ry="3"
-                      class="match--seed-background"></rect>
-                <rect x="191" y="5" width="35" height="<%= playerHeight * 2 %>" rx="3" ry="3"
+
+
+                <g class="match--player">
+                    <text x="38" y="19" width="10" height="12" text-anchor="middle"
+                          class="match--seed"><%= match.playerSvgArr[0].seed %>
+                    </text>
+                    <image x="-50" y="7" width="<%= playerWidth %>" height="<%= playerHeight %>"
+                           style="clip-path: url(#theSVGPath);"
+                           xlink:href="<%= match.playerSvgArr[0].avatar || "/img/panel/stage/blue.png" %>"/>
+
+                    <!--<image x="57" y="<%= playerHeight - 20 %>" width="132" height="22" style="opacity: .8"-->
+                    <!--xlink:href="<%= match.playerSvgArr[0].avatar ? "/img/panel/stage1v1/bracketNameBg.png" : "" %>"/>-->
+
+                    <text x="95" y="<%= playerHeight - 14 %>"
+                          width="147" height="20" class="match--player-name2"><%= match.playerSvgArr[0].name %>
+                    </text>
+                </g>
+                <g class="match--player">
+
+                    <text x="38" y="42" width="10" height="12" text-anchor="middle"
+                          class="match--seed"><%= match.playerSvgArr[1].seed %>
+                    </text>
+
+                    <image x="-50" y="<%= playerHeight + 7 %>" width="<%= playerWidth %>"
+                           height="<%= playerHeight %>"
+                           style="clip-path: url(#theSVGPath2);"
+                           xlink:href="<%= match.playerSvgArr[1].avatar || "/img/panel/stage/red.png" %>"/>
+
+
+                    <!--<image x="57" y="<%= playerHeight * 2 - 20 %>" width="132" height="22" style="opacity: .8"-->
+                    <!--xlink:href="<%= match.playerSvgArr[1].avatar ? "/img/panel/stage1v1/bracketNameBg.png" : "" %>"/>-->
+
+                    <text x="95" y="<%= playerHeight * 2 - 14 %>"
+                          width="147" height="20" class="match--player-name2"><%= match.playerSvgArr[1].name %>
+                    </text>
+                </g>
+
+
+                <rect x="241" y="5" width="35" height="<%= playerHeight * 2 %>" rx="3" ry="3"
                       class="match--scores-background"></rect>
                 <% if(match.playerSvgArr[0].score > match.playerSvgArr[1].score ){ %>
-                <rect x="191" y="5" width="35" height="<%= playerHeight - 2 %>" rx="3" ry="3"
+                <rect x="241" y="5" width="35" height="<%= playerHeight - 2 %>" rx="3" ry="3"
                       class="match--winner-background"></rect>
 
                 <% }else if(match.playerSvgArr[1].score){ %>
-                <rect x="191" y="<%= playerHeight + 5 %>" width="35" height="<%= playerHeight %>" rx="3" ry="3"
+                <rect x="241" y="<%= playerHeight + 5 %>" width="35" height="<%= playerHeight %>" rx="3" ry="3"
                       class="match--winner-background"></rect>
                 <% } %>
 
@@ -164,38 +213,6 @@
                       class="match--player-score"><%= match.playerSvgArr[1].score %>
                 </text>
 
-
-                <g class="match--player">
-                    <text x="38" y="19" width="10" height="12" text-anchor="middle"
-                          class="match--seed"><%= match.playerSvgArr[0].seed %>
-                    </text>
-                    <image x="50" y="5" width="<%= playerWidth %>" height="<%= playerHeight %>"
-                           xlink:href="<%= match.playerSvgArr[0].avatar || "/img/panel/stage/blue.png" %>"/>
-
-                    <image x="57" y="<%= playerHeight - 20 %>" width="132" height="22" style="opacity: .8"
-                           xlink:href="<%= match.playerSvgArr[0].avatar ? "/img/panel/stage1v1/bracketNameBg.png" : "" %>"/>
-
-                    <text x="125" y="<%= playerHeight - 4 %>" text-anchor="middle"
-                          width="147" height="20" class="match--player-name2"><%= match.playerSvgArr[0].name %>
-                    </text>
-                </g>
-                <g class="match--player">
-                    <text x="38" y="42" width="10" height="12" text-anchor="middle"
-                          class="match--seed"><%= match.playerSvgArr[1].seed %>
-                    </text>
-
-                    <image x="50" y="<%= playerHeight + 5 %>" width="<%= playerWidth %>"
-                           height="<%= playerHeight %>"
-                           xlink:href="<%= match.playerSvgArr[1].avatar || "/img/panel/stage/red.png" %>"/>
-
-
-                    <image x="57" y="<%= playerHeight * 2 - 20 %>" width="132" height="22" style="opacity: .8"
-                           xlink:href="<%= match.playerSvgArr[1].avatar ? "/img/panel/stage1v1/bracketNameBg.png" : "" %>"/>
-
-                    <text x="125" y="<%= playerHeight * 2 - 4 %>" text-anchor="middle"
-                          width="147" height="20" class="match--player-name2"><%= match.playerSvgArr[1].name %>
-                    </text>
-                </g>
                 <line x1="26" y1="<%= playerHeight + 4 %>" x2="226" y2="<%= playerHeight + 4 %>"
                       class="match--player-divider"></line>
             </svg>
@@ -212,8 +229,8 @@
                xlink:href="/img/panel/stage1v1/bracketTitle2.png"/>
 
 
-        <image x="1350" y="100" width="599" height="753"
-               xlink:href="/img/panel/stage1v1/finalPlayerBg.png"/>
+        <image x="1370" y="100" width="599" height="753"
+               xlink:href="/img/panel/stage1v1/win/playerBgKing.png"/>
 
     </svg>
 </div>
