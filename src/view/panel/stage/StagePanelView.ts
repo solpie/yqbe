@@ -6,10 +6,6 @@ import {PlayerInfo} from "../../../model/PlayerInfo";
 import {StagePanel} from "./StagePanel";
 import {SkillOP} from "../../../model/SkillOP";
 import {Notice} from "./Notice";
-// import Text = createjs.Text;
-// import BitmapText = createjs.BitmapText;
-// import Container = createjs.Container;
-
 @Component({
     template: require('./stage-panel.html'),
     props: {

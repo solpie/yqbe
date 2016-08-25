@@ -13,6 +13,7 @@ import {loadImgArr} from "../../../utils/JsFunc";
         op: {},
         gameId: {},
         gameIdx: {},
+        bracketIdx: {},
         timerName: {},
         isUnLimitScore: {},
         cmdString: {},
@@ -39,6 +40,7 @@ export class Stage1v1PanelView extends BasePanelView {
     playerNumArr: number[];
     gameId: number;
     gameIdx: number;
+    bracketIdx: number;//双败制场次序号 1-14
     timerName: string;
     scorePanel: ScorePanel;
     playerPanel: PlayerPanel;
@@ -55,6 +57,19 @@ export class Stage1v1PanelView extends BasePanelView {
             pid = PanelId.stage1v1Panel;
         var io = super.ready(pid, isInitCanvas);
         this.initIO(io);
+        this.initConsoleCmd();
+    }
+
+    initConsoleCmd() {
+        window['setBracket'] = (playerArrStr) => {
+            var a = playerArrStr.split(' ');
+            for (var i = 0; i < a.length; i++) {
+                a[i] = Number(a[i]);
+            }
+            this.opReq(`${CommandId.cs_setBracketPlayer}`, {playerIdArr: a});
+            console.log(playerArrStr, a);
+            return '';
+        }
     }
 
     initIO(io: any) {
@@ -191,14 +206,13 @@ export class Stage1v1PanelView extends BasePanelView {
         this.eventPanel = new EventPanel(this);
         console.log('initStage', gameDoc);
         if (this.op) {
-
             if (gameDoc.lastWinnerPlayerInfo.isBlue) {
                 this.getElem("#player0").value = gameDoc.lastWinnerPlayerInfo.playerData.id;
             }
             else {
                 this.getElem("#player1").value = gameDoc.lastWinnerPlayerInfo.playerData.id;
             }
-
+            this.gameIdx = gameDoc.gameIdx;
             for (var i = 0; i < gameDoc.playerInfoArr.length; i++) {
                 var playerInfo = gameDoc.playerInfoArr[i];
                 if (playerInfo)
@@ -326,7 +340,8 @@ export class Stage1v1PanelView extends BasePanelView {
 
         var date = new Date();
         var dateTime = date.getTime();
-        this.opReq(`${CommandId.cs_saveGameRec}`, {date: dateTime}, (res) => {
+        var data: any = {bracketIdx: this.bracketIdx};
+        this.opReq(`${CommandId.cs_saveGameRec}`, data, (res) => {
             console.log(res);
             if (res) {
                 this.isSubmitGame = true;
@@ -394,17 +409,21 @@ export class Stage1v1PanelView extends BasePanelView {
 
     }
 
-    onCmdInput() {
-        var a = this.cmdString.split(' ');
-        if (a.length > 1) {
-            console.log('cmd', this.cmdString);
-            var cmd = a[0];
-
-            if (cmd == 'setking') {
-                var kingId = a[1];
-                this.opReq(`${CommandId.cs_updateKingPlayer}`, {kingPlayer: kingId});
-            }
-            this.cmdString = '';
-        }
+    onGetBracketInfo() {
+        this.opReq(`${CommandId.cs_getBracketPlayerByIdx}`, {bracketIdx: this.bracketIdx});
     }
+
+    // onCmdInput() {
+    //     var a = this.cmdString.split(' ');
+    //     if (a.length > 1) {
+    //         console.log('cmd', this.cmdString);
+    //         var cmd = a[0];
+    //
+    //         if (cmd == 'setking') {
+    //             var kingId = a[1];
+    //             this.opReq(`${CommandId.cs_updateKingPlayer}`, {kingPlayer: kingId});
+    //         }
+    //         this.cmdString = '';
+    //     }
+    // }
 }

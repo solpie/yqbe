@@ -80,6 +80,9 @@ export enum CommandId{
     cs_fadeOutFinalPlayer,
     fadeOutFinalPlayer,
 //-----------------1v1
+    cs_setBracketPlayer,//八强名单
+    cs_getBracketPlayerByIdx,//获取球员信息
+
     cs_updateKingPlayer,
     updateKingPlayer,
 

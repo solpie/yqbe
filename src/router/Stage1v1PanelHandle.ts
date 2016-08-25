@@ -17,7 +17,7 @@ export class Stage1v1PanelHandle {
     gameInfo: Game1v1Info;
     exPlayerIdMap: any;
     lastWinnerPlayerInfo: PlayerInfo = new PlayerInfo();
-
+    lastGameIdx: number = 0;
 
     constructor(io: Server) {
         console.log('StagePanelHandle!!');
@@ -80,25 +80,26 @@ export class Stage1v1PanelHandle {
 
             //// foul
             cmdMap[`${CommandId.cs_addRightFoul}`] = () => {
-                var rightFoul:number = this.gameInfo.addRightFoul();
+                var rightFoul: number = this.gameInfo.addRightFoul();
                 this.io.emit(`${CommandId.updateRightFoul}`, ScParam({rightFoul: rightFoul}));
             };
             cmdMap[`${CommandId.cs_minRightFoul}`] = () => {
-                var rightFoul:number = this.gameInfo.minRightFoul();
+                var rightFoul: number = this.gameInfo.minRightFoul();
                 this.io.emit(`${CommandId.updateRightFoul}`, ScParam({rightFoul: rightFoul}));
             };
             cmdMap[`${CommandId.cs_addLeftFoul}`] = () => {
-                var leftFoul:number = this.gameInfo.addLeftFoul();
+                var leftFoul: number = this.gameInfo.addLeftFoul();
                 this.io.emit(`${CommandId.updateLeftFoul}`, ScParam({leftFoul: leftFoul}));
             };
             cmdMap[`${CommandId.cs_minLeftFoul}`] = () => {
-                var leftFoul:number = this.gameInfo.minLeftFoul();
+                var leftFoul: number = this.gameInfo.minLeftFoul();
                 this.io.emit(`${CommandId.updateLeftFoul}`, ScParam({leftFoul: leftFoul}));
             };
 
 
             cmdMap[`${CommandId.cs_resetGame}`] = (param) => {
                 this.gameInfo = new Game1v1Info();
+                this.gameInfo.gameIdx = this.lastGameIdx + 1;
                 this.io.emit(`${CommandId.resetGame}`);
             };
 
@@ -151,7 +152,6 @@ export class Stage1v1PanelHandle {
             cmdMap[`${CommandId.cs_updatePlayerAll}`] = (param) => {
                 this.gameInfo.playerDocArr = db.player.getDocArr(param.playerIdArr);
                 this.io.emit(`${CommandId.updatePlayerAll}`, ScParam({playerDocArr: this.gameInfo.playerDocArr}));
-
             };
 
             cmdMap[`${CommandId.cs_updateKingPlayer}`] = (param) => {
@@ -170,11 +170,11 @@ export class Stage1v1PanelHandle {
                 });
             };
 
+
             cmdMap[`${CommandId.cs_setGameIdx}`] = (param) => {
                 this.gameInfo.gameIdx = param.gameIdx;
                 this.io.emit(`${CommandId.setGameIdx}`, ScParam(param));
             };
-
             cmdMap[`${CommandId.cs_fadeInActivityPanel}`] = (param) => {
                 var playerIdArr;
                 for (var k in db.activity.dataMap) {
@@ -232,11 +232,102 @@ export class Stage1v1PanelHandle {
                 this.io.emit(`${CommandId.fadeInFinalPlayer}`, ScParam({playerDoc: playerDoc}));
             };
 
+            cmdMap[`${CommandId.cs_getBracketPlayerByIdx}`] = (param) => {
+                var actDoc = db.activity.getDocArr([3])[0];
+                var bracketIdx = param.bracketIdx;
+                if (actDoc.bracket[bracketIdx]) {
+                    cmdMap[`${CommandId.cs_updatePlayer}`]({
+                        idx: 0,
+                        playerId: actDoc.bracket[bracketIdx].gameInfoArr[0].id
+                    });
+                    cmdMap[`${CommandId.cs_updatePlayer}`]({
+                        idx: 1,
+                        playerId: actDoc.bracket[bracketIdx].gameInfoArr[1].id
+                    });
+                }
+            };
+
+            cmdMap[`${CommandId.cs_setBracketPlayer}`] = (param) => {
+                var playerIdArr = param.playerIdArr;
+                var actDoc = db.activity.getDocArr([3])[0];
+                var playerDocArr = db.player.getDocArr(playerIdArr);
+                console.log('bracket playerDocArr', playerDocArr);
+                if (playerDocArr.length == 8) {
+                    for (var i = 0; i < 4; i++) {
+                        playerDocArr[i * 2].seed = i * 2 + 1;
+                        playerDocArr[i * 2 + 1].seed = i * 2 + 2;
+
+                        playerDocArr[i * 2].score = 0;
+                        playerDocArr[i * 2 + 1].score = 0;
+                        actDoc.bracket[i + 1] = {
+                            gameInfoArr: [
+                                playerDocArr[i * 2], playerDocArr[i * 2 + 1]
+                            ]
+                        }
+                    }
+                    for (var i = 4; i < 10; i++) {
+                        if (actDoc.bracket[i + 1]) {
+                            delete actDoc.bracket[i + 1];
+                        }
+                    }
+
+                    db.activity.ds().update({id: actDoc.id}, actDoc, ()=> {
+                    });
+                }
+            };
             cmdMap[`${CommandId.cs_saveGameRec}`] = (param) => {
+                ////////////////    bracket
+                var bracketIdx = param.bracketIdx;
+                var actDoc = db.activity.getDocArr([3])[0];
+                var getLoserInfo = (isLoser: boolean = true)=> {
+
+                    if ((this.gameInfo.leftScore < this.gameInfo.rightScore) && isLoser)
+                        return {
+                            name: this.gameInfo.playerInfoArr[0].name(),
+                            avatar: this.gameInfo.playerInfoArr[0].avatar(),
+                            score: this.gameInfo.leftScore
+                        };
+                    else
+                        return {
+                            name: this.gameInfo.playerInfoArr[1].name(),
+                            avatar: this.gameInfo.playerInfoArr[1].avatar(),
+                            score: this.gameInfo.rightScore
+                        }
+                };
+                var getWinnerInfo = ()=> {
+                    return getLoserInfo(false);
+                };
+                actDoc.bracket[bracketIdx] = {
+                    gameInfoArr: [
+                        {
+                            name: this.gameInfo.playerInfoArr[0].name(),
+                            avatar: this.gameInfo.playerInfoArr[0].avatar(),
+                            score: this.gameInfo.leftScore
+                        },
+                        {
+                            name: this.gameInfo.playerInfoArr[1].name(),
+                            avatar: this.gameInfo.playerInfoArr[1].avatar(),
+                            score: this.gameInfo.rightScore
+                        }
+                    ]
+                };
+
+                db.activity.ds().update({id: actDoc.id}, actDoc, ()=> {
+                });
+                if (bracketIdx == "1") {
+                    actDoc.bracket[5] = {gameInfoArr: [getLoserInfo(), null]};
+                }
+                else if (bracketIdx == "2") {
+                    actDoc.bracket[5] = {gameInfoArr: [null, getLoserInfo()]};
+                }
+
+                ////////////////////////////////
+
                 if (this.gameInfo.isFinish) {
                     res.send(false);
                 }
                 else {
+                    this.lastGameIdx = this.gameInfo.gameIdx;
                     this.gameInfo.saveGameResult();
                     this.lastWinnerPlayerInfo = this.gameInfo.loserPlayerInfo;
                     db.player.updatePlayerDoc(this.gameInfo.getPlayerDocArr(), null);

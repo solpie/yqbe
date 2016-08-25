@@ -53,7 +53,6 @@
                     <a class="waves-effect waves-light btn" style="width: 75px;height: 25px"
                        @click="onPickPlayer($index)">+</a>
                 <p>
-                    <!--<input id="eloScore{{$index}}" type="text" @keyup.enter="onSetEloScore($index)" style="width: 75px">-->
             </div>
         </div>
         <div class="col">
@@ -80,6 +79,8 @@
                 </div>
                 <a class="waves-effect waves-light btn" @click="onResetTimer" style="height: 35px">Reset</a>
                 场次设置::::<input v-model="gameIdx" style="width: 50px">
+                双败场次::::<input v-model="bracketIdx" style="width: 50px">
+                <a class="waves-effect waves-light btn" @click="onGetBracketInfo">获取球员</a>
             </div>
             <div class="row">
                 <a class="waves-effect waves-light btn" @click="onAddLeftScore">蓝分++</a>

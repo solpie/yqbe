@@ -1,11 +1,13 @@
 import {ServerConf} from "../Env";
 import {ascendingProp} from "../utils/JsFunc";
+import {db} from "../model/DbInfo";
 export var panelRouter = require('express').Router();
 
 class PlayerSvg {
     seed: number;//八强排位
     name: string;//
-    score: number = 2;//
+    avatar: string;//
+    score: number = 0;//
 }
 class MatchSvg {
     x: number;
@@ -25,44 +27,36 @@ class MatchSvg {
 panelRouter.get('/bracket', function (req, res) {
     console.log('get bracket:');
 
-    var playerArr = [];
-    for (var i = 0; i < 8; i++) {
-        var ps = new PlayerSvg();
-        ps.seed = i + 1;
-        ps.name = '路人' + ps.seed;
-        playerArr.push(ps)
-    }
+
+    // var playerArr = [];
+    // for (var i = 0; i < 8; i++) {
+    //     var ps = new PlayerSvg();
+    //     ps.seed = i + 1;
+    //     ps.name = '路人' + ps.seed;
+    //     playerArr.push(ps)
+    // }
+    var actDoc = db.activity.getDocArr([3])[0];
 
     var matchArr = [];
     for (var i = 0; i < 15; i++) {
-        matchArr.push(new MatchSvg(0, 0, i + 1));
+        var ms: MatchSvg = new MatchSvg(0, 0, i + 1);
+        var bracketDoc = actDoc.bracket[ms.idx];
+        if (bracketDoc) {
+            if (bracketDoc.gameInfoArr[0]) {
+                ms.playerSvgArr[0].name = bracketDoc.gameInfoArr[0].name;
+                ms.playerSvgArr[0].avatar = bracketDoc.gameInfoArr[0].avatar;
+                ms.playerSvgArr[0].score = bracketDoc.gameInfoArr[0].score;
+            }
+            if (bracketDoc.gameInfoArr[1]) {
+                ms.playerSvgArr[1].name = bracketDoc.gameInfoArr[1].name;
+                ms.playerSvgArr[1].avatar = bracketDoc.gameInfoArr[1].avatar;
+                ms.playerSvgArr[1].score = bracketDoc.gameInfoArr[1].score;
+            }
+        }
+        matchArr.push(ms);
     }
-    // //12    x="488" y="116"
-    // matchArr.push(new MatchSvg(488, 116, 12));
-    //
-    //
-    // //14    x="732" y="143"
-    // matchArr.push(new MatchSvg(732, 143, 14));
-    // //15    x="976" y="143"
-    // matchArr.push(new MatchSvg(976, 143, 15));
-    //
-    //
-    // //loser section
-    // var py = 10;
-    // // 9
-    // matchArr.push(new MatchSvg(244, py + 377, 9));
-    // // 10
-    // matchArr.push(new MatchSvg(244, py + 323, 10));
-    //
-    // //11    x="488" y="340"
-    // matchArr.push(new MatchSvg(488, py + 340, 11));
-    //
-    // //13    x="732" y="313"
-    // matchArr.push(new MatchSvg(732, py + 313, 13));
 
     matchArr.sort(ascendingProp('idx'));
-
-
     res.render('panel/bracket/index',
         {matchArr: matchArr});
 });
