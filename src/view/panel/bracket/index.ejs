@@ -12,7 +12,7 @@
 
     .bracket {
         overflow: hidden;
-        background-image: url(/img/panel/stage1v1/bracketBg.png);
+        /*background-image: url(/img/panel/stage1v1/bracketBg.png);*/
         background-repeat: repeat;
     }
 
@@ -48,6 +48,11 @@
         /*filter: grayscale(100%);*/
     }
 
+    .match--base-background {
+        /*fill: #f0f0f0*/
+        fill: #626262
+    }
+
     /*style="filter: grayscale(100%);"*/
 
 </style>
@@ -62,7 +67,7 @@
         '5': ['  第1场败者', '  第2场败者'],
         '6': ['  第3场败者', '  第4场败者'],
         '9': ['  第7场败者', ''],
-        '13': ['  第12场败者', ''],
+        '13': ['  第11场败者', ''],
         '10': ['  第8场败者', ''],
         '14': ['', '  第13场胜者']
     }
@@ -94,9 +99,9 @@
     setMatchPos(9, col2x, 700);
     var col3x = col2x * 2;
     //  11
-    setMatchPos(10, col3x, 780);
+    setMatchPos(10, col3x, 280);
     // 12
-    setMatchPos(11, col3x, 280);
+    setMatchPos(11, col3x, 780);
     var col4x = col2x * 3;
     //  13
     setMatchPos(12, col4x, 730);
@@ -157,12 +162,12 @@
             </svg>
             <!--third col-->
 
-            <svg x="<%= col3x %>" y="<%= matchArr[11].y + playerHeight %>" data-path="12-14">
+            <svg x="<%= col3x %>" y="<%= matchArr[10].y + playerHeight %>" data-path="11-14">
                 <path d="M 228 1 L <%= col2x - 100 %> 1 L <%= col2x - 100 %> 60 L 375 60"
                       class="bracket-line"/>
             </svg>
 
-            <svg x="<%= col3x %>" y="<%= matchArr[12].y + playerHeight %>" data-path="11-13">
+            <svg x="<%= col3x %>" y="<%= matchArr[12].y + playerHeight %>" data-path="12-13">
                 <path d="M 228 60 L <%= col2x - 100 %> 60 L <%= col2x - 100 %> 1 L 375 1"
                       class="bracket-line"
                       data-line-length="41"></path>
@@ -173,13 +178,23 @@
             for(i = 0; i < matchArr.length; i++) {
                 var match = matchArr[i];
                 var isBlueWin = match.playerSvgArr[0].score > match.playerSvgArr[1].score;
-                var isEmptyMatch = !match.playerSvgArr[0].score && !match.playerSvgArr[1].score && playerHintMap[match.idx]
+                var isEmptyMatch = !match.playerSvgArr[0].score && !match.playerSvgArr[1].score
+                //print
+//                match.playerSvgArr[0].name = match.playerSvgArr[1].name = '';
+//                match.playerSvgArr[0].score = match.playerSvgArr[1].score = '';
                 var isOverMatch =
                         match.idx == 5
                         || match.idx == 6
                         || match.idx == 9
                         || match.idx == 10
                         || match.idx == 11
+                        || match.idx == 13
+                        || match.idx == 14
+                var isHintMatch =
+                        match.idx == 5
+                        || match.idx == 6
+                        || match.idx == 9
+                        || match.idx == 10
                         || match.idx == 13
                         || match.idx == 14
             %>
@@ -216,7 +231,7 @@
                 <rect x="40" y="5" width="160" height="<%= playerHeight * 2 %>"
                       class="match--base-background"></rect>
                 <g class="match--player"
-                        <% if(isOverMatch && !isBlueWin&& !isEmptyMatch){ %>
+                        <% if(isOverMatch && !isBlueWin && !isEmptyMatch){ %>
                    style="opacity: .2"
                         <% } %>
                 >
@@ -228,13 +243,14 @@
 
                     <text x="35" y="<%= playerHeight - 14 %>"
                           width="147" height="20"
-                            <% if(isEmptyMatch){ %>
+                            <% if(isHintMatch && !match.playerSvgArr[0].name){ %>
                           class="match--player-name -placeholder"
                             <% }else{ %>
                           class="match--player-name2"
                             <% } %>
                     >
-                        <%= isEmptyMatch ? playerHintMap[match.idx][0] : match.playerSvgArr[0].name %>
+                        <%= isHintMatch ? (match.playerSvgArr[0].name ? match.playerSvgArr[0].name : playerHintMap[match.idx][0]) : match.playerSvgArr[0].name %>
+
                     </text>
                 </g>
                 <g class="match--player"
@@ -252,13 +268,13 @@
 
                     <text x="35" y="<%= playerHeight * 2 - 14 %>"
                           width="147" height="20"
-                            <% if(isEmptyMatch){ %>
+                            <% if(isHintMatch && !match.playerSvgArr[1].name){ %>
                           class="match--player-name -placeholder"
                             <% }else{ %>
                           class="match--player-name2"
                             <% } %>
                     >
-                        <%= isEmptyMatch ? playerHintMap[match.idx][1] : match.playerSvgArr[1].name %>
+                        <%= isHintMatch ? (match.playerSvgArr[1].name ? match.playerSvgArr[1].name : playerHintMap[match.idx][1]) : match.playerSvgArr[1].name %>
                     </text>
                 </g>
 
