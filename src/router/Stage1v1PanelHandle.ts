@@ -227,6 +227,7 @@ export class Stage1v1PanelHandle {
                 this.io.emit(`${CommandId.fadeOutWinPanel}`);
             };
 
+
             cmdMap[`${CommandId.cs_fadeInFinalPlayer}`] = (param) => {
                 var playerDoc = db.player.dataMap[param.playerId];
                 this.io.emit(`${CommandId.fadeInFinalPlayer}`, ScParam({playerDoc: playerDoc}));
@@ -247,6 +248,19 @@ export class Stage1v1PanelHandle {
                         playerId: bracketDoc.gameInfoArr[1].id
                     });
                 }
+            };
+
+            cmdMap[`${CommandId.cs_clearActPlayerGameRec}`] = (param) => {
+                var playerDocArr = [];
+                for (var id in db.player.dataMap) {
+                    var playerDoc = db.player.dataMap[id];
+                    if (playerDoc) {
+                        playerDocArr.push(playerDoc);
+                        playerDoc.loseGameCount = 0;
+                        playerDoc.winGameCount = 0;
+                    }
+                }
+                db.player.updatePlayerDoc(playerDocArr);
             };
 
             cmdMap[`${CommandId.cs_setBracketPlayer}`] = (param) => {

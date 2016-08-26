@@ -18,7 +18,9 @@
                 <!-- Modaler Trigger -->
                 <a class="modal-trigger waves-effect waves-light btn" @click="onAddPlayer">添加玩家</a>
                 <p>
-                <a class="modal-trigger waves-effect waves-light btn" @click="onAddPlayerList">创建playerlist</a>
+                    <a class="modal-trigger waves-effect waves-light btn" @click="onAddPlayerList">创建playerlist</a>
+                <p>
+                    <a class="modal-trigger waves-effect waves-light btn" @click="onClearActPlayerGameRec">清除战绩</a>
                 <p class="lead">
                 </p>
                 <hr class="m-y-md">
@@ -32,26 +34,26 @@
             </div>
 
             <!--<div class="col s3">-->
-                <!--show-->
+            <!--show-->
             <!--</div>-->
             <!--最近添加-->
             <!--<table class="table">-->
-                <!--<thead>-->
-                <!--<tr>-->
-                    <!--<th>date</th>-->
-                    <!--<th>player</th>-->
-                    <!--<th>...</th>-->
-                <!--</tr>-->
-                <!--</thead>-->
-                <!--<tbody>-->
-                <!--<tr v-for="message in messages">-->
-                    <!--<td v-text="message.date"></td>-->
-                    <!--<td v-text="message.text"></td>-->
-                    <!--<td>-->
-                        <!--<button type="button" class="btn btn-secondary btn-sm" @click="remove(message)">削除する</button>-->
-                    <!--</td>-->
-                <!--</tr>-->
-                <!--</tbody>-->
+            <!--<thead>-->
+            <!--<tr>-->
+            <!--<th>date</th>-->
+            <!--<th>player</th>-->
+            <!--<th>...</th>-->
+            <!--</tr>-->
+            <!--</thead>-->
+            <!--<tbody>-->
+            <!--<tr v-for="message in messages">-->
+            <!--<td v-text="message.date"></td>-->
+            <!--<td v-text="message.text"></td>-->
+            <!--<td>-->
+            <!--<button type="button" class="btn btn-secondary btn-sm" @click="remove(message)">削除する</button>-->
+            <!--</td>-->
+            <!--</tr>-->
+            <!--</tbody>-->
             <!--</table>-->
         </div>
         <div id="player-grid" class="col s24" style="position: relative;">

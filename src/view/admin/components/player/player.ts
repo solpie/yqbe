@@ -4,6 +4,7 @@ import {Search} from "./search";
 import {Profile} from "./profile";
 import {VueEx} from "../../../VueEx";
 import {ViewEvent} from "../../../../event/Const";
+import {CommandId} from "../../../../event/Command";
 @Component({
     template: require('./player.html'),
     components: {Search, Profile},
@@ -46,6 +47,10 @@ export class Player extends VueEx {
             countPage: [1],
             isOpen: false
         };
+    }
+
+    onClearActPlayerGameRec() {
+        this.post(`/panel/stage1v1/${CommandId.cs_clearActPlayerGameRec}`)
     }
 
     ready() {
