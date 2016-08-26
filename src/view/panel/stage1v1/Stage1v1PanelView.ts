@@ -1,12 +1,12 @@
 import {BasePanelView} from "../BasePanelView";
 import Component from "vue-class-component";
-import {PlayerInfo} from "../../../model/PlayerInfo";
+import {PlayerInfo, PlayerState1v1} from "../../../model/PlayerInfo";
 import {PanelId, TimerState} from "../../../event/Const";
 import {CommandId} from "../../../event/Command";
 import {ScorePanel} from "./ScorePanel";
 import {PlayerPanel} from "./PlayerPanel";
 import {EventPanel} from "./EventPanel";
-import {loadImgArr} from "../../../utils/JsFunc";
+import {loadImgArr, descendingProp} from "../../../utils/JsFunc";
 @Component({
     template: require('./stage1v1-panel.html'),
     props: {
@@ -51,6 +51,8 @@ export class Stage1v1PanelView extends BasePanelView {
     isInit: boolean = false;
     cmdString: string;
     kingPlayer: number;
+    pickUpArr: Array<any>;
+    pickUpIdx: number;
 
     ready(pid?: string, isInitCanvas: boolean = true) {
         if (!pid)
@@ -138,8 +140,15 @@ export class Stage1v1PanelView extends BasePanelView {
                 console.log("fade in act ", data);
                 var pathArr = [];
                 for (var i = 0; i < data.playerDocArr.length; i++) {
-                    pathArr.push(data.playerDocArr[i].avatar);
+                    var playerDoc = data.playerDocArr[i];
+                    pathArr.push(playerDoc.avatar);
+                    if (!playerDoc.winGameCount && !playerDoc.loseGameCount) {
+                        playerDoc.winningPercent = -1;
+                    }
+                    else
+                        playerDoc.winningPercent = playerDoc.winGameCount / (playerDoc.loseGameCount + playerDoc.winGameCount);
                 }
+                data.playerDocArr = data.playerDocArr.sort(descendingProp('winningPercent'));
                 loadImgArr(pathArr, ()=> {
                     this.eventPanel.fadeInActPanel(data.playerDocArr, this.op, data.page, this.onChangePlayerState);
                 });
@@ -206,6 +215,8 @@ export class Stage1v1PanelView extends BasePanelView {
         this.eventPanel = new EventPanel(this);
         console.log('initStage', gameDoc);
         if (this.op) {
+            this.pickUpArr = [0, 0];
+            this.pickUpIdx = 0;
             if (gameDoc.lastWinnerPlayerInfo.isBlue) {
                 this.getElem("#player0").value = gameDoc.lastWinnerPlayerInfo.playerData.id;
             }
@@ -376,8 +387,23 @@ export class Stage1v1PanelView extends BasePanelView {
     }
 
     onChangePlayerState(playerDoc) {
-        console.log('onChangePlayerState');
+        console.log('onChangePlayerState', playerDoc);
+        if (playerDoc.state == PlayerState1v1.FIGHTING) {
+            console.log('pickUpIdx', this.pickUpIdx);
+            this.pickUpArr[this.pickUpIdx] = playerDoc.id;
+            this.pickUpIdx ? this.pickUpIdx = 0 : this.pickUpIdx = 1;
+        }
+
         this.opReq(`${CommandId.cs_updatePlayerState}`, {playerDoc: playerDoc});
+    }
+
+    onPickUpAct() {
+        console.log('onChangePlayerState', this.pickUpArr);
+        if (this.pickUpArr[0] && this.pickUpArr[1]) {
+            this.opReq(`${CommandId.cs_updatePlayer}`, {idx: 0, playerId: this.pickUpArr[0]});
+            this.opReq(`${CommandId.cs_updatePlayer}`, {idx: 1, playerId: this.pickUpArr[1]});
+            this.onHideAct();
+        }
     }
 
     onShowWin() {

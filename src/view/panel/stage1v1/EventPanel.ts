@@ -8,10 +8,12 @@ import Container = createjs.Container;
 import Text = createjs.Text;
 import Bitmap = createjs.Bitmap;
 import SpriteContainer = createjs.SpriteContainer;
+import Ease = createjs.Ease;
 export class EventPanel {
     ctn: Container;
     fireFx: any;
     itemArr: Array<any>;
+    titleItemArr: Array<any>;
     playerInfoCard: PlayerInfoCard;
     curPage: number = 0;
 
@@ -25,6 +27,7 @@ export class EventPanel {
     fadeInActPanel(playerDocArr, isOp: boolean, dtPage, eventCallback) {
         this.curPage += dtPage;
         this.itemArr = [];
+        this.titleItemArr = [];
         this.ctn.removeAllChildren();
         // var modal = new createjs.Shape();
         // modal.graphics.beginFill('#000').drawRect(0, 0, ViewConst.STAGE_WIDTH, ViewConst.STAGE_HEIGHT);
@@ -34,6 +37,7 @@ export class EventPanel {
         var actColumn = (playerDocArrC)=> {
             var ctn = new createjs.Container();
             var title = new createjs.Bitmap('/img/panel/stage1v1/actTitle.png');
+            this.titleItemArr.push(title);
             ctn.addChild(title);
             ////            test
             // var tmp = [PlayerState1v1.WAITING, PlayerState1v1.FIGHTING, PlayerState1v1.Dead, PlayerState1v1.PIGEON]
@@ -429,12 +433,31 @@ export class EventPanel {
 
     fadeOutWinPanel() {
         console.log(this, "show fade Out WinPanel");
+        // var ctn = this.ctn;
+        // createjs.Tween.get(ctn).to({alpha: 0}, 200)
+        //     .call(function () {
+        //         ctn.alpha = 1;
+        //         ctn.removeAllChildren();
+        //     });
+        for (var i = 0; i < this.titleItemArr.length; i++) {
+            var obj = this.titleItemArr[i];
+            if (i < 1)
+                createjs.Tween.get(obj).wait(80 * i).to({x: -920}, 150, Ease.elasticIn);
+            else
+                createjs.Tween.get(obj).wait(80 * (i - 1)).to({x: 1920}, 150, Ease.elasticIn)
+        }
+        for (var i = 0; i < this.itemArr.length; i++) {
+            var item = this.itemArr[i];
+            if (i < 10)
+                createjs.Tween.get(item).wait(80 * (i + 2)).to({x: -920}, 150, Ease.elasticIn);
+            else
+                createjs.Tween.get(item).wait(80 * (i - 10 + 2)).to({x: 1920}, 150, Ease.elasticIn)
+        }
         var ctn = this.ctn;
-        createjs.Tween.get(ctn).to({alpha: 0}, 200)
-            .call(function () {
-                ctn.alpha = 1;
-                ctn.removeAllChildren();
-            });
+        createjs.Tween.get(ctn).wait(80 * (i - 10)).to({alpha: 0}, 100).call(function () {
+            ctn.alpha = 1;
+            ctn.removeAllChildren();
+        });
     }
 
 
