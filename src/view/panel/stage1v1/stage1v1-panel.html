@@ -115,6 +115,15 @@
         <a class="waves-effect waves-light btn" @click="onHideAct">隐藏</a>
         <a class="waves-effect waves-light btn" @click="onPickUpAct">出阵并隐藏</a>
     </div>
+    <div class="row">
+        倒计时：
+        <br>
+        提示文字（最多五个字）：<input id="cdText" v-model="cdText" style="width: 100px">
+        计时多少秒：<input id="cdSec" v-model="cdSec" style="width: 100px">
+        <br>
+        <a class="waves-effect waves-light btn" @click="onCountDownIn">倒计时面板淡入</a>
+        <a class="waves-effect waves-light btn" @click="onCountDownOut">倒计时面板淡出</a>
+    </div>
 </div>
 <div id="ex">
 

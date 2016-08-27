@@ -205,7 +205,13 @@ export class Stage1v1PanelHandle {
             cmdMap[`${CommandId.cs_hideStartingLine}`] = (param) => {
                 this.io.emit(`${CommandId.hideStartingLine}`);
             };
+            cmdMap[`${CommandId.cs_fadeInCountDown}`] = (param)=> {
+                this.io.emit(`${CommandId.fadeInCountDown}`, param);
+            };
 
+            cmdMap[`${CommandId.cs_fadeOutCountDown}`] = (param)=> {
+                this.io.emit(`${CommandId.fadeOutCountDown}`);
+            };
             cmdMap[`${CommandId.cs_fadeInWinPanel}`] = (param) => {
                 var isBlueWin = this.gameInfo.leftScore > this.gameInfo.rightScore;
                 var playerDoc;

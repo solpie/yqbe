@@ -24,11 +24,22 @@
 
     .match--player-name2 {
         font-family: '微软雅黑';
-        font-size: 32px;
+        font-size: 26px;
         /*font-weight: bold;*/
-        fill: #ffeed1;
-        text-shadow: 1px 0 1px #8B4513, 0 1px 1px #8B4513,
-        0 -1px 1px #8B4513, -1px 0 1px #8B4513;
+        fill: #FFF;
+        /*fill: #ffeed1;*/
+        /*text-shadow: 1px 0 1px #8B4513, 0 1px 1px #8B4513,*/
+        /*0 -1px 1px #8B4513, -1px 0 1px #8B4513;*/
+    }
+
+    .match--player-name3 {
+        font-family: '微软雅黑';
+        font-size: 22px;
+        /*font-weight: bold;*/
+        fill: #FFF;
+        /*fill: #ffeed1;*/
+        /*text-shadow: 1px 0 1px #8B4513, 0 1px 1px #8B4513,*/
+        /*0 -1px 1px #8B4513, -1px 0 1px #8B4513;*/
     }
 
     .match--player-score {
@@ -245,9 +256,17 @@
                           width="147" height="20"
                             <% if(isHintMatch && !match.playerSvgArr[0].name){ %>
                           class="match--player-name -placeholder"
-                            <% }else{ %>
+                            <% }else{
+                            if (match.playerSvgArr[0].name && match.playerSvgArr[0].name.length > 6) {
+                            %>
+                          class="match--player-name3"
+                            <% }
+
+                            else {
+                            %>
                           class="match--player-name2"
-                            <% } %>
+                            <%
+                            }  } %>
                     >
                         <%= isHintMatch ? (match.playerSvgArr[0].name ? match.playerSvgArr[0].name : playerHintMap[match.idx][0]) : match.playerSvgArr[0].name %>
 
@@ -270,9 +289,17 @@
                           width="147" height="20"
                             <% if(isHintMatch && !match.playerSvgArr[1].name){ %>
                           class="match--player-name -placeholder"
-                            <% }else{ %>
+                            <% }else{
+                            if (match.playerSvgArr[1].name && match.playerSvgArr[1].name.length > 6) {
+                            %>
+                          class="match--player-name3"
+                            <% }
+
+                            else {
+                            %>
                           class="match--player-name2"
-                            <% } %>
+                            <%
+                            }  } %>
                     >
                         <%= isHintMatch ? (match.playerSvgArr[1].name ? match.playerSvgArr[1].name : playerHintMap[match.idx][1]) : match.playerSvgArr[1].name %>
                     </text>

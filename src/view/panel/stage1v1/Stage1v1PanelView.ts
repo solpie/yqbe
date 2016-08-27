@@ -7,6 +7,7 @@ import {ScorePanel} from "./ScorePanel";
 import {PlayerPanel} from "./PlayerPanel";
 import {EventPanel} from "./EventPanel";
 import {loadImgArr, descendingProp} from "../../../utils/JsFunc";
+import {CountDownPanel} from "./CountDownPanel";
 @Component({
     template: require('./stage1v1-panel.html'),
     props: {
@@ -45,14 +46,17 @@ export class Stage1v1PanelView extends BasePanelView {
     scorePanel: ScorePanel;
     playerPanel: PlayerPanel;
     eventPanel: EventPanel;
+    countDownRender: CountDownPanel;
+
     isUnLimitScore: any;
     isShowWinPlayer: boolean = false;
     isSubmitGame: boolean = false;
     isInit: boolean = false;
-    cmdString: string;
+
     kingPlayer: number;
     pickUpArr: Array<any>;
     pickUpIdx: number;
+    bracket18452736: string;
 
     ready(pid?: string, isInitCanvas: boolean = true) {
         if (!pid)
@@ -70,6 +74,10 @@ export class Stage1v1PanelView extends BasePanelView {
             }
             this.opReq(`${CommandId.cs_setBracketPlayer}`, {playerIdArr: a});
             console.log(playerArrStr, a);
+            return '';
+        };
+        window['showBracket'] = () => {
+            console.log('bracket18452736', this.bracket18452736);
             return '';
         }
     }
@@ -102,9 +110,6 @@ export class Stage1v1PanelView extends BasePanelView {
                     this.getElem("#player" + data.idx).value = data.playerDoc.id;
                 }
                 this.playerPanel.setPlayer(data.idx, new PlayerInfo(data.playerDoc), data.isKing);
-
-            })
-            .on(`${CommandId.updatePlayerAll}`, (param) => {
 
             })
             .on(`${CommandId.updatePlayerBackNum}`, (param) => {
@@ -148,7 +153,8 @@ export class Stage1v1PanelView extends BasePanelView {
                     else
                         playerDoc.winningPercent = playerDoc.winGameCount / (playerDoc.loseGameCount + playerDoc.winGameCount);
                 }
-                data.playerDocArr = data.playerDocArr.sort(descendingProp('winningPercent'));
+                var b = data.playerDocArr = data.playerDocArr.sort(descendingProp('winningPercent'));
+                this.bracket18452736 = `${b[0].id} ${b[7].id} ${b[3].id} ${b[4].id} ${b[1].id} ${b[6].id} ${b[2].id} ${b[5].id}`;
                 loadImgArr(pathArr, ()=> {
                     this.eventPanel.fadeInActPanel(data.playerDocArr, this.op, data.page, this.onChangePlayerState);
                 });
@@ -201,6 +207,16 @@ export class Stage1v1PanelView extends BasePanelView {
                 this.eventPanel.playerInfoCard.fadeOutWinPlayer();
             })
 
+            .on(`${CommandId.fadeInCountDown}`, (param)=> {
+                var cdSec = param.cdSec;
+                var cdText = param.cdText;
+                this.countDownRender.fadeInCountDown(cdSec, cdText);
+            })
+
+            .on(`${CommandId.fadeOutCountDown}`, (param)=> {
+                this.countDownRender.fadeOut();
+            })
+
     }
 
     initStage(gameDoc: any) {
@@ -213,6 +229,7 @@ export class Stage1v1PanelView extends BasePanelView {
         this.playerPanel.init(gameDoc);
         this.gameId = gameDoc.id;
         this.eventPanel = new EventPanel(this);
+        this.countDownRender = new CountDownPanel(this.stage);
         console.log('initStage', gameDoc);
         if (this.op) {
             this.pickUpArr = [0, 0];
@@ -439,17 +456,21 @@ export class Stage1v1PanelView extends BasePanelView {
         this.opReq(`${CommandId.cs_getBracketPlayerByIdx}`, {bracketIdx: this.bracketIdx});
     }
 
-    // onCmdInput() {
-    //     var a = this.cmdString.split(' ');
-    //     if (a.length > 1) {
-    //         console.log('cmd', this.cmdString);
-    //         var cmd = a[0];
-    //
-    //         if (cmd == 'setking') {
-    //             var kingId = a[1];
-    //             this.opReq(`${CommandId.cs_updateKingPlayer}`, {kingPlayer: kingId});
-    //         }
-    //         this.cmdString = '';
-    //     }
-    // }
+
+    cdText: string;
+    cdSec: number;
+
+    onCountDownIn() {
+        console.log('onCountDownIn');
+        this.opReq(`${CommandId.cs_fadeInCountDown}`,
+            {cdSec: this.cdSec, cdText: this.cdText},
+            (param)=> {
+                console.log(param);
+            });
+    }
+
+    onCountDownOut() {
+        console.log('onCountDownOut');
+        this.opReq(`${CommandId.cs_fadeOutCountDown}`);
+    }
 }
