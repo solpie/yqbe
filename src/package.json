@@ -4,9 +4,9 @@
   "description": "YuanQiTV Billiard",
   "main": "main.js",
   "server": {
-    "autoIP": true,
+    "autoIP": false,
     "king": 21,
-    "port": 5858,
+    "port": 80,
     "host": "localhost",
     "wsPort": "9696"
   }

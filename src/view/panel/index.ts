@@ -17,7 +17,7 @@ export class Panel extends VueEx {
     panel: any;
 
     connect() {
-        var wsUrl = `http://${host}:${wsPort}/${this.pid}`;
+        var wsUrl = `http://${window.location.host}:${wsPort}/${this.pid}`;
         console.log("init panel!!!", this.pid, this.isOp, wsUrl);
         return io.connect(wsUrl)
     }

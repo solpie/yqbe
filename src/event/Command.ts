@@ -112,10 +112,10 @@ export enum CommandId{
     cs_fadeInActivityPanel,
     fadeInActivityPanel,
 
-    // cs_fadeInActivityPanelNext,
-    // fadeInActivityPanelNext,
-    // cs_fadeInActivityPanelPre,
-    // fadeInActivityPanelPre,
+        // cs_fadeInActivityPanelNext,
+        // fadeInActivityPanelNext,
+        // cs_fadeInActivityPanelPre,
+        // fadeInActivityPanelPre,
 
 
     cs_fadeInNextActivity,
@@ -163,12 +163,16 @@ export class Command extends EventDispatcher {
     constructor() {
         super();
         this.cmdArr = [];
-        this.newCmd(CommandId.updateLeftScore, "addLeftScore");
-        this.newCmd(CommandId.updateRightScore, "addRightScore");
-        this.newCmd(CommandId.toggleTracker, "toggleTracker");
-        this.newCmd(CommandId.toggleTimer, "toggleTimer");
-        this.newCmd(CommandId.toggleBallRolling, "toggleBallRolling");
-        this.newCmd(CommandId.disableTracker, "disableTracker");
+        // this.newCmd(CommandId.updateLeftScore, "addLeftScore");
+        // this.newCmd(CommandId.updateRightScore, "addRightScore");
+        // this.newCmd(CommandId.toggleTracker, "toggleTracker");
+        // this.newCmd(CommandId.toggleTimer, "toggleTimer");
+        // this.newCmd(CommandId.toggleBallRolling, "toggleBallRolling");
+        // this.newCmd(CommandId.disableTracker, "disableTracker");
+        for (var k in CommandId) {
+            CommandId[k] = k;
+        }
+        console.log("CommandId", CommandId);
         ////test cmd
 
         // this.newCmd(CommandId.testSwapTrack, "test swap track");
