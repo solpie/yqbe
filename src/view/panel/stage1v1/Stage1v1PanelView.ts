@@ -89,8 +89,8 @@ export class Stage1v1PanelView extends BasePanelView {
             if (!this.isInit && this.isInitCanvas) {
                 data.gameInfo.kingPlayer = data.kingPlayer;
                 this.kingPlayer = data.kingPlayer;
-                // if (data.lastWinnerPlayerInfo)
-                data.gameInfo.lastWinnerPlayerInfo = data.lastWinnerPlayerInfo;
+                // if (data.lastLoserPlayerInfo)
+                data.gameInfo.lastLoserPlayerInfo = data.lastLoserPlayerInfo;
                 this.initStage(data.gameInfo);
             }
         });
@@ -234,11 +234,11 @@ export class Stage1v1PanelView extends BasePanelView {
         if (this.op) {
             this.pickUpArr = [0, 0];
             this.pickUpIdx = 0;
-            if (gameDoc.lastWinnerPlayerInfo.isBlue) {
-                this.getElem("#player0").value = gameDoc.lastWinnerPlayerInfo.playerData.id;
+            if (gameDoc.lastLoserPlayerInfo.isBlue) {
+                this.getElem("#player0").value = gameDoc.lastLoserPlayerInfo.playerData.id;
             }
             else {
-                this.getElem("#player1").value = gameDoc.lastWinnerPlayerInfo.playerData.id;
+                this.getElem("#player1").value = gameDoc.lastLoserPlayerInfo.playerData.id;
             }
             this.gameIdx = gameDoc.gameIdx;
             for (var i = 0; i < gameDoc.playerInfoArr.length; i++) {

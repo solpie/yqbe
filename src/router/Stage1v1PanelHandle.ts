@@ -9,14 +9,15 @@ import {ScParam, screenPanelHanle} from "../SocketIOSrv";
 import {db} from "../model/DbInfo";
 import {PlayerInfo, PlayerState1v1} from "../model/PlayerInfo";
 import {Game1v1Info} from "../model/Game1v1Info";
-import {mapToArr} from "../utils/JsFunc";
+import {mapToArr, ascendingProp} from "../utils/JsFunc";
+import {MatchSvg} from "../model/BracketInfo";
 import Server = SocketIO.Server;
 import Socket = SocketIO.Socket;
 export class Stage1v1PanelHandle {
     io: any;
     gameInfo: Game1v1Info;
     exPlayerIdMap: any;
-    lastWinnerPlayerInfo: PlayerInfo = new PlayerInfo();
+    lastLoserPlayerInfo: PlayerInfo = new PlayerInfo();
     lastGameIdx: number = 0;
 
     constructor(io: Server) {
@@ -29,7 +30,7 @@ export class Stage1v1PanelHandle {
                 socket.emit(`${CommandId.initPanel}`, ScParam({
                     gameInfo: this.gameInfo,
                     isDev: ServerConf.isDev,
-                    lastWinnerPlayerInfo: this.lastWinnerPlayerInfo,
+                    lastLoserPlayerInfo: this.lastLoserPlayerInfo,
                     kingPlayer: ServerConf.king
                 }));
             })
@@ -277,8 +278,8 @@ export class Stage1v1PanelHandle {
                 console.log('bracket playerDocArr', playerDocArr);
                 if (playerDocArr.length == 8) {
                     for (var i = 0; i < 4; i++) {
-                        playerDocArr[i * 2].seed = i * 2 + 1;
-                        playerDocArr[i * 2 + 1].seed = i * 2 + 2;
+                        // playerDocArr[i * 2].seed = i * 2 + 1;
+                        // playerDocArr[i * 2 + 1].seed = i * 2 + 2;
 
                         playerDocArr[i * 2].score = 0;
                         playerDocArr[i * 2 + 1].score = 0;
@@ -296,8 +297,18 @@ export class Stage1v1PanelHandle {
 
                     db.activity.ds().update({id: actDoc.id}, actDoc, ()=> {
                     });
+
+                    // var actDoc = db.activity.getDocArr([3])[0];
+                    var matchArr = this.refreshBracket(actDoc);
+                    this.io.emit(`${CommandId.refreshClient}`, ScParam({matchArr: matchArr}));
                 }
             };
+            cmdMap[`${CommandId.cs_refreshClient}`] = (param) => {
+                var actDoc = db.activity.getDocArr([3])[0];
+                var matchArr = this.refreshBracket(actDoc);
+                this.io.emit(`${CommandId.refreshClient}`, ScParam({matchArr: matchArr}));
+            };
+
             cmdMap[`${CommandId.cs_saveGameRec}`] = (param) => {
                 ////////////////    bracket
                 var bracketIdx = param.bracketIdx;
@@ -392,6 +403,9 @@ export class Stage1v1PanelHandle {
                     };
 
                     setBracketPlayer(bracketIdx);
+
+                    var matchArr = this.refreshBracket(actDoc);
+                    this.io.emit(`${CommandId.refreshClient}`, ScParam({matchArr: matchArr}));
                 }
 
 
@@ -403,7 +417,7 @@ export class Stage1v1PanelHandle {
                 else {
                     this.lastGameIdx = Number(this.gameInfo.gameIdx);
                     this.gameInfo.saveGameResult();
-                    this.lastWinnerPlayerInfo = this.gameInfo.loserPlayerInfo;
+                    this.lastLoserPlayerInfo = this.gameInfo.loserPlayerInfo;
                     db.player.updatePlayerDoc(this.gameInfo.getPlayerDocArr(), null);
                     res.send(true);
                 }
@@ -431,5 +445,54 @@ export class Stage1v1PanelHandle {
 
         db.game.startGame(gameDoc);
         console.log('startGame:', gameId, gameDoc);
+    }
+
+    refreshBracket(actDoc: any) {
+        //refresh bracket
+        var matchArr = [];
+        var playerHintMap = {
+            '5': ['  第1场败者', '  第2场败者'],
+            '6': ['  第3场败者', '  第4场败者'],
+            '9': ['  第7场败者', ''],
+            '13': ['  第11场败者', ''],
+            '10': ['  第8场败者', ''],
+            '14': ['', '  第13场胜者']
+        };
+        for (var i = 0; i < 15; i++) {
+            var ms: MatchSvg = new MatchSvg(0, 0, i + 1);
+            var bracketDoc = actDoc.bracket[ms.idx];
+            if (bracketDoc) {
+                var gameInfoArr = bracketDoc.gameInfoArr;
+                if (bracketDoc.gameInfoArr[0]) {
+                    ms.playerSvgArr[0].name = bracketDoc.gameInfoArr[0].name;
+                    ms.playerSvgArr[0].avatar = bracketDoc.gameInfoArr[0].avatar;
+                    ms.playerSvgArr[0].score = bracketDoc.gameInfoArr[0].score;
+                }
+                if (bracketDoc.gameInfoArr[1]) {
+                    ms.playerSvgArr[1].name = bracketDoc.gameInfoArr[1].name;
+                    ms.playerSvgArr[1].avatar = bracketDoc.gameInfoArr[1].avatar;
+                    ms.playerSvgArr[1].score = bracketDoc.gameInfoArr[1].score;
+                }
+                if (ms.playerSvgArr[0].score || ms.playerSvgArr[1].score) {
+                    if (ms.playerSvgArr[0].score > ms.playerSvgArr[1].score) {
+                        ms.playerSvgArr[0].isWin = true;
+                    }
+                    else {
+                        ms.playerSvgArr[1].isWin = true;
+                    }
+                }
+            }
+            else if (playerHintMap[ms.idx]) {
+                ms.playerSvgArr[0].name = playerHintMap[ms.idx][0];
+                ms.playerSvgArr[1].name = playerHintMap[ms.idx][1];
+                ms.playerSvgArr[0].isHint = true;
+                ms.playerSvgArr[1].isHint = true;
+            }
+            matchArr.push(ms);
+        }
+
+        matchArr.sort(ascendingProp('idx'));
+        return matchArr;
+
     }
 }

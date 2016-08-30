@@ -83,6 +83,8 @@ export enum CommandId{
     cs_setBracketPlayer,//八强名单
     cs_clearActPlayerGameRec,//清除act 20人战绩
     cs_getBracketPlayerByIdx,//获取球员信息
+    cs_refreshClient,//刷新bracket
+    refreshClient,
 
     cs_updateKingPlayer,
     updateKingPlayer,

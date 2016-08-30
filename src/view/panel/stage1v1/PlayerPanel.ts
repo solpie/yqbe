@@ -48,20 +48,8 @@ export class PlayerPanel {
         if (isKing) {
             this.playerCardArr[idx].setKingLabel();
         }
-
-        // this.playerCardArr[idx].setPlayerInfo(playerInfo);
     }
 
-    // setKing(kingPlayer) {
-    //     for (var i = 0; i < this.playerCardArr.length; i++) {
-    //         var playerInfo = this.playerCardArr[i].playerInfo;
-    //         console.log('setKing: ', Number(kingPlayer), playerInfo);
-    //         if (Number(kingPlayer) == playerInfo.id()) {
-    //             this.playerCardArr[i].setKingLabel();
-    //             break;
-    //         }
-    //     }
-    // }
 
     init(gameDoc) {
         for (var i = 0; i < gameDoc.playerInfoArr.length; i++) {

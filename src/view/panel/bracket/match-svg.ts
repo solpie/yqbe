@@ -1,5 +1,5 @@
 import {Component} from "../../VueEx";
-import {MatchSvg} from "./BracketView";
+import {MatchSvg} from "../../../model/BracketInfo";
 @Component({
     template: require('./match.html'),
     props: {
@@ -8,6 +8,9 @@ import {MatchSvg} from "./BracketView";
         x: {},
         y: {},
         match: {}
+    },
+    watch: {
+        match: 'onMatchChanged'
     }
 })
 export class matchsvg {
@@ -34,13 +37,10 @@ export class matchsvg {
                 this.playerArr[1].isWin = true;
         }
 
-        // for (var i = 0; i < this.playerArr.length; i++) {
-        //     var player = this.playerArr[i];
-        //     if (player.score) {
-        //
-        //     }
-        //     // player.isWin =
-        // }
         console.log('match ready', this.match);
+    }
+
+    onMatchChanged() {
+        console.log('onMatchChanged');
     }
 }

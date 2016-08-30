@@ -1,7 +1,10 @@
 <link class="challonge_stylesheet" href="/css/bracket.css" media="all" rel="stylesheet">
 <style>
     body {
-        font-family: '微软雅黑'
+        font-family: '微软雅黑';
+        background-image: url(/img/panel/stage1v1/bracketBg.png);
+        background-repeat: repeat;
+        background-color: rgba(0, 0, 0, .5);
     }
 
     @font-face {
@@ -12,8 +15,6 @@
 
     .bracket {
         overflow: hidden;
-        background-image: url(/img/panel/stage1v1/bracketBg.png);
-        background-repeat: repeat;
     }
 
     .bracket-line {
@@ -68,50 +69,60 @@
 </style>
 <div class="bracket">
     <svg class="bracket-svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+
+        <image x="40" y="0" width="1410"
+               height="36"
+               xlink:href="/img/panel/stage1v1/bracketTitle1.png"></image>
+
+        <image x="40" y="{{matchArr[3].y + 140 }}" width="1410"
+               height="36"
+               xlink:href="/img/panel/stage1v1/bracketTitle2.png"></image>
         <g>
             <!--first col-->
-            <svg x="0" y="{{ matchArr[0].y + 60 }}" data-path="1-7">
+            <svg x="0" y="{{ matchArr[0].y + 65 }}" data-path="1-7">
                 <path d="M 228 1 L {{ 300 }} 1 L {{ 300 }} 160 L 228 160 M {{ 300 }} 83 L 375 83"
                       class="bracket-line"/>
             </svg>
 
-            <svg x="0" y="{{ matchArr[2].y + 60 }}" data-path="3-8">
+            <svg x="0" y="{{ matchArr[2].y + 65 }}" data-path="3-8">
                 <path d="M 228 1 L {{ 300 }} 1 L {{ 300 }} 160 L 228 160 M {{ 300 }} 83 L 375 83"
                       class="bracket-line"/>
             </svg>
 
-
-            <svg x="0" y="{{ matchArr[9].y + 60 }}" data-path="5-10">
+            <svg x="0" y="{{ matchArr[9].y + 65 }}" data-path="5-10">
                 <path d="M 228 60 L {{ 300 }} 60 L {{ 300 }} 1 L 375 1"
                       class="bracket-line"/>
             </svg>
-            <svg x="0" y="{{ matchArr[8].y + 60 }}" data-path="6-9">
+            <svg x="0" y="{{ matchArr[8].y + 65 }}" data-path="6-9">
                 <path d="M 228 60 L {{ 300 }} 60 L {{ 300 }} 1 L 375 1"
                       class="bracket-line"/>
             </svg>
 
             <!--second col-->
-            <svg x="{{ 400 }}" y="{{ matchArr[6].y + 60 }}" data-path="7-12">
+            <svg x="{{ 400 }}" y="{{ matchArr[6].y + 65 }}" data-path="7-12">
                 <path d="M 228 1 L {{ 300 }} 1 L {{ 300 }} 326 L 228 326 M 300 160 L 375 160"
                       class="bracket-line"/>
             </svg>
-            <svg x="{{ 400 }}" y="{{ matchArr[9].y + 60 }}" data-path="10-11">
+            <svg x="{{ 400 }}" y="{{ matchArr[9].y + 65 }}" data-path="10-11">
                 <path d="M 228 1 L {{ 300 }} 1 L {{ 300 }} 165 L 228 165 M 300 82 L 375 82"
                       class="bracket-line"/>
             </svg>
             <!--third col-->
 
-            <svg x="{{ 800 }}" y="{{ matchArr[10].y + 60 }}" data-path="11-14">
+            <svg x="{{ 800 }}" y="{{ matchArr[10].y + 65 }}" data-path="11-14">
                 <path d="M 228 1 L {{ 300 }} 1 L {{ 300 }} 60 L 375 60"
                       class="bracket-line"/>
             </svg>
 
-            <svg x="{{ 800 }}" y="{{ matchArr[12].y + 60 }}" data-path="12-13">
+            <svg x="{{ 800 }}" y="{{ matchArr[12].y + 65 }}" data-path="12-13">
                 <path d="M 228 60 L {{ 300 }} 60 L {{ 300 }} 1 L 375 1"
-                      class="bracket-line"
-                      data-line-length="41"></path>
+                      class="bracket-line"></path>
             </svg>
         </g>
-        <matchsvg v-for="match in matchArr" :match="match"></matchsvg>
+        <matchsvg v-for="match in matchArr"
+                  :match="match" :x="match.x" :y="match.y" :idx="match.idx"
+                  :playerArr='match.playerArr'>
+        </matchsvg>
     </svg>
+
 </div>

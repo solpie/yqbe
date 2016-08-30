@@ -1,28 +1,9 @@
 import {ServerConf} from "../Env";
 import {ascendingProp} from "../utils/JsFunc";
 import {db} from "../model/DbInfo";
+import {MatchSvg} from "../model/BracketInfo";
 export var panelRouter = require('express').Router();
 
-class PlayerSvg {
-    seed: number;//八强排位
-    name: string;//
-    avatar: string;//
-    score: number = 0;//
-}
-class MatchSvg {
-    x: number;
-    y: number;
-    round: number;
-    idx: number;//场次
-    playerSvgArr: Array<PlayerSvg>;
-
-    constructor(x, y, idx) {
-        this.x = x;
-        this.y = y;
-        this.idx = idx;
-        this.playerSvgArr = [new PlayerSvg, new PlayerSvg];
-    }
-}
 
 panelRouter.get('/bracket', function (req, res) {
     console.log('get bracket:');

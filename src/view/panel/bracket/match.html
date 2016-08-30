@@ -9,12 +9,14 @@
         <rect x="165" y="0" width="60" height="120" rx="3" ry="3"
               class="match--scores-background"></rect>
         <g v-for="player in playerArr" class="match--player">
-            <text x="29" y="{{$index*60+30}}" width="147" height="20" class="match--player-name2">
+            <text id="playerName{{(idx-1)*2+$index}}" x="82" y="{{$index*60+40}}" width="147" height="20"
+                  class="match--player-name2" text-anchor="middle">
                 {{player.name}}
             </text>
-            <rect v-if="player.isWin" x="165" y="{{$index*60}}" width="60" height="60" rx="3" ry="3"
-                  class="match--winner-background"></rect>
-            <text x="199" y="{{$index*60+30}}" width="21" height="12" text-anchor="middle" class="match--player-score">
+            <rect id="winner{{(idx-1)*2+$index}}" x="165" y="{{$index*60}}" width="60" height="60" rx="3" ry="3"
+                  class="match--winner-background" display="none"></rect>
+            <text id="score{{(idx-1)*2+$index}}" x="195" y="{{$index*60+40}}" width="21" height="12"
+                  text-anchor="middle" class="match--player-score">
                 {{player.score}}
             </text>
         </g>
