@@ -67,38 +67,43 @@ export class BracketView extends BasePanelView {
         var io = super.ready(PanelId.stage1v1Panel, false);
 
         io
-            .on(`${CommandId.initPanel}`, (data) => {
-                console.log(`${CommandId.initPanel}`, data);
-                this.opReq(`${CommandId.cs_refreshClient}`);
+            .on(`${CommandId.initPanel}`, (param) => {
+                console.log(`${CommandId.initPanel}`, param);
+                this.updateBracket(param.matchArr);
             })
             .on(`${CommandId.refreshClient}`, (param)=> {
                 console.log('refresh bracket', param);
-                var matchArr = param.matchArr;
-                for (var j = 0; j < 14; j++) {
-                    var match: MatchSvg = matchArr[j];
-                    for (var k = 0; k < 2; k++) {
-                        var playerSvg = match.playerSvgArr[k];
-                        // if (playerSvg) {
-                        var $playerSvg = $('#playerName' + (j * 2 + k));
-                        $playerSvg.text(playerSvg.name);
-                        if (playerSvg.isHint) {
-                            console.log('player name isHint');
-                            $playerSvg.attr('class', 'match--player-name -placeholder')
-                        } else if (playerSvg.name && playerSvg.name.length > 6) {
-                            $playerSvg.attr('class', 'match--player-name3')
-                        }
-                        if (playerSvg.isWin) {
-                            $('#winner' + (j * 2 + k)).show();
-                            // match--winner-background
-                        }
-                        else {
-                            $('#winner' + (j * 2 + k)).hide();
-                        }
-                        $('#score' + (j * 2 + k)).text(playerSvg.score);
-                        // }
+                this.updateBracket(param.matchArr);
+            });
+    }
+
+    updateBracket(matchArr) {
+        for (var j = 0; j < 14; j++) {
+            var match: MatchSvg = matchArr[j];
+            for (var k = 0; k < 2; k++) {
+                var playerSvg = match.playerSvgArr[k];
+                var $playerSvg = $('#playerName' + (j * 2 + k));
+                $playerSvg.text(playerSvg.name);
+                if (playerSvg.isHint) {
+                    console.log('player name isHint');
+                    $playerSvg.attr('class', 'match--player-name -placeholder')
+                } else {
+                    $playerSvg.attr('class', 'match--player-name2');
+                    if (playerSvg.name && playerSvg.name.length > 6) {
+                        $playerSvg.attr('class', 'match--player-name3')
                     }
                 }
-            });
+
+                if (playerSvg.isWin) {
+                    $('#winner' + (j * 2 + k)).show();
+                    // match--winner-background
+                }
+                else {
+                    $('#winner' + (j * 2 + k)).hide();
+                }
+                $('#score' + (j * 2 + k)).text(playerSvg.score);
+            }
+        }
     }
 
     onMatchArrChanged(v) {

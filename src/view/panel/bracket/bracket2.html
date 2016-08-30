@@ -2,9 +2,7 @@
 <style>
     body {
         font-family: '微软雅黑';
-        background-image: url(/img/panel/stage1v1/bracketBg.png);
-        background-repeat: repeat;
-        background-color: rgba(0, 0, 0, .5);
+        background-color: rgba(0, 0, 0, 0);
     }
 
     @font-face {
@@ -14,7 +12,21 @@
     }
 
     .bracket {
+        position: absolute;
         overflow: hidden;
+    }
+
+    .bracket-bg {
+        width: 1920px;
+        height: 1080px;
+        background-image: url(/img/panel/stage1v1/bracketBg.png);
+        background-repeat: repeat;
+        opacity: .8;
+    }
+
+    .bracket-svg {
+        top:0;
+        position: absolute;
     }
 
     .bracket-line {
@@ -68,6 +80,9 @@
     /*style="filter: grayscale(100%);"*/
 </style>
 <div class="bracket">
+    <div class="bracket-bg">
+
+    </div>
     <svg class="bracket-svg" width="1920" height="1080" viewBox="0 0 1920 1080">
 
         <image x="40" y="0" width="1410"

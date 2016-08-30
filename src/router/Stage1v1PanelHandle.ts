@@ -27,10 +27,14 @@ export class Stage1v1PanelHandle {
         this.io = io.of(`/${PanelId.stage1v1Panel}`);
         this.io
             .on("connect", (socket: Socket) => {
+                var actDoc = db.activity.getDocArr([3])[0];
+                var matchArr = this.refreshBracket(actDoc);
+
                 socket.emit(`${CommandId.initPanel}`, ScParam({
                     gameInfo: this.gameInfo,
                     isDev: ServerConf.isDev,
                     lastLoserPlayerInfo: this.lastLoserPlayerInfo,
+                    matchArr: matchArr,
                     kingPlayer: ServerConf.king
                 }));
             })
@@ -461,8 +465,8 @@ export class Stage1v1PanelHandle {
         for (var i = 0; i < 15; i++) {
             var ms: MatchSvg = new MatchSvg(0, 0, i + 1);
             var bracketDoc = actDoc.bracket[ms.idx];
+
             if (bracketDoc) {
-                var gameInfoArr = bracketDoc.gameInfoArr;
                 if (bracketDoc.gameInfoArr[0]) {
                     ms.playerSvgArr[0].name = bracketDoc.gameInfoArr[0].name;
                     ms.playerSvgArr[0].avatar = bracketDoc.gameInfoArr[0].avatar;
@@ -473,6 +477,7 @@ export class Stage1v1PanelHandle {
                     ms.playerSvgArr[1].avatar = bracketDoc.gameInfoArr[1].avatar;
                     ms.playerSvgArr[1].score = bracketDoc.gameInfoArr[1].score;
                 }
+
                 if (ms.playerSvgArr[0].score || ms.playerSvgArr[1].score) {
                     if (ms.playerSvgArr[0].score > ms.playerSvgArr[1].score) {
                         ms.playerSvgArr[0].isWin = true;
@@ -482,10 +487,13 @@ export class Stage1v1PanelHandle {
                     }
                 }
             }
-            else if (playerHintMap[ms.idx]) {
+
+            if (!ms.playerSvgArr[0].name && playerHintMap[ms.idx]) {
                 ms.playerSvgArr[0].name = playerHintMap[ms.idx][0];
-                ms.playerSvgArr[1].name = playerHintMap[ms.idx][1];
                 ms.playerSvgArr[0].isHint = true;
+            }
+            if (!ms.playerSvgArr[1].name && playerHintMap[ms.idx]) {
+                ms.playerSvgArr[1].name = playerHintMap[ms.idx][1];
                 ms.playerSvgArr[1].isHint = true;
             }
             matchArr.push(ms);
