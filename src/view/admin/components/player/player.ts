@@ -54,19 +54,6 @@ export class Player extends VueEx {
     }
 
     ready() {
-        // ($('#modal1')as any).leanModal({
-        //         dismissible: true, // Modaler can be dismissed by clicking outside of the modal
-        //         opacity: .5, // Opacity of modal background
-        //         in_duration: 300, // Transition in duration
-        //         out_duration: 200, // Transition out duration
-        //         ready: function () {
-        //             alert('Ready');
-        //         }, // Callback for Modaler open
-        //         complete: function () {
-        //             alert('Closed');
-        //         } // Callback for Modaler close
-        //     }
-        // );
         console.log('player Ready!!');
         this.$http.post('/db/player', {all: true}).then((res)=> {
             console.log(JSON.stringify(res));
@@ -109,11 +96,13 @@ export class Player extends VueEx {
 
     onAddPlayerList() {
         var a = [];
-        for (var i = 0; i < this.pickPlayerIdArr.length; i++) {
-            var playerIdArr = this.pickPlayerIdArr[i];
+        for (var i = 0; i < this.pickPlayerIdArrArr.length; i++) {
+            var playerIdArr = this.pickPlayerIdArrArr[i];
             a = a.concat(playerIdArr);
         }
-
+        a = a.concat(this.pickPlayerIdArr);
+        console.log('playerList', a);
+        this.post(`/panel/stage1v1/${CommandId.cs_setActPlayer}`, {playerIdArr: a});
     }
 
     onEdit(playerId, event): any {
@@ -163,6 +152,4 @@ export class Player extends VueEx {
         this.messages.$remove(item);
         this.store();
     }
-
-
 }

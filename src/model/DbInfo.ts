@@ -117,9 +117,13 @@ export class BaseDB {
     //     });
     // }
     updateDocArr(docArr) {
-        this.ds().find({'$or': docArr}, (err, docs)=> {
-
-        })
+        for (var i = 0; i < docArr.length; i++) {
+            var doc = docArr[i];
+            this.ds().update({'_id': doc._id}, doc,{upsert:true},null);
+        }
+        // this.ds().find({'$or': docArr}, (err, docs)=> {
+        //
+        // })
     }
 
     getDocArr(idArr) {

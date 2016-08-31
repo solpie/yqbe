@@ -80,6 +80,7 @@ export enum CommandId{
     cs_fadeOutFinalPlayer,
     fadeOutFinalPlayer,
 //-----------------1v1
+    cs_setActPlayer,//参赛名单
     cs_setBracketPlayer,//八强名单
     cs_clearActPlayerGameRec,//清除act 20人战绩
     cs_getBracketPlayerByIdx,//获取球员信息

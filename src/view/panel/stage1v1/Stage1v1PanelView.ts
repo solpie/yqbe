@@ -6,7 +6,7 @@ import {CommandId} from "../../../event/Command";
 import {ScorePanel} from "./ScorePanel";
 import {PlayerPanel} from "./PlayerPanel";
 import {EventPanel} from "./EventPanel";
-import {loadImgArr, descendingProp} from "../../../utils/JsFunc";
+import {loadImgArr, descendingProp, mapToArr} from "../../../utils/JsFunc";
 import {CountDownPanel} from "./CountDownPanel";
 @Component({
     template: require('./stage1v1-panel.html'),
@@ -17,6 +17,8 @@ import {CountDownPanel} from "./CountDownPanel";
         bracketIdx: {},
         timerName: {},
         isUnLimitScore: {},
+        leftFoul: {},
+        rightFoul: {},
         cmdString: {},
         playerNumArr: {
             type: Array,
@@ -41,6 +43,8 @@ export class Stage1v1PanelView extends BasePanelView {
     playerNumArr: number[];
     gameId: number;
     gameIdx: number;
+    leftFoul: number;
+    rightFoul: number;
     bracketIdx: number;//双败制场次序号 1-14
     timerName: string;
     scorePanel: ScorePanel;
@@ -57,6 +61,8 @@ export class Stage1v1PanelView extends BasePanelView {
     pickUpArr: Array<any>;
     pickUpIdx: number;
     bracket18452736: string;
+
+    pickUp8Map: any;
 
     ready(pid?: string, isInitCanvas: boolean = true) {
         if (!pid)
@@ -89,6 +95,8 @@ export class Stage1v1PanelView extends BasePanelView {
             if (!this.isInit && this.isInitCanvas) {
                 data.gameInfo.kingPlayer = data.kingPlayer;
                 this.kingPlayer = data.kingPlayer;
+                this.leftFoul = data.gameInfo.leftFoul;
+                this.rightFoul = data.gameInfo.rightFoul;
                 // if (data.lastLoserPlayerInfo)
                 data.gameInfo.lastLoserPlayerInfo = data.lastLoserPlayerInfo;
                 this.initStage(data.gameInfo);
@@ -102,6 +110,14 @@ export class Stage1v1PanelView extends BasePanelView {
             .on(`${CommandId.updateRightScore}`, (data) => {
                 console.log('updateRightScore', data);
                 this.scorePanel.setRightScore(data.rightScore);
+            })
+            .on(`${CommandId.updateLeftFoul}`, (data) => {
+                console.log('updateLeftFoul', data);
+                this.leftFoul = data.leftFoul;
+            })
+            .on(`${CommandId.updateRightFoul}`, (data) => {
+                console.log('updateRightFoul', data);
+                this.rightFoul = data.rightFoul;
             })
             .on(`${CommandId.updatePlayer}`, (data) => {
                 console.log('updatePlayer', data);
@@ -143,6 +159,7 @@ export class Stage1v1PanelView extends BasePanelView {
             })
             .on(`${CommandId.fadeInActivityPanel}`, (data) => {
                 console.log("fade in act ", data);
+                this.pickUp8Map = {};
                 var pathArr = [];
                 for (var i = 0; i < data.playerDocArr.length; i++) {
                     var playerDoc = data.playerDocArr[i];
@@ -154,7 +171,8 @@ export class Stage1v1PanelView extends BasePanelView {
                         playerDoc.winningPercent = playerDoc.winGameCount / (playerDoc.loseGameCount + playerDoc.winGameCount);
                 }
                 var b = data.playerDocArr = data.playerDocArr.sort(descendingProp('winningPercent'));
-                this.bracket18452736 = `${b[0].id} ${b[7].id} ${b[3].id} ${b[4].id} ${b[1].id} ${b[6].id} ${b[2].id} ${b[5].id}`;
+                if (b.length > 7)
+                    this.bracket18452736 = `${b[0].id} ${b[7].id} ${b[3].id} ${b[4].id} ${b[1].id} ${b[6].id} ${b[2].id} ${b[5].id}`;
                 loadImgArr(pathArr, ()=> {
                     this.eventPanel.fadeInActPanel(data.playerDocArr, this.op, data.page, this.onChangePlayerState);
                 });
@@ -234,6 +252,8 @@ export class Stage1v1PanelView extends BasePanelView {
         if (this.op) {
             this.pickUpArr = [0, 0];
             this.pickUpIdx = 0;
+            this.pickUp8Map = {};
+
             if (gameDoc.lastLoserPlayerInfo.isBlue) {
                 this.getElem("#player0").value = gameDoc.lastLoserPlayerInfo.playerData.id;
             }
@@ -366,8 +386,8 @@ export class Stage1v1PanelView extends BasePanelView {
         var isBlueWin = this.scorePanel.isBlueWin;
         console.log("isBlueWin:", isBlueWin);
 
-        var date = new Date();
-        var dateTime = date.getTime();
+        // var date = new Date();
+        // var dateTime = date.getTime();
         var data: any = {bracketIdx: this.bracketIdx};
         this.opReq(`${CommandId.cs_saveGameRec}`, data, (res) => {
             console.log(res);
@@ -409,6 +429,7 @@ export class Stage1v1PanelView extends BasePanelView {
             console.log('pickUpIdx', this.pickUpIdx);
             this.pickUpArr[this.pickUpIdx] = playerDoc.id;
             this.pickUpIdx ? this.pickUpIdx = 0 : this.pickUpIdx = 1;
+            this.pickUp8Map[playerDoc.id] = playerDoc;
         }
 
         this.opReq(`${CommandId.cs_updatePlayerState}`, {playerDoc: playerDoc});
@@ -420,6 +441,27 @@ export class Stage1v1PanelView extends BasePanelView {
             this.opReq(`${CommandId.cs_updatePlayer}`, {idx: 0, playerId: this.pickUpArr[0]});
             this.opReq(`${CommandId.cs_updatePlayer}`, {idx: 1, playerId: this.pickUpArr[1]});
             this.onHideAct();
+        }
+    }
+
+    onPickUp8() {
+        var playerDocArr = mapToArr(this.pickUp8Map);
+        var a = [];
+        for (var i = 0; i < playerDocArr.length; i++) {
+            var playerDoc = playerDocArr[i];
+            if (playerDoc.state == PlayerState1v1.FIGHTING) {
+                a.push(playerDoc);
+            }
+        }
+        if (a.length == 8) {
+            var b = a.sort(descendingProp('winningPercent'));
+            this.bracket18452736 = `${b[0].id} ${b[7].id} ${b[3].id} ${b[4].id} ${b[1].id} ${b[6].id} ${b[2].id} ${b[5].id}`;
+            window['setBracket'](this.bracket18452736);
+            console.log('pick up 8', this.bracket18452736);
+            this.onHideAct();
+        }
+        else {
+            alert('未选满8人');
         }
     }
 

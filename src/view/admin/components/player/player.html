@@ -18,7 +18,7 @@
                 <!-- Modaler Trigger -->
                 <a class="modal-trigger waves-effect waves-light btn" @click="onAddPlayer">添加玩家</a>
                 <p>
-                    <a class="modal-trigger waves-effect waves-light btn" @click="onAddPlayerList">创建playerlist</a>
+                    <a class="modal-trigger waves-effect waves-light btn" @click="onAddPlayerList">参赛玩家选取</a>
                 <p>
                     <a class="modal-trigger waves-effect waves-light btn" @click="onClearActPlayerGameRec">清除战绩</a>
                 <p class="lead">
@@ -31,30 +31,9 @@
                 <li v-for="team in pickPlayerIdArrArr">
                     <div>{{team | json}}</div>
                 </li>
+                total:{{pickPlayerIdArrArr.length}}
             </div>
 
-            <!--<div class="col s3">-->
-            <!--show-->
-            <!--</div>-->
-            <!--最近添加-->
-            <!--<table class="table">-->
-            <!--<thead>-->
-            <!--<tr>-->
-            <!--<th>date</th>-->
-            <!--<th>player</th>-->
-            <!--<th>...</th>-->
-            <!--</tr>-->
-            <!--</thead>-->
-            <!--<tbody>-->
-            <!--<tr v-for="message in messages">-->
-            <!--<td v-text="message.date"></td>-->
-            <!--<td v-text="message.text"></td>-->
-            <!--<td>-->
-            <!--<button type="button" class="btn btn-secondary btn-sm" @click="remove(message)">削除する</button>-->
-            <!--</td>-->
-            <!--</tr>-->
-            <!--</tbody>-->
-            <!--</table>-->
         </div>
         <div id="player-grid" class="col s24" style="position: relative;">
             <!-- Note that "m8 l9" was added -->
@@ -94,8 +73,7 @@
                         </div>
                         <div class="card-reveal">
                             <span class="card-title grey-text text-darken-4">战绩<i class="material-icons right">close</i></span>
-                            <p>Here is some more information about this product that is only revealed once clicked
-                                on.</p>
+                            <p></p>
                         </div>
                     </div>
                 </div>

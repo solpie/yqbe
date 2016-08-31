@@ -14,6 +14,7 @@ class PlayerDoc {
     loseGameCount: number = 0;
     winGameCount: number = 0;
     size: string;//衣服尺寸
+    state:string;
 }
 export var PlayerState1v1 = {
     FIGHTING: ' ',

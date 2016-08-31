@@ -95,7 +95,7 @@
             <div class="row">
                 <a class="waves-effect waves-light btn" @click="onAddLeftFoul">蓝规++</a>
                 <a class="waves-effect waves-light btn" @click="onMinLeftFoul">蓝规--</a>
-                <label>///////口口口口口\\\\\\\</label>
+                <label style="font-size: 24px">[{{leftFoul}}]===口口口口口===[{{rightFoul}}]</label>
                 <a class="waves-effect waves-light btn" @click="onMinRightFoul">红规--</a>
                 <a class="waves-effect waves-light btn" @click="onAddRightFoul">红规++</a>
             </div>
@@ -114,6 +114,7 @@
         <a class="waves-effect waves-light btn" @click="onShowActNext">下一页</a>
         <a class="waves-effect waves-light btn" @click="onHideAct">隐藏</a>
         <a class="waves-effect waves-light btn" @click="onPickUpAct">出阵并隐藏</a>
+        <a class="waves-effect waves-light btn" @click="onPickUp8">双败出阵</a>
     </div>
     <div class="row">
         倒计时：

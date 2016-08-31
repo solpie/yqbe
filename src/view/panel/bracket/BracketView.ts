@@ -78,8 +78,17 @@ export class BracketView extends BasePanelView {
     }
 
     updateBracket(matchArr) {
+
         for (var j = 0; j < 14; j++) {
             var match: MatchSvg = matchArr[j];
+            var isOverMatch =
+                match.idx == 5
+                || match.idx == 6
+                || match.idx == 9
+                || match.idx == 10
+                || match.idx == 11
+                || match.idx == 13
+                || match.idx == 14
             for (var k = 0; k < 2; k++) {
                 var playerSvg = match.playerSvgArr[k];
                 var $playerSvg = $('#playerName' + (j * 2 + k));
@@ -92,15 +101,18 @@ export class BracketView extends BasePanelView {
                     if (playerSvg.name && playerSvg.name.length > 6) {
                         $playerSvg.attr('class', 'match--player-name3')
                     }
+                    if (playerSvg.isWin) {
+                        $('#winner' + (j * 2 + k)).show();
+                        // match--winner-background
+                    }
+                    else {
+                        $('#winner' + (j * 2 + k)).hide();
+                        if (isOverMatch && (playerSvg.score || playerSvg.score)) {
+                            $playerSvg.css({opacity: 0.2});
+                        }
+                    }
                 }
 
-                if (playerSvg.isWin) {
-                    $('#winner' + (j * 2 + k)).show();
-                    // match--winner-background
-                }
-                else {
-                    $('#winner' + (j * 2 + k)).hide();
-                }
                 $('#score' + (j * 2 + k)).text(playerSvg.score);
             }
         }

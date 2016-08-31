@@ -110,18 +110,3 @@ adminRouter.get('/game/delete/:gameId', function (req:any, res:any) {
         res.send(sus);
     });
 });
-
-//////////////////activity admin
-adminRouter.post('/act/19', function (req:any, res:any) {
-    // if (!req.body) return res.sendStatus(400);
-    // var act:any = Act619;
-    // for (var gameDoc of act.gameDataArr) {
-    //     gameDoc.playerDocArr = [];
-    //     for (var i = 0; i < gameDoc.playerIdArr.length; i++) {
-    //         var playerId = gameDoc.playerIdArr[i];
-    //         console.log('playerId: ', playerId);
-    //         gameDoc.playerDocArr.push(db.player.dataMap[playerId]);
-    //     }
-    // }
-    // res.send(act);
-});

@@ -167,19 +167,29 @@ export class Stage1v1PanelHandle {
             cmdMap[`${CommandId.cs_updatePlayerState}`] = (param) => {
                 db.player.updatePlayerDoc([param.playerDoc], ()=> {
                     var playerDoc = param.playerDoc;
-                    if (playerDoc.state == PlayerState1v1.FIGHTING) {
-                        // this.io.emit(`${CommandId.updatePlayer}`, ScParam(param))
-                    }
+                    // if (playerDoc.state == PlayerState1v1.FIGHTING) {
+                    //     // this.io.emit(`${CommandId.updatePlayer}`, ScParam(param))
+                    // }
                     console.log('cs_updatePlayerState', 'updatePlayerState', param);
                     this.io.emit(`${CommandId.updatePlayerState}`, ScParam(param))
                 });
             };
 
 
+            cmdMap[`${CommandId.cs_setActPlayer}`] = (param) => {
+                var playerIdArr = param.playerIdArr;
+                if (playerIdArr && playerIdArr.length) {
+                    var actDoc = this.getActDoc();
+                    actDoc.gameDataArr[0].playerIdArr = playerIdArr;
+                    db.activity.updateDocArr([actDoc]);
+                }
+            };
+
             cmdMap[`${CommandId.cs_setGameIdx}`] = (param) => {
                 this.gameInfo.gameIdx = param.gameIdx;
                 this.io.emit(`${CommandId.setGameIdx}`, ScParam(param));
             };
+
             cmdMap[`${CommandId.cs_fadeInActivityPanel}`] = (param) => {
                 var playerIdArr;
                 for (var k in db.activity.dataMap) {
@@ -217,6 +227,7 @@ export class Stage1v1PanelHandle {
             cmdMap[`${CommandId.cs_fadeOutCountDown}`] = (param)=> {
                 this.io.emit(`${CommandId.fadeOutCountDown}`);
             };
+
             cmdMap[`${CommandId.cs_fadeInWinPanel}`] = (param) => {
                 var isBlueWin = this.gameInfo.leftScore > this.gameInfo.rightScore;
                 var playerDoc;
@@ -421,6 +432,13 @@ export class Stage1v1PanelHandle {
                 else {
                     this.lastGameIdx = Number(this.gameInfo.gameIdx);
                     this.gameInfo.saveGameResult();
+                    if (this.lastLoserPlayerInfo && this.lastLoserPlayerInfo.id() == this.gameInfo.loserPlayerInfo.id()) {
+                        console.log('player out: ', this.gameInfo.loserPlayerInfo.id(), this.gameInfo.loserPlayerInfo.name())
+                        // var playerDoc = db.player.dataMap[this.gameInfo.loserPlayerInfo.id()];
+                        // playerDoc.state = PlayerState1v1.Dead;
+                        this.gameInfo.loserPlayerInfo.playerData.state = PlayerState1v1.Dead;
+                        // cmdMap[`${CommandId.cs_updatePlayerState}`]({playerDoc: playerDoc})
+                    }
                     this.lastLoserPlayerInfo = this.gameInfo.loserPlayerInfo;
                     db.player.updatePlayerDoc(this.gameInfo.getPlayerDocArr(), null);
                     res.send(true);
@@ -502,5 +520,9 @@ export class Stage1v1PanelHandle {
         matchArr.sort(ascendingProp('idx'));
         return matchArr;
 
+    }
+
+    getActDoc() {
+        return db.activity.getDocArr([3])[0];
     }
 }
