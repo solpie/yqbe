@@ -48,6 +48,8 @@ class StreamServer
           @onReceiveVideoPacket stream, nalUnits, pts, dts
         else
           logger.warn "warn: Received invalid streamId from rtmp: #{streamId}"
+      @rtmpServer.on 'push_video_data',(pushTimestamp) =>
+        logger.info "[rtmp:receive] Video Message push timestamp(ms):#{pushTimestamp}"
       @rtmpServer.on 'audio_start', (streamId) =>
         stream = avstreams.getOrCreate streamId
         @onReceiveAudioControlBuffer stream
@@ -329,6 +331,7 @@ class StreamServer
   #   pts: timestamp in 90 kHz clock rate (PTS)
   onReceiveVideoPacket: (stream, nalUnitGlob, pts, dts) ->
     nalUnits = h264.splitIntoNALUnits nalUnitGlob
+#    logger.info "onReceiveVideoPacket send ts:#{}"
     if nalUnits.length is 0
       return
     @onReceiveVideoNALUnits stream, nalUnits, pts, dts

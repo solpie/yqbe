@@ -7,7 +7,7 @@ import {panelRouter} from "./router/PanelRouter";
 import {getIPAddress} from "./utils/NodeJsFunc";
 import {mobileRouter} from "./router/MobileRouter";
 import {dmkRouter} from "./router/DmkRouter";
-import {startRtmpServer} from "./utils/rtmpServer/rtmpServer";
+import {startRtmpServer} from "./utils/rtmpServer/rtmpServer2";
 var colors = require('colors');
 
 var dataObj: any;

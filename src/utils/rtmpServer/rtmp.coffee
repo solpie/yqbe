@@ -2525,8 +2525,8 @@ class RTMPSession
                 @emit 'audio_data', @stream.id, pts, dts, audioData.adtsFrame
               seq.done()
             when 9  # Video Message (incoming)
-#              if DEBUG_INCOMING_RTMP_PACKETS
-#                logger.info "[rtmp:receive] Video Message"
+              if DEBUG_INCOMING_RTMP_PACKETS
+                logger.info "[rtmp:receive] Video Message"
               videoData = @parseVideoMessage rtmpMessage.body
               if videoData.nalUnitGlob?
                 if not @isFirstVideoReceived
@@ -2536,8 +2536,8 @@ class RTMPSession
                 pts = dts + videoData.info.videoDataTag.compositionTime
                 pts = flv.convertMsToPTS pts
                 dts = flv.convertMsToPTS dts
-                if DEBUG_INCOMING_RTMP_PACKETS
-                  logger.info "[rtmp:receive] Video Message push timestamp(ms):#{rtmpMessage.timestamp}"
+#                logger.info "[rtmp:receive] Video Message#{rtmpMessage.timestamp}"
+                @emit 'push_video_data', "#{rtmpMessage.timestamp}"
                 @emit 'video_data', @stream.id, pts, dts, videoData.nalUnitGlob  # TODO pts, dts
               if videoData.isEOS
                 logger.info "[rtmp:client=#{@clientid}] received EOS for stream: #{@stream.id}"
@@ -2647,6 +2647,8 @@ class RTMPServer
         @emit 'audio_start', args...
       sess.on 'video_data', (args...) =>
         @emit 'video_data', args...
+      sess.on 'push_video_data', (args...) =>
+        @emit 'push_video_data', args...
       sess.on 'audio_data', (args...) =>
         @emit 'audio_data', args...
       c.on 'close', =>
@@ -2892,6 +2894,8 @@ class RTMPServer
           @emit 'audio_start', args...
         session.on 'video_data', (args...) =>
           @emit 'video_data', args...
+        session.on 'push_video_data', (args...) =>
+          @emit 'push_video_data', args...
         session.on 'audio_data', (args...) =>
           @emit 'audio_data', args...
       else if command is 'idle'
@@ -3004,6 +3008,8 @@ class RTMPTSession
       @emit 'audio_start', args...
     @rtmpSession.on 'video_data', (args...) =>
       @emit 'video_data', args...
+    @rtmpSession.on 'push_video_data', (args...) =>
+      @emit 'push_video_data', args...
     @rtmpSession.on 'audio_data', (args...) =>
       @emit 'audio_data', args...
     @rtmpSession.on 'teardown', =>

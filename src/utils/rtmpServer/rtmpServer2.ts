@@ -47,4 +47,4 @@ export var startRtmpServer = ()=> {
     });
 
     streamServer.start();
-}
+};
