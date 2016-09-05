@@ -1,6 +1,21 @@
 import {PlayerInfo} from "./PlayerInfo";
 import {setPropTo} from "./BaseInfo";
 import {TimerState} from "../event/Const";
+export var bracketMap = {
+    "1": {'loser': [5, 0], 'winner': [7, 0]},
+    "2": {'loser': [5, 1], 'winner': [7, 1]},
+    "3": {'loser': [6, 0], 'winner': [8, 0]},
+    "4": {'loser': [6, 1], 'winner': [8, 1]},
+    "5": {'loser': [-1, 0], 'winner': [10, 1]},
+    "6": {'loser': [-1, 0], 'winner': [9, 1]},
+    "7": {'loser': [9, 0], 'winner': [11, 0]},
+    "8": {'loser': [10, 0], 'winner': [11, 1]},
+    "9": {'loser': [-1, 0], 'winner': [12, 1]},
+    "10": {'loser': [-1, 0], 'winner': [12, 0]},
+    "11": {'loser': [13, 0], 'winner': [14, 0]},
+    "12": {'loser': [-1, 0], 'winner': [13, 1]},
+    "13": {'loser': [-1, 0], 'winner': [14, 1]}
+};
 export class Game1v1Info {
     id: number;
     leftScore: number;

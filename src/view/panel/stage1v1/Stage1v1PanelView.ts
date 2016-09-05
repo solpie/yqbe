@@ -386,8 +386,6 @@ export class Stage1v1PanelView extends BasePanelView {
         var isBlueWin = this.scorePanel.isBlueWin;
         console.log("isBlueWin:", isBlueWin);
 
-        // var date = new Date();
-        // var dateTime = date.getTime();
         var data: any = {bracketIdx: this.bracketIdx};
         this.opReq(`${CommandId.cs_saveGameRec}`, data, (res) => {
             console.log(res);

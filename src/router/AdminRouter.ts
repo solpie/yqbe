@@ -76,7 +76,6 @@ adminRouter.post('/player/update', function (req:any, res:any) {
             avatarPathOld = '/' + 'img/player/' + playerDocUpdate.id + '.png';
 
         function updatePlayer() {
-            playerDocUpdate.avatar = avatarPathOld;
             console.log('/player/update playerDoc', playerDocUpdate);
             db.player.ds().update({id: playerDocUpdate.id}, {$set: playerDocUpdate}, {}, (err, newDoc) => {
                 db.player.syncDataMap();
@@ -85,14 +84,16 @@ adminRouter.post('/player/update', function (req:any, res:any) {
         }
 
         if (playerDocUpdate.avatar) {
-            var avatarPath = 'img/player/' + playerDocUpdate.id + '.png';
-            var dbImgPath = "app/db/" + avatarPath;
+            var avatarPath = '/img/player/' + playerDocUpdate.id + '.png';
+            var dbImgPath = "app/db" + avatarPath;
             base64ToPng(dbImgPath, playerDocUpdate.avatar, (imgPath)=> {
                 console.log('/player/update base64ToPng');
+                playerDocUpdate.avatar = avatarPath;
                 updatePlayer();
             });
         }
         else {
+            playerDocUpdate.avatar = avatarPathOld;
             updatePlayer();
         }
     }

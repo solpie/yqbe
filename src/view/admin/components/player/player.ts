@@ -19,6 +19,9 @@ import {CommandId} from "../../../../event/Command";
                 messages: messages
             })
         }
+    },
+    props: {
+        total: {}
     }
 })
 export class Player extends VueEx {
@@ -33,6 +36,7 @@ export class Player extends VueEx {
     pickPlayerIdArrArr: Array<number[]> = [];
     countPage: number[];
     isOpen: boolean;
+    total: number;
 
     data(): any {
         return {
@@ -78,6 +82,8 @@ export class Player extends VueEx {
             this.pickPlayerIdArrArr.push(this.pickPlayerIdArr);
             this.pickPlayerIdArr = [];
         }
+
+        this.total = this.pickPlayerIdArrArr.length * 4 + this.pickPlayerIdArr.length;
     }
 
     showFile(files) {

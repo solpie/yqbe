@@ -78,7 +78,6 @@ export class Profile extends VueEx {
 
     setProp(data, toObj) {
         // 头像 虎扑ID  身高 体重 本场战绩 黑话
-
         toObj.name = data.name;
         toObj.weight = data.weight;
         toObj.height = data.height;
@@ -92,7 +91,7 @@ export class Profile extends VueEx {
             _this_.bluePlayerCard.setName(val);
             _this_.redPlayerCard.setName(val);
         }
-    }
+    }4
 
     onDeletePlayer() {
         console.log('onDeletePlayer');

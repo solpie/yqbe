@@ -7,6 +7,7 @@ import {panelRouter} from "./router/PanelRouter";
 import {getIPAddress} from "./utils/NodeJsFunc";
 import {mobileRouter} from "./router/MobileRouter";
 import {dmkRouter} from "./router/DmkRouter";
+import {startRtmpServer} from "./utils/rtmpServer/rtmpServer";
 var colors = require('colors');
 
 var dataObj: any;
@@ -103,8 +104,6 @@ export class WebServer {
         });
 
 
-
-
         app.get('/', function (req: any, res: any) {
             res.redirect('/admin');
         });
@@ -118,6 +117,7 @@ export class WebServer {
 
         app.listen(ServerConf.port, () => {
             this.initSocketIO();
+            this.initRtmpServer();
             //and... we're live
             console.log("server on:  ws port:");
         });
@@ -125,6 +125,10 @@ export class WebServer {
 
     initSocketIO() {
         this.socketIO = new SocketIOSrv();
+    }
+
+    initRtmpServer() {
+        startRtmpServer();
     }
 }
 export var serverConf = ServerConf;

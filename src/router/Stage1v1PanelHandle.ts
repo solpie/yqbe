@@ -8,7 +8,7 @@ import {Request} from "express";
 import {ScParam, screenPanelHanle} from "../SocketIOSrv";
 import {db} from "../model/DbInfo";
 import {PlayerInfo, PlayerState1v1} from "../model/PlayerInfo";
-import {Game1v1Info} from "../model/Game1v1Info";
+import {Game1v1Info, bracketMap} from "../model/Game1v1Info";
 import {mapToArr, ascendingProp} from "../utils/JsFunc";
 import {MatchSvg} from "../model/BracketInfo";
 import Server = SocketIO.Server;
@@ -256,7 +256,7 @@ export class Stage1v1PanelHandle {
             };
 
             cmdMap[`${CommandId.cs_getBracketPlayerByIdx}`] = (param) => {
-                var actDoc = db.activity.getDocArr([3])[0];
+                var actDoc = this.getActDoc();
                 var bracketIdx = param.bracketIdx;
                 var bracketDoc = actDoc.bracket[bracketIdx];
                 console.log('bracketDoc', bracketDoc);
@@ -378,21 +378,6 @@ export class Stage1v1PanelHandle {
 
                     db.activity.ds().update({id: actDoc.id}, actDoc, ()=> {
                     });
-                    var bracketMap = {
-                        "1": {'loser': [5, 0], 'winner': [7, 0]},
-                        "2": {'loser': [5, 1], 'winner': [7, 1]},
-                        "3": {'loser': [6, 0], 'winner': [8, 0]},
-                        "4": {'loser': [6, 1], 'winner': [8, 1]},
-                        "5": {'loser': [-1, 0], 'winner': [10, 1]},
-                        "6": {'loser': [-1, 0], 'winner': [9, 1]},
-                        "7": {'loser': [9, 0], 'winner': [11, 0]},
-                        "8": {'loser': [10, 0], 'winner': [11, 1]},
-                        "9": {'loser': [-1, 0], 'winner': [12, 1]},
-                        "10": {'loser': [-1, 0], 'winner': [12, 0]},
-                        "11": {'loser': [13, 0], 'winner': [14, 0]},
-                        "12": {'loser': [-1, 0], 'winner': [13, 1]},
-                        "13": {'loser': [-1, 0], 'winner': [14, 1]}
-                    };
 
                     var setBracketPlayer = (idx)=> {
                         var map = bracketMap[idx];
@@ -522,7 +507,7 @@ export class Stage1v1PanelHandle {
 
     }
 
-    getActDoc() {
+    getActDoc(): any {
         return db.activity.getDocArr([3])[0];
     }
 }
