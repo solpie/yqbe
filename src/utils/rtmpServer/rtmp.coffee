@@ -18,6 +18,7 @@ avstreams = require './avstreams'
 logger = require './logger'
 Bits = require './bits'
 
+streamState = require './streamState'
 # enum
 SESSION_STATE_NEW               = 1
 SESSION_STATE_HANDSHAKE_ONGOING = 2
@@ -30,7 +31,7 @@ AVC_PACKET_TYPE_END_OF_SEQUENCE = 2
 TIMESTAMP_ROUNDOFF = 4294967296  # 32 bits
 
 DEBUG_INCOMING_STREAM_DATA = false
-DEBUG_INCOMING_RTMP_PACKETS = true
+DEBUG_INCOMING_RTMP_PACKETS = false
 DEBUG_OUTGOING_RTMP_PACKETS = false
 
 RTMPT_SEND_REQUEST_BUFFER_SIZE = 10
@@ -453,6 +454,7 @@ flushRTMPMessages = (stream, params) ->
               session.playStartTimestamp = rtmpMessage.originalTimestamp
               session.playStartDateTime = Date.now()  # TODO: Should we use slower process.hrtime()?
               session.isWaitingForKeyFrame = false
+              streamState.emit 'PlayStart',rtmpMessage.originalTimestamp
               logger.info "[rtmp:client=#{session.clientid}] timestamp #{session.playStartTimestamp} datetime #{session.playStartDateTime }"
               msgs = rtmpMessagesToSend[i..]
               break
@@ -469,6 +471,7 @@ flushRTMPMessages = (stream, params) ->
         session.playStartTimestamp = rtmpMessagesToSend[0].originalTimestamp
         session.playStartDateTime = Date.now()
         session.isWaitingForKeyFrame = false
+        streamState.emit 'PlayStart',rtmpMessage.originalTimestamp
         logger.info "[rtmp:client=#{session.clientid}] timestamp #{session.playStartTimestamp} datetime #{session.playStartDateTime }"
         msgs = rtmpMessagesToSend
     else
@@ -503,6 +506,10 @@ flushRTMPMessages = (stream, params) ->
         buf = createRTMPAggregateMessage filteredMsgs, session.chunkSize
         if DEBUG_OUTGOING_RTMP_PACKETS
           logger.info "send RTMP agg msg: #{buf.length} bytes; time=" + filteredMsgs.map((item) -> "#{item.avType?[0] ? 'other'}#{if item.avType is 'video' and item.isKeyFrame then '(key)' else ''}:#{item.timestamp}#{if item.avType is 'video' and item.compositionTime isnt 0 then "(cmp=#{item.timestamp+item.compositionTime})" else ''}").join(',')
+#        logger.info "send RTMP agg msg: #{filteredMsgs[0].timestamp}"
+#        @emit 'play_duration',filteredMsgs[0].timestamp
+#        streamState.playDuration = filteredMsgs[0].timestamp
+        streamState.emit 'streamPlayDuration',rtmpMessage.originalTimestamp
         session.sendData buf
       else
         bufs = []
@@ -2652,7 +2659,7 @@ class RTMPServer
       sess.on 'audio_data', (args...) =>
         @emit 'audio_data', args...
       c.on 'close', =>
-        logger.info "[rtmp:client=#{sess.clientid}] disconnected"
+        logger.info "[rtmp:client=#{sess.clientid}] disconnected "
         if sessions[c.clientId]?
           sessions[c.clientId].teardown()
           delete sessions[c.clientId]

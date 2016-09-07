@@ -2,9 +2,10 @@ import {PlayerInfo} from "../model/PlayerInfo";
 import {db} from "../model/DbInfo";
 import {base64ToPng} from "../utils/NodeJsFunc";
 import {ServerConst} from "../event/Const";
+import {syncInfo} from "../utils/rtmpServer/rtmpServer2";
 export var adminRouter = require('express').Router();
 
-adminRouter.get('/', function (req:any, res:any) {
+adminRouter.get('/', function (req: any, res: any) {
     res.render('admin/index');
 });
 
@@ -12,11 +13,11 @@ adminRouter.get('/', function (req:any, res:any) {
 //     res.render('admin/admin-player', {playerDataArr: []});
 // });
 // post /admin/player/add
-adminRouter.post('/player/wx/add', function (req:any, res:any) {
+adminRouter.post('/player/wx/add', function (req: any, res: any) {
 
 });
 
-adminRouter.post('/player/add', function (req:any, res:any) {
+adminRouter.post('/player/add', function (req: any, res: any) {
     if (!req.body) return res.sendStatus(400);
 
     var playerData = req.body.playerData;
@@ -50,7 +51,7 @@ adminRouter.post('/player/add', function (req:any, res:any) {
 
 });
 
-adminRouter.post('/player/delete', function (req:any, res:any) {
+adminRouter.post('/player/delete', function (req: any, res: any) {
     if (!req.body) return res.sendStatus(400);
     var playerId = req.body.id;
     db.player.remove({id: playerId}, function (err, numRemoved) {
@@ -64,9 +65,9 @@ adminRouter.post('/player/delete', function (req:any, res:any) {
     });
 });
 
-adminRouter.post('/player/update', function (req:any, res:any) {
+adminRouter.post('/player/update', function (req: any, res: any) {
     if (!req.body) return res.sendStatus(400);
-    var playerDocUpdate:any = req.body.playerDoc;
+    var playerDocUpdate: any = req.body.playerDoc;
     console.log('/player/update', playerDocUpdate);
 
     var playerDoc = db.player.dataMap[playerDocUpdate.id];
@@ -103,11 +104,21 @@ adminRouter.post('/player/update', function (req:any, res:any) {
 });
 
 ////////////// game admin 
-adminRouter.get('/game/delete/:gameId', function (req:any, res:any) {
+adminRouter.get('/game/delete/:gameId', function (req: any, res: any) {
     var gameId = Number(req.params.gameId);
     console.log('/admin/game/delete/', gameId);
     db.game.remove({id: gameId});
     db.activity.removeGame(gameId, (sus)=> {
         res.send(sus);
     });
+});
+
+////////////// rtmp admin
+adminRouter.get('/stream/state', function (req: any, res: any) {
+    var data = {
+        streamStart: syncInfo.streamStart,
+        duration: syncInfo.streamDuration,
+        playDuration: syncInfo.playDuration
+    };
+    res.send(data);
 });

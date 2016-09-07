@@ -25,7 +25,7 @@ module.exports = {
         ],
         loaders: [
             // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
-            {test: /\.tsx?$/, exclude: [/node_modules/, /YuanQiTV2-win32-x64/], loader: 'ts-loader'},
+            {test: /\.tsx?$/, exclude: [/node_modules/, /YuanQiTV2-win32-x64/], loader: 'ts-loader'}
         ]
     },
     plugins: [

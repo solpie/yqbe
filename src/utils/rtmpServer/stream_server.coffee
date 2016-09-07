@@ -35,7 +35,7 @@ serverName = config.serverName ? DEFAULT_SERVER_NAME
 class StreamServer
   constructor: (opts) ->
     @serverName = opts?.serverName ? serverName
-
+    @eventListeners = {}
     if config.enableRTMP or config.enableRTMPT
       # Create RTMP server
       @rtmpServer = new rtmp.RTMPServer
@@ -49,7 +49,8 @@ class StreamServer
         else
           logger.warn "warn: Received invalid streamId from rtmp: #{streamId}"
       @rtmpServer.on 'push_video_data',(pushTimestamp) =>
-        logger.info "[rtmp:receive] Video Message push timestamp(ms):#{pushTimestamp}"
+#        logger.info "[rtmp:receive] Video Message push timestamp(ms):#{pushTimestamp}"
+        @emit 'push_video_data',pushTimestamp
       @rtmpServer.on 'audio_start', (streamId) =>
         stream = avstreams.getOrCreate streamId
         @onReceiveAudioControlBuffer stream
@@ -131,6 +132,19 @@ class StreamServer
 
     avstreams.on 'video_start', (stream) =>
       @onReceiveVideoControlBuffer stream
+
+  on: (event, listener) ->
+    if @eventListeners[event]?
+      @eventListeners[event].push listener
+    else
+      @eventListeners[event] = [ listener ]
+    return
+
+  emit: (event, args...) ->
+    if @eventListeners[event]?
+      for listener in @eventListeners[event]
+        listener args...
+    return
 
     ## TODO: Do we need to do something for remove_stream event?
     #avstreams.on 'remove_stream', (stream) ->

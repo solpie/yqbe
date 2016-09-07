@@ -1,0 +1,18 @@
+<div>
+    <table class="table centered striped">
+        <thead>
+        <tr>
+            <th>推流开始时间</th>
+            <th>推流时长</th>
+            <th>播放时长</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td v-text="{{streamStart}}">{{streamStart}}</td>
+            <td v-text="{{streamDuration}}">{{streamDuration}}秒</td>
+            <td v-text="{{playDuration}}">{{playDuration}}秒</td>
+        </tr>
+        </tbody>
+    </table>
+</div>

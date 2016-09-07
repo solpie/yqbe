@@ -194,11 +194,13 @@ api =
 
     # AUDIODATA tag: Adobe's Video File Format Spec v10.1 E.4.2.1 AUDIODATA
     buf = [
-      (opts.soundFormat << 4) \ # SoundFormat (4 bits)
-      | (soundRate << 2) \      # SoundRate (2 bits): ignored by Flash Player if AAC
-      | (opts.soundSize << 1) \ # SoundSize (1 bit)
-      | soundType               # SoundType (1 bit): ignored by Flash Player if AAC
-    ]
+      (opts.soundFormat << 4)|(soundRate << 2)|(opts.soundSize << 1) | soundType]
+#    buf = [
+#      (opts.soundFormat << 4) \ # SoundFormat (4 bits)
+#      | (soundRate << 2) \      # SoundRate (2 bits): ignored by Flash Player if AAC
+#      | (opts.soundSize << 1) \ # SoundSize (1 bit)
+#      | soundType               # SoundType (1 bit): ignored by Flash Player if AAC
+#    ]
     if opts.soundFormat is api.SOUND_FORMAT_AAC
       buf.push opts.aacPacketType  # AACPacketType (1 bit)
     return buf

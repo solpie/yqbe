@@ -5,7 +5,8 @@ import {Player} from "./components/player/player";
 import {Activity} from "./components/activity/activity";
 import {Rank} from "./components/rank/rank";
 import {ExternalData} from "./components/external/external-data";
-export function configureRouter(router:vuejs.Router<App>) {
+import {StreamServerView} from "./components/streamserver/StreamServerView";
+export function configureRouter(router: vuejs.Router<App>) {
     router.map({
         '/': {
             component: OpLinks,
@@ -14,6 +15,10 @@ export function configureRouter(router:vuejs.Router<App>) {
         '/player': {
             component: Player,
             name: 'player'
+        },
+        '/stream': {
+            component: StreamServerView,
+            name: 'stream'
         },
         '/activity': {
             component: Activity,
