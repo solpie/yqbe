@@ -8,7 +8,7 @@
 
     /* Basic configurations */
     serverPort: 80,
-    rtmpServerPort: 1935,
+    rtmpServerPort: 1936,
     serverName: 'node-rtsp-rtmp-server',
     videoFrameRate: 30,
     videoBitrateKbps: 2000,

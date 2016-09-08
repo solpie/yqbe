@@ -78,18 +78,23 @@ export class Game1v1Info {
         this.playerInfoArr[pos] = playerInfo;
         return playerInfo;
     }
-
+    winner_Idx:any;
+    loser_Idx:any;
     saveGameResult() {
         if (this.gameState === 0) {
             var isBlueWin = this.leftScore > this.rightScore;
             if (isBlueWin) {
                 this.loserPlayerInfo = this.playerInfoArr[1];
                 this.loserPlayerInfo.isBlue = false;
-
+                this.winner_Idx = [this.playerInfoArr[0].playerData.id,0];
+                this.loser_Idx = [this.playerInfoArr[1].playerData.id,1];
                 PlayerInfo.addWinGameAmount(this.playerInfoArr[0].playerData);
                 PlayerInfo.addLoseGameAmount(this.playerInfoArr[1].playerData);
             }
             else {
+                this.winner_Idx = [this.playerInfoArr[1].playerData.id,1];
+                this.loser_Idx = [this.playerInfoArr[0].playerData.id,0];
+
                 this.loserPlayerInfo = this.playerInfoArr[0];
                 this.loserPlayerInfo.isBlue = true;
 

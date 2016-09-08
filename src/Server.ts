@@ -117,7 +117,7 @@ export class WebServer {
 
         app.listen(ServerConf.port, () => {
             this.initSocketIO();
-            this.initRtmpServer();
+            // this.initRtmpServer();
             //and... we're live
             console.log("server on:  ws port:");
         });

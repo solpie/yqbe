@@ -2402,6 +2402,7 @@ class RTMPSession
         @tmpBuf = null
       if buf.length < 1537
         logger.debug "[rtmp] waiting for C0+C1"
+        logger.info "[rtmp] waiting for C0+C1"
         @tmpBuf = buf
         return
       @tmpBuf = null
@@ -2500,6 +2501,7 @@ class RTMPSession
                   userControlMessage.eventData[7]
                 if DEBUG_INCOMING_RTMP_PACKETS
                   logger.info "[rtmp:receive] SetBufferLength: streamID=#{streamID} bufferLength=#{bufferLength}"
+                logger.info "[rtmp:receive] SetBufferLength: streamID=#{streamID} bufferLength=#{bufferLength}"
               else if userControlMessage.eventType is 7
                 timestamp = (userControlMessage.eventData[0] << 24) +
                   (userControlMessage.eventData[1] << 16) +
@@ -2669,7 +2671,12 @@ class RTMPServer
         logger.error "[rtmp:client=#{sess.clientid}] socket error: #{err}"
         c.destroy()
       c.on 'data', (data) =>
-        c.rtmpSession.handleData data, (err, output) ->
+        if (data[0]==0x0f and data[1]==0x2f and data[2]==0x3e)
+          data2 = data.slice(3)
+          logger.info "proxy data from#{sess.clientid}",data.length,data2.length
+        else
+          data2 = data
+        c.rtmpSession.handleData data2, (err, output) ->
           if err
             logger.error "[rtmp] error: #{err}"
           else if output?

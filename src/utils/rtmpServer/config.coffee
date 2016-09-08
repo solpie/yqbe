@@ -9,7 +9,7 @@ module.exports =
   serverPort: 80
 
   # RTMP server listen port
-  rtmpServerPort: 1935
+  rtmpServerPort: 1936
 
   # Server name which will be embedded in
   # RTSP and HTTP response headers.

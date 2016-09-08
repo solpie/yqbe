@@ -19,6 +19,11 @@ export class Stage1v1PanelHandle {
     exPlayerIdMap: any;
     lastLoserPlayerInfo: PlayerInfo = new PlayerInfo();
     lastGameIdx: number = 0;
+    //[playerId] = idx
+    playerIdx: any = {};
+    // playerCount: number;
+    nextPlayerIdArr = [-1, -1];
+    playerQue: Array<any> = [];
 
     constructor(io: Server) {
         console.log('StagePanelHandle!!');
@@ -42,6 +47,23 @@ export class Stage1v1PanelHandle {
                 console.log('disconnect');
             });
         this.initOp();
+    }
+
+    isInit;
+
+    init1v1() {
+        if (this.isInit)
+            return 0;
+        this.isInit = true;
+        var playerIdArr = this.getActDoc().gameDataArr[0].playerIdArr;
+        this.playerQue = playerIdArr.concat();
+
+        for (var i = 0; i < playerIdArr.length; i++) {
+            var playerId = playerIdArr[i];
+            this.playerIdx[playerId] = i + 1;
+        }
+        // this.playerCount = playerIdArr.length;
+        console.log('init1v1 playerIdx', this.playerIdx);
     }
 
     initOp() {
@@ -106,6 +128,14 @@ export class Stage1v1PanelHandle {
                 this.gameInfo = new Game1v1Info();
                 this.gameInfo.gameIdx = this.lastGameIdx + 1;
                 this.io.emit(`${CommandId.resetGame}`);
+                this.init1v1();
+                if (this.nextPlayerIdArr[0] < 0) {
+                    this.nextPlayerIdArr[0] = this.playerQue[0];
+                    this.nextPlayerIdArr[1] = this.playerQue[1];
+                }
+                cmdMap[`${CommandId.cs_updatePlayer}`]({playerId: this.nextPlayerIdArr[0], idx: 0});
+                cmdMap[`${CommandId.cs_updatePlayer}`]({playerId: this.nextPlayerIdArr[1], idx: 1});
+                console.log('player', this.nextPlayerIdArr);
             };
 
 
@@ -134,9 +164,9 @@ export class Stage1v1PanelHandle {
             cmdMap[`${CommandId.cs_updatePlayer}`] = (param) => {
                 if (this.gameInfo.gameState == GameInfo.GAME_STATE_ING) {
                     var playerId = param.playerId;
-                    if (playerId == ServerConf.king) {
-                        param.isKing = true;
-                    }
+                    // if (playerId == ServerConf.king) {
+                    //     param.isKing = true;
+                    // }
                     var playerIdx = param.idx;
                     if (!this.exPlayerIdMap[playerId]) {
                         if (actPlayerIdArr().indexOf(playerId) < 0) {
@@ -417,14 +447,25 @@ export class Stage1v1PanelHandle {
                 else {
                     this.lastGameIdx = Number(this.gameInfo.gameIdx);
                     this.gameInfo.saveGameResult();
+                    this.quePlayer(this.gameInfo.winner_Idx[0], false);
                     if (this.lastLoserPlayerInfo && this.lastLoserPlayerInfo.id() == this.gameInfo.loserPlayerInfo.id()) {
                         console.log('player out: ', this.gameInfo.loserPlayerInfo.id(), this.gameInfo.loserPlayerInfo.name())
                         // var playerDoc = db.player.dataMap[this.gameInfo.loserPlayerInfo.id()];
                         // playerDoc.state = PlayerState1v1.Dead;
                         this.gameInfo.loserPlayerInfo.playerData.state = PlayerState1v1.Dead;
+                        this.quePlayer(this.gameInfo.loser_Idx[0], true);
                         // cmdMap[`${CommandId.cs_updatePlayerState}`]({playerDoc: playerDoc})
+                        this.nextPlayerIdArr[0] = this.playerQue[0];
+                        this.nextPlayerIdArr[1] = this.playerQue[1];
+                    }
+                    else {
+                        this.quePlayer(this.gameInfo.loser_Idx[0], false);
+                        this.nextPlayerIdArr[this.gameInfo.winner_Idx[1]] = this.playerQue[0];
+                        // this.quePlayer(this.gameInfo.loserId, false);
                     }
                     this.lastLoserPlayerInfo = this.gameInfo.loserPlayerInfo;
+                    var playerDocArr = this.gameInfo.getPlayerDocArr();
+                    this.quePlayer(playerDocArr[0], false);
                     db.player.updatePlayerDoc(this.gameInfo.getPlayerDocArr(), null);
                     res.send(true);
                 }
@@ -509,5 +550,23 @@ export class Stage1v1PanelHandle {
 
     getActDoc(): any {
         return db.activity.getDocArr([3])[0];
+    }
+
+    private quePlayer(playerId: any, b: boolean) {
+        if (this.playerQue[0] == playerId) {
+            var p0 = this.playerQue.shift();
+            if (!b)
+                this.playerQue.push(p0);
+        }
+        else if (this.playerQue[1] == playerId) {
+            var p0 = this.playerQue.shift();
+            this.playerQue.push(p0);
+            var p1 = this.playerQue.shift();
+            if (!b)
+                this.playerQue.push(p1);
+        } else {
+            console.log('quePlayer gg')
+        }
+        console.log('quePlayer', this.playerQue);
     }
 }

@@ -529,6 +529,7 @@ export function initDB() {
     db.playerHuiTi = new BaseDB({filename: huitiPlayerDbPath, autoload: true, indexName: '_id'});
 
     db.externalInfo = new ExternalInfo();
+    console.log('initDB done!');
     // var ProtoBuf = require('protobufjs');
     // var builder = ProtoBuf.loadProtoFile(_path('app/proto/player.proto'));
     // var Player:any = builder.build('Player');

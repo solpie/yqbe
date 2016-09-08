@@ -72,11 +72,11 @@ function NMRtmpConn(id, socket, conns, producers) {
             delete this.producers[this.publishStreamName];
         } else if (this.playStreamName != '') {
             if (this.producers[this.playStreamName]) {
-                //console.info("Delete player from consumers. Stream name " + this.playStreamName);
+                console.info("Delete player from consumers. Stream name " + this.playStreamName);
                 delete this.producers[this.playStreamName].consumers[this.id];
             }
         }
-        //console.info("Delete client from conns. ID: " + this.id);
+        console.info("Delete client from conns. ID: " + this.id);
         delete this.conns[this.id];
     };
 
@@ -215,17 +215,18 @@ function NMRtmpConn(id, socket, conns, producers) {
             var chunkBody = self.bp.read(chunkBodySize);
             var chunkBodyPos = 0;
             do {
-                if (rtmpBodySize > self.inChunkSize) {
-                    rtmpBody.push(chunkBody.slice(chunkBodyPos, chunkBodyPos + self.inChunkSize));
-                    rtmpBodySize -= self.inChunkSize;
-                    chunkBodyPos += self.inChunkSize;
-                    chunkBodyPos++;
-                } else {
-                    rtmpBody.push(chunkBody.slice(chunkBodyPos, chunkBodyPos + rtmpBodySize));
-                    rtmpBodySize -= rtmpBodySize;
-                    chunkBodyPos += rtmpBodySize;
-                }
-
+                // if (chunkBody) {
+                    if (rtmpBodySize > self.inChunkSize) {
+                        rtmpBody.push(chunkBody.slice(chunkBodyPos, chunkBodyPos + self.inChunkSize));
+                        rtmpBodySize -= self.inChunkSize;
+                        chunkBodyPos += self.inChunkSize;
+                        chunkBodyPos++;
+                    } else {
+                        rtmpBody.push(chunkBody.slice(chunkBodyPos, chunkBodyPos + rtmpBodySize));
+                        rtmpBodySize -= rtmpBodySize;
+                        chunkBodyPos += rtmpBodySize;
+                    }
+                // }
             } while (rtmpBodySize > 0)
 
             message.timestamp += message.timestampDelta;
@@ -704,7 +705,6 @@ function NMRtmpConn(id, socket, conns, producers) {
     };
 
     NMRtmpConn.prototype.parseUserControlMessage = function (buf) {
-        var eventData, eventType;
         var eventType = (buf[0] << 8) + buf[1];
         var eventData = buf.slice(2);
         var message = {
@@ -810,7 +810,7 @@ function NMRtmpConn(id, socket, conns, producers) {
         }
         var avc_packet_type = rtmpBody[1];
         var composition_time = rtmpBody.readIntBE(2, 3);
-         // console.log("v composition_time ",composition_time);
+        // console.log("v composition_time ",composition_time);
 
         if (avc_packet_type == 0) {
             if (this.isFirstVideoReceived) {
