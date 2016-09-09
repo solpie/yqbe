@@ -86,7 +86,8 @@ export enum CommandId{
     cs_getBracketPlayerByIdx,//获取球员信息
     cs_refreshClient,//刷新bracket
     refreshClient,
-
+    cs_updateWinScore,//胜出分数
+    updateWinScore,//
     cs_updateKingPlayer,
     updateKingPlayer,
 

@@ -354,127 +354,140 @@ export class Stage1v1PanelHandle {
                 this.io.emit(`${CommandId.refreshClient}`, ScParam({matchArr: matchArr}));
             };
 
-            cmdMap[`${CommandId.cs_saveGameRec}`] = (param) => {
-                ////////////////    bracket
-                var bracketIdx = param.bracketIdx;
-                if (bracketIdx) {
-                    var actDoc = db.activity.getDocArr([3])[0];
-                    var getLoserInfo = (isLoser: boolean = true)=> {
-                        var winner;
-                        var loser;
-                        var bluePlayer = {
-                            id: this.gameInfo.playerInfoArr[0].id(),
-                            name: this.gameInfo.playerInfoArr[0].name(),
-                            avatar: this.gameInfo.playerInfoArr[0].avatar(),
-                            score: this.gameInfo.leftScore
-                        };
-                        var redPlayer = {
-                            id: this.gameInfo.playerInfoArr[1].id(),
-                            name: this.gameInfo.playerInfoArr[1].name(),
-                            avatar: this.gameInfo.playerInfoArr[1].avatar(),
-                            score: this.gameInfo.rightScore
-                        };
-                        if (this.gameInfo.leftScore < this.gameInfo.rightScore) {
-                            winner = redPlayer;
-                            loser = bluePlayer;
-                        }
-                        else {
-                            winner = bluePlayer;
-                            loser = redPlayer;
-                        }
-                        return isLoser ? loser : winner;
-                    };
-
-                    var getWinnerInfo = ()=> {
-                        return getLoserInfo(false);
-                    };
-
-                    actDoc.bracket[bracketIdx] = {
-                        gameInfoArr: [
-                            {
-                                id: this.gameInfo.playerInfoArr[0].id(),
-                                name: this.gameInfo.playerInfoArr[0].name(),
-                                avatar: this.gameInfo.playerInfoArr[0].avatar(),
-                                score: this.gameInfo.leftScore
-                            },
-                            {
-                                id: this.gameInfo.playerInfoArr[1].id(),
-                                name: this.gameInfo.playerInfoArr[1].name(),
-                                avatar: this.gameInfo.playerInfoArr[1].avatar(),
-                                score: this.gameInfo.rightScore
-                            }
-                        ]
-                    };
-
-                    db.activity.ds().update({id: actDoc.id}, actDoc, ()=> {
-                    });
-
-                    var setBracketPlayer = (idx)=> {
-                        var map = bracketMap[idx];
-                        var bracketIdx = map.loser[0];
-                        var playerPos = map.loser[1];
-                        if (bracketIdx > 0) {
-                            if (!actDoc.bracket[bracketIdx])
-                                actDoc.bracket[bracketIdx] = {gameInfoArr: [{}, {}]};
-                            actDoc.bracket[bracketIdx].gameInfoArr[playerPos] = getLoserInfo();
-                            actDoc.bracket[bracketIdx].gameInfoArr[playerPos].score = 0;
-                        }
-
-
-                        bracketIdx = map.winner[0];
-                        playerPos = map.winner[1];
-
-                        if (bracketIdx > 0) {
-                            if (!actDoc.bracket[bracketIdx])
-                                actDoc.bracket[bracketIdx] = {gameInfoArr: [{}, {}]};
-                            actDoc.bracket[bracketIdx].gameInfoArr[playerPos] = getWinnerInfo();
-                            actDoc.bracket[bracketIdx].gameInfoArr[playerPos].score = 0;
-                        }
-                    };
-
-                    setBracketPlayer(bracketIdx);
-
-                    var matchArr = this.refreshBracket(actDoc);
-                    this.io.emit(`${CommandId.refreshClient}`, ScParam({matchArr: matchArr}));
-                }
-
-
-                ////////////////////////////////
-
-                if (this.gameInfo.isFinish) {
-                    res.send(false);
-                }
-                else {
-                    this.lastGameIdx = Number(this.gameInfo.gameIdx);
-                    this.gameInfo.saveGameResult();
-                    this.quePlayer(this.gameInfo.winner_Idx[0], false);
-                    if (this.lastLoserPlayerInfo && this.lastLoserPlayerInfo.id() == this.gameInfo.loserPlayerInfo.id()) {
-                        console.log('player out: ', this.gameInfo.loserPlayerInfo.id(), this.gameInfo.loserPlayerInfo.name())
-                        // var playerDoc = db.player.dataMap[this.gameInfo.loserPlayerInfo.id()];
-                        // playerDoc.state = PlayerState1v1.Dead;
-                        this.gameInfo.loserPlayerInfo.playerData.state = PlayerState1v1.Dead;
-                        this.quePlayer(this.gameInfo.loser_Idx[0], true);
-                        // cmdMap[`${CommandId.cs_updatePlayerState}`]({playerDoc: playerDoc})
-                        this.nextPlayerIdArr[0] = this.playerQue[0];
-                        this.nextPlayerIdArr[1] = this.playerQue[1];
-                    }
-                    else {
-                        this.quePlayer(this.gameInfo.loser_Idx[0], false);
-                        this.nextPlayerIdArr[this.gameInfo.winner_Idx[1]] = this.playerQue[0];
-                        // this.quePlayer(this.gameInfo.loserId, false);
-                    }
-                    this.lastLoserPlayerInfo = this.gameInfo.loserPlayerInfo;
-                    var playerDocArr = this.gameInfo.getPlayerDocArr();
-                    this.quePlayer(playerDocArr[0], false);
-                    db.player.updatePlayerDoc(this.gameInfo.getPlayerDocArr(), null);
-                    res.send(true);
-                }
-                return ServerConst.SEND_ASYNC;
+            cmdMap[`${CommandId.cs_updateWinScore}`] = (param)=> {
+                this.cs_updateWinScore(param);
+            };
+            cmdMap[`${CommandId.cs_saveGameRec}`] = (param)=> {
+                this.cs_saveGameRec(param, res);
             };
             var isSend = cmdMap[cmdId](param);
             if (!isSend)
                 res.sendStatus(200);
         });
+    }
+
+    cs_saveGameRec(param, res) {
+        ////////////////    bracket
+        var bracketIdx = param.bracketIdx;
+        if (bracketIdx) {
+            var actDoc = db.activity.getDocArr([3])[0];
+            var getLoserInfo = (isLoser: boolean = true)=> {
+                var winner;
+                var loser;
+                var bluePlayer = {
+                    id: this.gameInfo.playerInfoArr[0].id(),
+                    name: this.gameInfo.playerInfoArr[0].name(),
+                    avatar: this.gameInfo.playerInfoArr[0].avatar(),
+                    score: this.gameInfo.leftScore
+                };
+                var redPlayer = {
+                    id: this.gameInfo.playerInfoArr[1].id(),
+                    name: this.gameInfo.playerInfoArr[1].name(),
+                    avatar: this.gameInfo.playerInfoArr[1].avatar(),
+                    score: this.gameInfo.rightScore
+                };
+                if (this.gameInfo.leftScore < this.gameInfo.rightScore) {
+                    winner = redPlayer;
+                    loser = bluePlayer;
+                }
+                else {
+                    winner = bluePlayer;
+                    loser = redPlayer;
+                }
+                return isLoser ? loser : winner;
+            };
+
+            var getWinnerInfo = ()=> {
+                return getLoserInfo(false);
+            };
+
+            actDoc.bracket[bracketIdx] = {
+                gameInfoArr: [
+                    {
+                        id: this.gameInfo.playerInfoArr[0].id(),
+                        name: this.gameInfo.playerInfoArr[0].name(),
+                        avatar: this.gameInfo.playerInfoArr[0].avatar(),
+                        score: this.gameInfo.leftScore
+                    },
+                    {
+                        id: this.gameInfo.playerInfoArr[1].id(),
+                        name: this.gameInfo.playerInfoArr[1].name(),
+                        avatar: this.gameInfo.playerInfoArr[1].avatar(),
+                        score: this.gameInfo.rightScore
+                    }
+                ]
+            };
+
+            db.activity.ds().update({id: actDoc.id}, actDoc, ()=> {
+            });
+
+            var setBracketPlayer = (idx)=> {
+                var map = bracketMap[idx];
+                var bracketIdx = map.loser[0];
+                var playerPos = map.loser[1];
+                if (bracketIdx > 0) {
+                    if (!actDoc.bracket[bracketIdx])
+                        actDoc.bracket[bracketIdx] = {gameInfoArr: [{}, {}]};
+                    actDoc.bracket[bracketIdx].gameInfoArr[playerPos] = getLoserInfo();
+                    actDoc.bracket[bracketIdx].gameInfoArr[playerPos].score = 0;
+                }
+
+
+                bracketIdx = map.winner[0];
+                playerPos = map.winner[1];
+
+                if (bracketIdx > 0) {
+                    if (!actDoc.bracket[bracketIdx])
+                        actDoc.bracket[bracketIdx] = {gameInfoArr: [{}, {}]};
+                    actDoc.bracket[bracketIdx].gameInfoArr[playerPos] = getWinnerInfo();
+                    actDoc.bracket[bracketIdx].gameInfoArr[playerPos].score = 0;
+                }
+            };
+
+            setBracketPlayer(bracketIdx);
+
+            var matchArr = this.refreshBracket(actDoc);
+            this.io.emit(`${CommandId.refreshClient}`, ScParam({matchArr: matchArr}));
+        }
+
+
+        ////////////////////////////////
+
+        if (this.gameInfo.isFinish) {
+            res.send(false);
+        }
+        else {
+            this.lastGameIdx = Number(this.gameInfo.gameIdx);
+            this.gameInfo.saveGameResult();
+            this.quePlayer(this.gameInfo.winner_Idx[0], false);
+            if (this.lastLoserPlayerInfo && this.lastLoserPlayerInfo.id() == this.gameInfo.loserPlayerInfo.id()) {
+                console.log('player out: ', this.gameInfo.loserPlayerInfo.id(), this.gameInfo.loserPlayerInfo.name())
+                // var playerDoc = db.player.dataMap[this.gameInfo.loserPlayerInfo.id()];
+                // playerDoc.state = PlayerState1v1.Dead;
+                this.gameInfo.loserPlayerInfo.playerData.state = PlayerState1v1.Dead;
+                this.quePlayer(this.gameInfo.loser_Idx[0], true);
+                // cmdMap[`${CommandId.cs_updatePlayerState}`]({playerDoc: playerDoc})
+                this.nextPlayerIdArr[0] = this.playerQue[0];
+                this.nextPlayerIdArr[1] = this.playerQue[1];
+            }
+            else {
+                this.quePlayer(this.gameInfo.loser_Idx[0], false);
+                this.nextPlayerIdArr[this.gameInfo.winner_Idx[1]] = this.playerQue[0];
+                // this.quePlayer(this.gameInfo.loserId, false);
+            }
+            this.lastLoserPlayerInfo = this.gameInfo.loserPlayerInfo;
+            var playerDocArr = this.gameInfo.getPlayerDocArr();
+            this.quePlayer(playerDocArr[0], false);
+            db.player.updatePlayerDoc(this.gameInfo.getPlayerDocArr(), null);
+            res.send(true);
+        }
+        return ServerConst.SEND_ASYNC;
+    }
+
+    cs_updateWinScore(param) {
+        console.log('cs_updateWinScore', param);
+        this.gameInfo.winScore = param.winScore;
+        this.io.emit(`${CommandId.updateWinScore}`, ScParam(param));
     }
 
     startGame(gameId) {

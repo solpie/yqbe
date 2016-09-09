@@ -103,6 +103,10 @@ export class Stage1v1PanelView extends BasePanelView {
             }
         });
         io
+            .on(`${CommandId.updateWinScore}`, (data) => {
+                console.log('updateWinScore', data);
+                this.scorePanel.set35ScoreLight(data.winScore);
+            })
             .on(`${CommandId.updateLeftScore}`, (data) => {
                 console.log('updateLeftScore', data);
                 this.scorePanel.setLeftScore(data.leftScore);
@@ -302,6 +306,11 @@ export class Stage1v1PanelView extends BasePanelView {
 
     onHideStarting() {
         this.opReq(`${CommandId.cs_hideStartingLine}`);
+    }
+
+    onUpdateWinScore(winScore) {
+        console.log('onUpdateWinScore', winScore);
+        this.opReq(`${CommandId.cs_updateWinScore}`, {winScore: winScore});
     }
 
     onAddLeftScore() {

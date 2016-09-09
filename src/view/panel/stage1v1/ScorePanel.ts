@@ -8,24 +8,26 @@ import {blink} from "../../../utils/Fx";
 import {TimerState} from "../../../event/Const";
 
 export class ScorePanel {
-    timeText:Text;
+    timeText: Text;
     // leftAvgEloScoreText:Text;
     // rightAvgEloScoreText:Text;
-    gameThText:Text;
+    gameThText: Text;
 
-    leftScoreText:BitmapText;
-    rightScoreText:BitmapText;
-    leftScoreTextX:number;
-    rightScoreTextX:number;
-    leftCircleArr:any;
-    rightCircleArr:any;
-    timeOnSec:number;
+    leftScoreText: BitmapText;
+    rightScoreText: BitmapText;
+    leftScoreTextX: number;
+    rightScoreTextX: number;
+    leftCircleArr: any;
+    rightCircleArr: any;
+    leftCircleBgArr: any;
+    rightCircleBgArr: any;
+    timeOnSec: number;
 
-    timerId:any;
-    timerState:number;
-    ctn:Container;
+    timerId: any;
+    timerState: number;
+    ctn: Container;
 
-    constructor(parent:any, is2v2:boolean = false) {
+    constructor(parent: any, is2v2: boolean = false) {
         this.timeOnSec = 0;
 
         var scoreCtn = new createjs.Container();
@@ -43,7 +45,7 @@ export class ScorePanel {
         bg.x = 1;
         scoreCtn.addChild(bg);
 
-        var timeText:Text = new createjs.Text("99:99", "28px Arial", "#fff");
+        var timeText: Text = new createjs.Text("99:99", "28px Arial", "#fff");
         timeText.x = parent.stageWidth * .5 - 31;
         timeText.y = 100;
         this.timeText = timeText;
@@ -88,32 +90,37 @@ export class ScorePanel {
         //////
         this.leftCircleArr = [];
         this.rightCircleArr = [];
-        var px = 675;
-        var py = 88;
-        for (var i = 0; i < 2; i++) {
-            var leftScoreBg = new createjs.Bitmap("/img/panel/stage1v1/leftScoreBg.png");//694x132
-            leftScoreBg.x = px + i * 80;
-            leftScoreBg.y = py;
-            scoreCtn.addChild(leftScoreBg);
-            var leftScore = new createjs.Bitmap("/img/panel/stage1v1/leftScore.png");//694x132
-            leftScore.x = leftScoreBg.x;
-            leftScore.y = leftScoreBg.y;
-            scoreCtn.addChild(leftScore);
-            this.leftCircleArr.push(leftScore);
-        }
-        //right score
-        px = 1090;
-        for (var i = 0; i < 2; i++) {
-            var rightScoreBg = new createjs.Bitmap("/img/panel/stage1v1/rightScoreBg.png");//694x132
-            rightScoreBg.x = px + i * 80;
-            rightScoreBg.y = py;
-            scoreCtn.addChild(rightScoreBg);
-            var rightScore = new createjs.Bitmap("/img/panel/stage1v1/rightScore.png");//694x132
-            rightScore.x = rightScoreBg.x;
-            rightScore.y = rightScoreBg.y;
-            scoreCtn.addChild(rightScore);
-            this.rightCircleArr.push(rightScore);
-        }
+        this.leftCircleBgArr = [];
+        this.rightCircleBgArr = [];
+        // var px = 675;
+        // var py = 88;
+        // for (var i = 0; i < 2; i++) {
+        //     var leftScoreBg = new createjs.Bitmap("/img/panel/stage1v1/leftScoreBg.png");//694x132
+        //     leftScoreBg.x = px + i * 80;
+        //     leftScoreBg.y = py;
+        //     scoreCtn.addChild(leftScoreBg);
+        //     this.leftCircleBgArr.push(leftScoreBg);
+        //     var leftScore = new createjs.Bitmap("/img/panel/stage1v1/leftScore.png");//694x132
+        //     leftScore.x = leftScoreBg.x;
+        //     leftScore.y = leftScoreBg.y;
+        //     scoreCtn.addChild(leftScore);
+        //     this.leftCircleArr.push(leftScore);
+        // }
+        // //right score
+        // px = 1090;
+        // for (var i = 0; i < 2; i++) {
+        //     var rightScoreBg = new createjs.Bitmap("/img/panel/stage1v1/rightScoreBg.png");//694x132
+        //     rightScoreBg.x = px + i * 80;
+        //     rightScoreBg.y = py;
+        //     scoreCtn.addChild(rightScoreBg);
+        //     this.rightCircleBgArr.push(rightScoreBg);
+        //     var rightScore = new createjs.Bitmap("/img/panel/stage1v1/rightScore.png");//694x132
+        //     rightScore.x = rightScoreBg.x;
+        //     rightScore.y = rightScoreBg.y;
+        //     scoreCtn.addChild(rightScore);
+        //     this.rightCircleArr.push(rightScore);
+        // }
+        this.set35ScoreLight(2);
 
         px = 770;
 
@@ -122,10 +129,11 @@ export class ScorePanel {
         gameThText.x = 964;
         gameThText.y = 59;
         scoreCtn.addChild(gameThText);
+
         this.gameThText = gameThText;
     }
 
-    get isBlueWin():boolean {
+    get isBlueWin(): boolean {
         return Number(this.leftScoreText.text) > Number(this.rightScoreText.text);
     }
 
@@ -141,15 +149,22 @@ export class ScorePanel {
 
         for (var i = 0; i < this.leftCircleArr.length; i++) {
             if (i < leftScore) {
-                if (this.leftCircleArr[len - 1 - i].alpha == 0)
-                    blink(this.leftCircleArr[len - 1 - i]);
-                //circleArr[i].alpha = 1;
+                if (this.leftCircleArr[i].alpha == 0)
+                    blink(this.leftCircleArr[i]);
             }
             else {
-                createjs.Tween.get(this.leftCircleArr[len - 1 - i]).to({alpha: 0}, 200);
-                //circleArr[i].alpha = 0;
+                createjs.Tween.get(this.leftCircleArr[i]).to({alpha: 0}, 200);
             }
         }
+        // for (var i = 0; i < this.leftCircleArr.length; i++) {
+        //     if (i < leftScore) {
+        //         if (this.leftCircleArr[len - 1 - i].alpha == 0)
+        //             blink(this.leftCircleArr[len - 1 - i]);
+        //     }
+        //     else {
+        //         createjs.Tween.get(this.leftCircleArr[len - 1 - i]).to({alpha: 0}, 200);
+        //     }
+        // }
     }
 
     setRightScore(rightScore) {
@@ -169,6 +184,85 @@ export class ScorePanel {
             else {
                 createjs.Tween.get(this.rightCircleArr[i]).to({alpha: 0}, 200);
             }
+        }
+    }
+
+    set35ScoreLight(count) {
+        // this.leftCircleArr.length = 0;
+        // this.rightCircleArr.length = 0;
+        for (var i = 0; i < this.rightCircleArr.length; i++) {
+            var img = this.rightCircleArr[i];
+            img.parent.removeChild(img);
+        }
+        this.rightCircleArr.length = 0;
+
+        for (var i = 0; i < this.rightCircleBgArr.length; i++) {
+            var img = this.rightCircleBgArr[i];
+            img.parent.removeChild(img);
+        }
+        this.rightCircleBgArr.length = 0;
+
+        for (var i = 0; i < this.leftCircleArr.length; i++) {
+            var img = this.leftCircleArr[i];
+            img.parent.removeChild(img);
+        }
+        this.leftCircleArr.length = 0;
+        for (var i = 0; i < this.leftCircleBgArr.length; i++) {
+            var img = this.leftCircleBgArr[i];
+            img.parent.removeChild(img);
+        }
+        this.leftCircleBgArr.length = 0;
+
+        var scoreCtn = this.ctn;
+        ///////////////
+        var px;
+        var py = 88;
+        var pxLeft;
+        var pxRight;
+        var invert;
+        var pathBigCircle = 'stage';
+        if (count == 3) {
+            pxLeft = 780;
+            pxRight = 1110;
+            invert = 45
+        }
+        else if (count == 5) {
+            pxLeft = 780;
+            pxRight = 1110;
+            invert = 27;
+        }
+        else if (count == 2) {
+            invert = 80;
+            pxLeft = 750;
+            pxRight = 1090;
+            pathBigCircle = 'stage1v1'
+        }
+        px = pxLeft;
+        for (var i = 0; i < count; i++) {
+            var leftScoreBg = new createjs.Bitmap(`/img/panel/${pathBigCircle}/leftScoreBg.png`);//694x132
+            leftScoreBg.x = px - i * invert;
+            leftScoreBg.y = py;
+            scoreCtn.addChild(leftScoreBg);
+            this.leftCircleBgArr.push(leftScoreBg);
+            var leftScore = new createjs.Bitmap(`/img/panel/${pathBigCircle}/leftScore.png`);//694x132
+            leftScore.x = leftScoreBg.x;
+            leftScore.y = leftScoreBg.y;
+            scoreCtn.addChild(leftScore);
+            this.leftCircleArr.push(leftScore);
+        }
+        //right score
+        px = pxRight;
+        for (var i = 0; i < count; i++) {
+            var rightScoreBg = new createjs.Bitmap(`/img/panel/${pathBigCircle}/rightScoreBg.png`);//694x132
+            rightScoreBg.x = px + i * invert;
+            rightScoreBg.y = py;
+            scoreCtn.addChild(rightScoreBg);
+            this.rightCircleBgArr.push(rightScoreBg);
+            var rightScore = new createjs.Bitmap(`/img/panel/${pathBigCircle}/rightScore.png`);//694x132
+            rightScore.x = rightScoreBg.x;
+            rightScore.y = rightScoreBg.y;
+            scoreCtn.addChild(rightScore);
+            this.rightCircleArr.push(rightScore);
         }
     }
 
@@ -224,7 +318,7 @@ export class ScorePanel {
 
     }
 
-    setTime(time, state:number) {
+    setTime(time, state: number) {
         this.timeText.text = formatSecond(time);
         this.timeOnSec = time;
         if (state) {
@@ -232,16 +326,16 @@ export class ScorePanel {
         }
     }
 
-    setGameIdx(idx:number) {
+    setGameIdx(idx: number) {
         if (idx == null)
             idx = 0;
         this.gameThText.text = `第${idx}场`;
     }
 
-    init(gameInfo:any) {
+    init(gameInfo: any) {
         this.setLeftScore(gameInfo.leftScore);
         this.setRightScore(gameInfo.rightScore);
-        var gameInfoClone:GameInfo = new GameInfo(gameInfo);
+        var gameInfoClone: GameInfo = new GameInfo(gameInfo);
         this.setAvgEloScore(gameInfoClone.getAvgEloScore());
         this.setGameIdx(gameInfo.gameTh);
     }

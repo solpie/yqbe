@@ -83,6 +83,11 @@
                 <a class="waves-effect waves-light btn" @click="onGetBracketInfo">获取球员</a>
             </div>
             <div class="row">
+                <a class="waves-effect waves-light btn" @click="onUpdateWinScore(2)">2分胜</a>
+                <a class="waves-effect waves-light btn" @click="onUpdateWinScore(3)">3分胜</a>
+                <a class="waves-effect waves-light btn" @click="onUpdateWinScore(5)">5分胜</a>
+            </div>
+            <div class="row">
                 <a class="waves-effect waves-light btn" @click="onAddLeftScore">蓝分++</a>
                 <a class="waves-effect waves-light btn" @click="onMinLeftScore">蓝分--</a>
 
@@ -90,7 +95,6 @@
                 <label for="unlimitScore">///////不限制分数\\\\\\\</label>
                 <a class="waves-effect waves-light btn" @click="onMinRightScore">红分--</a>
                 <a class="waves-effect waves-light btn" @click="onAddRightScore">红分++</a>
-
             </div>
             <div class="row">
                 <a class="waves-effect waves-light btn" @click="onAddLeftFoul">蓝规++</a>
