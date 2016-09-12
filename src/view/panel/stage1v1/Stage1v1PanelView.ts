@@ -358,8 +358,9 @@ export class Stage1v1PanelView extends BasePanelView {
         var playerId0 = Number(this.getElem("#player0").value);
         var playerId1 = Number(this.getElem("#player1").value);
         if (playerId0 && playerId1) {
-            this.opReq(`${CommandId.cs_updatePlayer}`, {idx: 0, playerId: playerId1});
-            this.opReq(`${CommandId.cs_updatePlayer}`, {idx: 1, playerId: playerId0});
+            this.opReq(`${CommandId.cs_changeColor}`, {idx: 0, playerId: playerId1});
+            // this.opReq(`${CommandId.cs_updatePlayer}`, {idx: 0, playerId: playerId1});
+            // this.opReq(`${CommandId.cs_updatePlayer}`, {idx: 1, playerId: playerId0});
         }
     }
 

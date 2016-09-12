@@ -52,6 +52,7 @@ export enum CommandId{
     updatePlayer,
     cs_updatePlayer,
     updatePlayerAll,
+    cs_changeColor,//红蓝交换
     cs_updatePlayerAll,
     cs_updatePlayerBackNum,
     updatePlayerBackNum,

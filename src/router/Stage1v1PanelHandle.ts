@@ -162,26 +162,27 @@ export class Stage1v1PanelHandle {
                 }
             };
             cmdMap[`${CommandId.cs_updatePlayer}`] = (param) => {
-                if (this.gameInfo.gameState == GameInfo.GAME_STATE_ING) {
-                    var playerId = param.playerId;
-                    // if (playerId == ServerConf.king) {
-                    //     param.isKing = true;
-                    // }
-                    var playerIdx = param.idx;
-                    if (!this.exPlayerIdMap[playerId]) {
-                        if (actPlayerIdArr().indexOf(playerId) < 0) {
-                            this.exPlayerIdMap[playerId] = playerId;
-                            console.log('ex player', playerId);
-                        }
-                    }
-                    db.player.syncDataMap(()=> {
-                        param.playerDoc = db.player.dataMap[playerId];
-                        this.gameInfo.setPlayerInfoByIdx(playerIdx, db.player.getPlayerInfoById(playerId));
-                        db.game.updatePlayerByPos(this.gameInfo.id, playerIdx, playerId);
-                        // param.avgEloScore = this.gameInfo.getAvgEloScore();
-                        this.io.emit(`${CommandId.updatePlayer}`, ScParam(param))
-                    });
-                }
+                // if (this.gameInfo.gameState == GameInfo.GAME_STATE_ING) {
+                //     var playerId = param.playerId;
+                //     // if (playerId == ServerConf.king) {
+                //     //     param.isKing = true;
+                //     // }
+                //     var playerIdx = param.idx;
+                //     // if (!this.exPlayerIdMap[playerId]) {
+                //     //     if (actPlayerIdArr().indexOf(playerId) < 0) {
+                //     //         this.exPlayerIdMap[playerId] = playerId;
+                //     //         console.log('ex player', playerId);
+                //     //     }
+                //     // }
+                //     db.player.syncDataMap(()=> {
+                //         param.playerDoc = db.player.dataMap[playerId];
+                //         this.gameInfo.setPlayerInfoByIdx(playerIdx, db.player.getPlayerInfoById(playerId));
+                //         db.game.updatePlayerByPos(this.gameInfo.id, playerIdx, playerId);
+                //         // param.avgEloScore = this.gameInfo.getAvgEloScore();
+                //         this.io.emit(`${CommandId.updatePlayer}`, ScParam(param))
+                //     });
+                // }
+                return this.cs_updatePlayer(param);
             };
 
             cmdMap[`${CommandId.cs_updatePlayerAll}`] = (param) => {
@@ -354,16 +355,64 @@ export class Stage1v1PanelHandle {
                 this.io.emit(`${CommandId.refreshClient}`, ScParam({matchArr: matchArr}));
             };
 
+            cmdMap[`${CommandId.cs_changeColor}`] = (param)=> {
+                return this.cs_changeColor(param);
+            };
             cmdMap[`${CommandId.cs_updateWinScore}`] = (param)=> {
-                this.cs_updateWinScore(param);
+                return this.cs_updateWinScore(param);
             };
             cmdMap[`${CommandId.cs_saveGameRec}`] = (param)=> {
-                this.cs_saveGameRec(param, res);
+                return this.cs_saveGameRec(param, res);
             };
             var isSend = cmdMap[cmdId](param);
             if (!isSend)
                 res.sendStatus(200);
         });
+    }
+
+    cs_updatePlayer(param) {
+        if (this.gameInfo.gameState == GameInfo.GAME_STATE_ING) {
+            var playerId = param.playerId;
+            // if (playerId == ServerConf.king) {
+            //     param.isKing = true;
+            // }
+            var playerIdx = param.idx;
+            // if (!this.exPlayerIdMap[playerId]) {
+            //     if (actPlayerIdArr().indexOf(playerId) < 0) {
+            //         this.exPlayerIdMap[playerId] = playerId;
+            //         console.log('ex player', playerId);
+            //     }
+            // }
+            db.player.syncDataMap(()=> {
+                param.playerDoc = db.player.dataMap[playerId];
+                this.gameInfo.setPlayerInfoByIdx(playerIdx, db.player.getPlayerInfoById(playerId));
+                db.game.updatePlayerByPos(this.gameInfo.id, playerIdx, playerId);
+                // param.avgEloScore = this.gameInfo.getAvgEloScore();
+                this.io.emit(`${CommandId.updatePlayer}`, ScParam(param))
+            });
+        }
+    }
+
+    cs_changeColor(param) {
+        var p1 = {idx: 0, playerId: this.gameInfo.getPlayerDocArr()[1].id};
+        var p2 = {idx: 1, playerId: this.gameInfo.getPlayerDocArr()[0].id};
+
+        this.cs_updatePlayer(p1);
+        this.cs_updatePlayer(p2);
+
+        var tmp = this.gameInfo.leftFoul;
+        this.gameInfo.leftFoul = this.gameInfo.rightFoul;
+        this.gameInfo.rightFoul = tmp;
+        this.io.emit(`${CommandId.updateRightFoul}`, ScParam({rightFoul: this.gameInfo.rightFoul}));
+        this.io.emit(`${CommandId.updateLeftFoul}`, ScParam({leftFoul: this.gameInfo.leftFoul}));
+
+        var tmp = this.gameInfo.leftScore;
+        this.gameInfo.leftScore = this.gameInfo.rightScore;
+        this.gameInfo.rightScore = tmp;
+
+        this.io.emit(`${CommandId.updateLeftScore}`, ScParam({leftScore: this.gameInfo.leftScore}));
+        this.io.emit(`${CommandId.updateRightScore}`, ScParam({rightScore: this.gameInfo.rightScore}));
+
     }
 
     cs_saveGameRec(param, res) {
@@ -471,13 +520,13 @@ export class Stage1v1PanelHandle {
                 this.nextPlayerIdArr[1] = this.playerQue[1];
             }
             else {
-                this.quePlayer(this.gameInfo.loser_Idx[0], false);
-                this.nextPlayerIdArr[this.gameInfo.winner_Idx[1]] = this.playerQue[0];
+                // this.quePlayer(this.gameInfo.loser_Idx[0], false);
+                this.nextPlayerIdArr[this.gameInfo.winner_Idx[1]] = this.playerQue[1];
                 // this.quePlayer(this.gameInfo.loserId, false);
             }
             this.lastLoserPlayerInfo = this.gameInfo.loserPlayerInfo;
-            var playerDocArr = this.gameInfo.getPlayerDocArr();
-            this.quePlayer(playerDocArr[0], false);
+            // var playerDocArr = this.gameInfo.getPlayerDocArr();
+            // this.quePlayer(playerDocArr[0], false);
             db.player.updatePlayerDoc(this.gameInfo.getPlayerDocArr(), null);
             res.send(true);
         }
@@ -565,20 +614,27 @@ export class Stage1v1PanelHandle {
         return db.activity.getDocArr([3])[0];
     }
 
-    private quePlayer(playerId: any, b: boolean) {
+    private quePlayer(playerId: any, isout: boolean) {
+        console.log('quePlayer playerId:', playerId, isout);
         if (this.playerQue[0] == playerId) {
             var p0 = this.playerQue.shift();
-            if (!b)
+            if (!isout)
                 this.playerQue.push(p0);
+            else
+                console.log('quePlayer out:', p0, this.playerQue);
         }
         else if (this.playerQue[1] == playerId) {
             var p0 = this.playerQue.shift();
-            this.playerQue.push(p0);
+            // this.playerQue.push(p0);
             var p1 = this.playerQue.shift();
-            if (!b)
+            if (!isout)
                 this.playerQue.push(p1);
+            else {
+                console.log('quePlayer out:', p1, this.playerQue);
+            }
+            this.playerQue = [p0].concat(this.playerQue);
         } else {
-            console.log('quePlayer gg')
+            console.log('quePlayer gg', playerId, this.playerQue);
         }
         console.log('quePlayer', this.playerQue);
     }

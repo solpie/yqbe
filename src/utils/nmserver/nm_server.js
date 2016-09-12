@@ -17,16 +17,16 @@ function NMServer() {
 
         socket.on('data', function (data) {
             // console.log('socket on data:');
-            if (data[0] == 0x0f && data[1] == 0x2f && data[2] == 0x3e) {
-                var head = data.slice(0, 3);
-                var body = data.slice(3);
-                rtmpClient.bp.push(body);
-                // console.log('head', head);
-                // console.log('body', body);
-            }
-            else {
+            // if (data[0] == 0x0f && data[1] == 0x2f && data[2] == 0x3e) {
+            //     var head = data.slice(0, 3);
+            //     var body = data.slice(3);
+            //     rtmpClient.bp.push(body);
+            //     // console.log('head', head);
+            //     // console.log('body', body);
+            // }
+            // else {
                 rtmpClient.bp.push(data);
-            }
+            // }
 
             // rtmpClient.bp.push(body);
             // rtmpClient.bp.push(data);

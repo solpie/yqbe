@@ -7,7 +7,7 @@
   module.exports = {
 
     /* Basic configurations */
-    serverPort: 80,
+    serverPort: 5858,
     rtmpServerPort: 1936,
     serverName: 'node-rtsp-rtmp-server',
     videoFrameRate: 30,
