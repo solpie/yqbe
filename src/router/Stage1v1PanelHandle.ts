@@ -400,13 +400,18 @@ export class Stage1v1PanelHandle {
         this.cs_updatePlayer(p1);
         this.cs_updatePlayer(p2);
 
-        var tmp = this.gameInfo.leftFoul;
+        var tmp;
+        tmp = this.playerQue[0];
+        this.playerQue[0] = this.playerQue[1];
+        this.playerQue[1] = tmp;
+
+        tmp = this.gameInfo.leftFoul;
         this.gameInfo.leftFoul = this.gameInfo.rightFoul;
         this.gameInfo.rightFoul = tmp;
         this.io.emit(`${CommandId.updateRightFoul}`, ScParam({rightFoul: this.gameInfo.rightFoul}));
         this.io.emit(`${CommandId.updateLeftFoul}`, ScParam({leftFoul: this.gameInfo.leftFoul}));
 
-        var tmp = this.gameInfo.leftScore;
+        tmp = this.gameInfo.leftScore;
         this.gameInfo.leftScore = this.gameInfo.rightScore;
         this.gameInfo.rightScore = tmp;
 
@@ -472,24 +477,24 @@ export class Stage1v1PanelHandle {
 
             var setBracketPlayer = (idx)=> {
                 var map = bracketMap[idx];
-                var bracketIdx = map.loser[0];
-                var playerPos = map.loser[1];
-                if (bracketIdx > 0) {
-                    if (!actDoc.bracket[bracketIdx])
-                        actDoc.bracket[bracketIdx] = {gameInfoArr: [{}, {}]};
-                    actDoc.bracket[bracketIdx].gameInfoArr[playerPos] = getLoserInfo();
-                    actDoc.bracket[bracketIdx].gameInfoArr[playerPos].score = 0;
-                }
+                if (map) {
+                    var bracketIdx = map.loser[0];
+                    var playerPos = map.loser[1];
+                    if (bracketIdx > 0) {
+                        if (!actDoc.bracket[bracketIdx])
+                            actDoc.bracket[bracketIdx] = {gameInfoArr: [{}, {}]};
+                        actDoc.bracket[bracketIdx].gameInfoArr[playerPos] = getLoserInfo();
+                        actDoc.bracket[bracketIdx].gameInfoArr[playerPos].score = 0;
+                    }
+                    bracketIdx = map.winner[0];
+                    playerPos = map.winner[1];
 
-
-                bracketIdx = map.winner[0];
-                playerPos = map.winner[1];
-
-                if (bracketIdx > 0) {
-                    if (!actDoc.bracket[bracketIdx])
-                        actDoc.bracket[bracketIdx] = {gameInfoArr: [{}, {}]};
-                    actDoc.bracket[bracketIdx].gameInfoArr[playerPos] = getWinnerInfo();
-                    actDoc.bracket[bracketIdx].gameInfoArr[playerPos].score = 0;
+                    if (bracketIdx > 0) {
+                        if (!actDoc.bracket[bracketIdx])
+                            actDoc.bracket[bracketIdx] = {gameInfoArr: [{}, {}]};
+                        actDoc.bracket[bracketIdx].gameInfoArr[playerPos] = getWinnerInfo();
+                        actDoc.bracket[bracketIdx].gameInfoArr[playerPos].score = 0;
+                    }
                 }
             };
 
@@ -520,10 +525,20 @@ export class Stage1v1PanelHandle {
                 this.nextPlayerIdArr[1] = this.playerQue[1];
             }
             else {
+                if (this.playerQue[0] != this.gameInfo.loser_Idx[0]) {
+                    this.nextPlayerIdArr[this.gameInfo.winner_Idx[1]] = this.playerQue[0];
+                }
+                else
+                    this.nextPlayerIdArr[this.gameInfo.winner_Idx[1]] = this.playerQue[1];
+                this.nextPlayerIdArr[this.gameInfo.loser_Idx[1]] = this.gameInfo.loser_Idx[0];
+
+                // this.nextPlayerIdArr[0] = this.playerQue[0];
+                // this.nextPlayerIdArr[1] = this.playerQue[1];
                 // this.quePlayer(this.gameInfo.loser_Idx[0], false);
-                this.nextPlayerIdArr[this.gameInfo.winner_Idx[1]] = this.playerQue[1];
                 // this.quePlayer(this.gameInfo.loserId, false);
             }
+            console.log('nextPlayerIdArr', this.nextPlayerIdArr);
+
             this.lastLoserPlayerInfo = this.gameInfo.loserPlayerInfo;
             // var playerDocArr = this.gameInfo.getPlayerDocArr();
             // this.quePlayer(playerDocArr[0], false);
