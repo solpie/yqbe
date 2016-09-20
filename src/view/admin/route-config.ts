@@ -4,7 +4,6 @@ import {Settings} from "./components/settings/settings";
 import {Player} from "./components/player/player";
 import {Activity} from "./components/activity/activity";
 import {Rank} from "./components/rank/rank";
-import {ExternalData} from "./components/external/external-data";
 import {StreamServerView} from "./components/streamserver/StreamServerView";
 export function configureRouter(router: vuejs.Router<App>) {
     router.map({
@@ -27,13 +26,6 @@ export function configureRouter(router: vuejs.Router<App>) {
         '/rank': {
             component: Rank,
             name: 'rank'
-        },
-        '/external': {
-            component: ExternalData,
-            name: 'external'
-        },
-        '/external/:page': {
-            component: ExternalData,
         },
         '/settings': {
             component: Settings,

@@ -81,6 +81,9 @@ router.afterEach((transition) => {
     else if (/\/bracket/.test(toPath)) {
         router.app.pid = PanelId.stage1v1Panel;
     }
+    else if (/\/rkb/.test(toPath)) {
+        router.app.pid = PanelId.rkbPanel;
+    }
     console.log('after each!!!', toPath);
 });
 router.start(Panel, '#panel');

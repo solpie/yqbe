@@ -1,10 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+<div id="rkb-panel" class="card-panel grey lighten-3" v-if="op">
+    <div class="row">
+        <div class="col" v-for="playerInfo in playerInfoArr">
+            <div class="col" style="width: 85px">
+                <img src="/img/panel/stage/blue.png" id="playerImg{{$index}}" style="width: 80px">
+                <input id="player{{$index}}" type="text" @keyup.enter="onQueryPlayer($index)" style="width: 75px">
+                <!--<input id="playerNum{{$index}}" v-model="playerNumArr[$index]" type="text"-->
+                <!--style="width: 35px" Number>-->
+                <a class="waves-effect waves-light btn" style="width: 75px;height: 25px"
+                   @click="onUpdatePlayer($index)">↓</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <a class="waves-effect waves-light btn" @click="on1PAttack">1p A</a>
+        <a class="waves-effect waves-light btn" @click="onMin1PHealth">1p--</a>
+        <label>///////__________\\\\\\\</label>
+        <a class="waves-effect waves-light btn" @click="on2pAttack">2p A</a>
+        <a class="waves-effect waves-light btn" @click="onMin2PHealth">2p--</a>
+    </div>
+</div>

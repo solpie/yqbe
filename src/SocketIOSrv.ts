@@ -3,10 +3,13 @@ import {ServerConf} from "./Env";
 import {ActivityPanelHandle} from "./router/ActivityPanelHandle";
 import {ScreenPanelHandle} from "./router/ScreenPanelHandle";
 import {Stage1v1PanelHandle} from "./router/Stage1v1PanelHandle";
+import {RkbPanelHandle} from "./router/RkbPanelHandle";
 export var stagePanelHandle;
 export var stagePanel1v1Handle;
 export var activityPanelHandle;
 export var screenPanelHanle;
+export var rkbPanelHandle;
+
 export class SocketIOSrv {
     constructor() {
         var io = require('socket.io')(ServerConf.wsPort);
@@ -14,6 +17,7 @@ export class SocketIOSrv {
         stagePanel1v1Handle = new Stage1v1PanelHandle(io);
         activityPanelHandle = new ActivityPanelHandle(io);
         screenPanelHanle = new ScreenPanelHandle(io);
+        rkbPanelHandle = new RkbPanelHandle(io);
         // var news = io
         //     .of('/news')
         //     .on('connection', function (socket) {
