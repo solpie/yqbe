@@ -30,6 +30,7 @@ Vue.use(require('vue-resource'));
 
 import VueRouter = require('vue-router');
 import ComponentOption = vuejs.ComponentOption;
+import {RkbPanelView} from "./rkb/RkbPanelView";
 Vue.use(VueRouter);
 
 var router = new VueRouter<Panel>();
@@ -46,6 +47,10 @@ router.map({
     '/screen1v1/:ob': {
         component: ScreenView,
         name: 'screen1v1'
+    },
+    '/rkb/:op': {
+        component: RkbPanelView,
+        name: 'rkb'
     },
     '/bracket/:ob': {
         component: BracketView,

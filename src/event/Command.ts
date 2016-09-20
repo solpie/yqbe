@@ -152,6 +152,11 @@ export enum CommandId{
         // fadeInComingActivity,
         //db op
     cs_findPlayerData,
+    //// RKB
+    cs_attack,
+    attack,
+    cs_combo,
+    combo,
 }
 class CommandItem {
     id: number;
