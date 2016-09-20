@@ -4,6 +4,7 @@ export class PlayerRkbInfo {
     avatar: string;
     hp: number;
     attack: number = 0;
+    combo: number = 0;
 
     constructor(ad: number) {
         this.attack = ad;

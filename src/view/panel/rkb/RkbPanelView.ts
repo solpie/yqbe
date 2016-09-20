@@ -2,7 +2,7 @@ import {BasePanelView} from "../BasePanelView";
 import Component from "vue-class-component";
 import {PanelId} from "../../../event/Const";
 import {CommandId} from "../../../event/Command";
-import {HealthBar} from "./HealthBar";
+import {HealthPanel} from "./HealthBar";
 @Component({
     template: require('./rkb-panel.html'),
     props: {
@@ -18,7 +18,7 @@ export class RkbPanelView extends BasePanelView {
     isInit;
     op: boolean = false;
     playerInfoArr;
-    health: HealthBar;
+    health: HealthPanel;
 
     ready(pid?: string, isInitCanvas: boolean = true) {
         if (!pid)
@@ -45,7 +45,7 @@ export class RkbPanelView extends BasePanelView {
 
     initStage(gameInfo) {
         this.isInit = true;
-        this.health = new HealthBar(this.stage);
+        this.health = new HealthPanel(this.stage);
         this.health.init(gameInfo);
         if (this.op) {
 
