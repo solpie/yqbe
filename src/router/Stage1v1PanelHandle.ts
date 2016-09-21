@@ -210,8 +210,26 @@ export class Stage1v1PanelHandle {
             cmdMap[`${CommandId.cs_setActPlayer}`] = (param) => {
                 var playerIdArr = param.playerIdArr;
                 if (playerIdArr && playerIdArr.length) {
+
+                    var countPlayerId = [];
+                    var updatePlayerDocArr = [];
+                    for (var i = 0; i < playerIdArr.length; i++) {
+                        var playerDoc = db.player.dataMap[i + 1];
+                        playerDoc.id += 100;
+                        updatePlayerDocArr.push(playerDoc);
+                    }
+                    for (var i = 0; i < playerIdArr.length; i++) {
+                        var playerDoc2 = db.player.dataMap[playerIdArr[i]];
+                        playerDoc2.id = i + 1;
+                        updatePlayerDocArr.push(playerDoc2);
+                        countPlayerId.push(playerDoc2.id);
+                    }
+                    db.player.updateDocArr(updatePlayerDocArr, ()=> {
+                        db.player.syncDataMap();
+                    });
+
                     var actDoc = this.getActDoc();
-                    actDoc.gameDataArr[0].playerIdArr = playerIdArr;
+                    actDoc.gameDataArr[0].playerIdArr = countPlayerId;
                     db.activity.updateDocArr([actDoc]);
                 }
             };
@@ -363,6 +381,10 @@ export class Stage1v1PanelHandle {
             };
             cmdMap[`${CommandId.cs_saveGameRec}`] = (param)=> {
                 return this.cs_saveGameRec(param, res);
+            };
+            ///
+            cmdMap[`${CommandId.cs_fadeInFTShow}`] = (param)=> {
+                return this.cs_fadeInFTShow(param);
             };
             var isSend = cmdMap[cmdId](param);
             if (!isSend)
@@ -554,6 +576,10 @@ export class Stage1v1PanelHandle {
         this.io.emit(`${CommandId.updateWinScore}`, ScParam(param));
     }
 
+    cs_fadeInFTShow(param: any) {
+        this.io.emit(`${CommandId.fadeInFTShow}`);
+    }
+
     startGame(gameId) {
         var gameDoc = db.game.getDataById(gameId);
         if (!gameDoc) {
@@ -653,4 +679,6 @@ export class Stage1v1PanelHandle {
         }
         console.log('quePlayer', this.playerQue);
     }
+
+
 }

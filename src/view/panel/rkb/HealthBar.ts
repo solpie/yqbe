@@ -24,6 +24,7 @@ class HealthBar extends Container {
 
         this.easeSp = new Shape();
         this.easeSp.graphics.f('#c1242b').drawRect(0, 0, HEALTH_BAR_WIDTH, 45);
+        this.easeSp.alpha = .8;
         this.fxCtn.addChild(this.easeSp);
 
         this.healthSp = new Shape();
@@ -71,12 +72,15 @@ export class HealthPanel {
         ///health bar
         this.hpBar1p = new HealthBar(true);
         this.hpBar2p = new HealthBar(false);
-        this.hpBar1p.x = 260;
-        this.hpBar2p.x = 1015;
-        this.hpBar1p.y = this.hpBar2p.y = 65;
+        this.hpBar1p.x = 259;
+        this.hpBar2p.x = 1014;
+        this.hpBar1p.y = this.hpBar2p.y = 66;
         this.ctn.addChild(this.hpBar1p);
         this.ctn.addChild(this.hpBar2p);
+    }
 
+    addHealth(param) {
+        this.attackHandle(param);
     }
 
     attackHandle(param) {

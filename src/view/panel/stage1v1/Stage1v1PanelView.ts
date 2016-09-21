@@ -523,4 +523,10 @@ export class Stage1v1PanelView extends BasePanelView {
         console.log('onCountDownOut');
         this.opReq(`${CommandId.cs_fadeOutCountDown}`);
     }
+
+    /////////////////////////////////
+    onFTShow() {
+        console.log('onFTShow');
+        this.opReq(`${CommandId.cs_fadeInFTShow}`);
+    }
 }

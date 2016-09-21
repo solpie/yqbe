@@ -1,8 +1,9 @@
 <style>
 
-    body{
+    body {
         background: transparent;
     }
+
     #stage-panel {
         position: absolute;
         width: 1250px;
@@ -38,100 +39,117 @@
         left: 1270px;
     }
 </style>
-<div id="stage-panel" class="card-panel grey lighten-3" v-if="op">
-    <div class="row">
-        <div class="col" v-for="playerInfo in playerInfoArr">
-            <div class="col" style="width: 85px">
-                <img src="/img/panel/stage/blue.png" id="playerImg{{$index}}" style="width: 80px">
-                <input id="player{{$index}}" type="text" @keyup.enter="onQueryPlayer($index)" style="width: 75px">
-                <!--<input id="playerNum{{$index}}" v-model="playerNumArr[$index]" type="text"-->
-                <!--style="width: 35px" Number>-->
-                <a class="waves-effect waves-light btn" style="width: 75px;height: 25px"
-                   @click="onUpdatePlayer($index)">↓</a>
-                <p>
-                    <a class="waves-effect waves-light btn" style="width: 75px;height: 25px"
-                       @click="onFinalPlayer($index)">路人王</a>
-                <p>
-                    <a class="waves-effect waves-light btn" style="width: 75px;height: 25px"
-                       @click="onPickPlayer($index)">+</a>
-                <p>
-            </div>
-        </div>
-        <div class="col">
+<div id="stage-panel" v-if="op" class="row">
+    <div class="col s12">
+        <ul class="tabs">
+            <li class="tab col s3"><a class="active" href="#tab1">Game</a></li>
+            <li class="tab col s3"><a href="#tab2">战团</a></li>
+        </ul>
+    </div>
+    <div id="tab1" class="col s12">
+        <div class="card-panel grey lighten-3">
             <div class="row">
-                ```````````````````````````````
-                <a class="waves-effect waves-light btn"
-                   @click="onCreateGame">创建比赛</a>
-                <a class="waves-effect waves-light btn"
-                   @click="onChangeColor">交换红蓝</a>
-                <a class="waves-effect waves-light btn"
-                   @click="onStarting">出阵(球员信息)</a>
-                <a class="waves-effect waves-light btn" @click="onHideStarting">隐藏</a>
-
-                ```````````````````````````````
-            </div>
-            <div class="row" style="display: inline-flex">
-                <div class="switch">
-                    <label>
-                        pause
-                        <input type="checkbox" @click="onToggleTimer">
-                        <span class="lever"></span>
-                        start::::::::
-                    </label>
+                <div class="col" v-for="playerInfo in playerInfoArr">
+                    <div class="col" style="width: 85px">
+                        <img src="/img/panel/stage/blue.png" id="playerImg{{$index}}" style="width: 80px">
+                        <input id="player{{$index}}" type="text" @keyup.enter="onQueryPlayer($index)"
+                               style="width: 75px">
+                        <!--<input id="playerNum{{$index}}" v-model="playerNumArr[$index]" type="text"-->
+                        <!--style="width: 35px" Number>-->
+                        <a class="waves-effect waves-light btn" style="width: 75px;height: 25px"
+                           @click="onUpdatePlayer($index)">↓</a>
+                        <p>
+                            <a class="waves-effect waves-light btn" style="width: 75px;height: 25px"
+                               @click="onFinalPlayer($index)">路人王</a>
+                        <p>
+                            <a class="waves-effect waves-light btn" style="width: 75px;height: 25px"
+                               @click="onPickPlayer($index)">+</a>
+                        <p>
+                    </div>
                 </div>
-                <a class="waves-effect waves-light btn" @click="onResetTimer" style="height: 35px">Reset</a>
-                场次设置::::<input v-model="gameIdx" style="width: 50px">
-                双败场次::::<input v-model="bracketIdx" style="width: 50px">
-                <a class="waves-effect waves-light btn" @click="onGetBracketInfo">获取球员</a>
-            </div>
-            <div class="row">
-                <a class="waves-effect waves-light btn" @click="onUpdateWinScore(2)">2分胜</a>
-                <a class="waves-effect waves-light btn" @click="onUpdateWinScore(3)">3分胜</a>
-                <a class="waves-effect waves-light btn" @click="onUpdateWinScore(5)">5分胜</a>
-            </div>
-            <div class="row">
-                <a class="waves-effect waves-light btn" @click="onAddLeftScore">蓝分++</a>
-                <a class="waves-effect waves-light btn" @click="onMinLeftScore">蓝分--</a>
+                <div class="col">
+                    <div class="row">
+                        ```````````````````````````````
+                        <a class="waves-effect waves-light btn"
+                           @click="onCreateGame">创建比赛</a>
+                        <a class="waves-effect waves-light btn"
+                           @click="onChangeColor">交换红蓝</a>
+                        <a class="waves-effect waves-light btn"
+                           @click="onStarting">出阵(球员信息)</a>
+                        <a class="waves-effect waves-light btn" @click="onHideStarting">隐藏</a>
 
-                <input type="checkbox" id="unlimitScore" v-model="isUnLimitScore"/>
-                <label for="unlimitScore">///////不限制分数\\\\\\\</label>
-                <a class="waves-effect waves-light btn" @click="onMinRightScore">红分--</a>
-                <a class="waves-effect waves-light btn" @click="onAddRightScore">红分++</a>
+                        ```````````````````````````````
+                    </div>
+                    <div class="row" style="display: inline-flex">
+                        <div class="switch">
+                            <label>
+                                pause
+                                <input type="checkbox" @click="onToggleTimer">
+                                <span class="lever"></span>
+                                start::::::::
+                            </label>
+                        </div>
+                        <a class="waves-effect waves-light btn" @click="onResetTimer" style="height: 35px">Reset</a>
+                        场次设置::::<input v-model="gameIdx" style="width: 50px">
+                        双败场次::::<input v-model="bracketIdx" style="width: 50px">
+                        <a class="waves-effect waves-light btn" @click="onGetBracketInfo">获取球员</a>
+                    </div>
+                    <div class="row">
+                        <a class="waves-effect waves-light btn" @click="onUpdateWinScore(2)">2分胜</a>
+                        <a class="waves-effect waves-light btn" @click="onUpdateWinScore(3)">3分胜</a>
+                        <a class="waves-effect waves-light btn" @click="onUpdateWinScore(5)">5分胜</a>
+                    </div>
+                    <div class="row">
+                        <a class="waves-effect waves-light btn" @click="onAddLeftScore">蓝分++</a>
+                        <a class="waves-effect waves-light btn" @click="onMinLeftScore">蓝分--</a>
+
+                        <input type="checkbox" id="unlimitScore" v-model="isUnLimitScore"/>
+                        <label for="unlimitScore">///////不限制分数\\\\\\\</label>
+                        <a class="waves-effect waves-light btn" @click="onMinRightScore">红分--</a>
+                        <a class="waves-effect waves-light btn" @click="onAddRightScore">红分++</a>
+                    </div>
+                    <div class="row">
+                        <a class="waves-effect waves-light btn" @click="onAddLeftFoul">蓝规++</a>
+                        <a class="waves-effect waves-light btn" @click="onMinLeftFoul">蓝规--</a>
+                        <label style="font-size: 24px">[{{leftFoul}}]===口口口口口===[{{rightFoul}}]</label>
+                        <a class="waves-effect waves-light btn" @click="onMinRightFoul">红规--</a>
+                        <a class="waves-effect waves-light btn" @click="onAddRightFoul">红规++</a>
+                    </div>
+                    <div class="row">
+                        <a class="waves-effect waves-light btn" @click="onSubmitGame">提交比赛结果</a>
+                        <a class="waves-effect waves-light btn" @click="onShowWin">显示胜方</a>
+                        <a class="waves-effect waves-light btn" @click="onHideWin">隐藏胜方</a>
+                        <a class="waves-effect waves-light btn" @click="onRefresh">Refresh</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <a class="waves-effect waves-light btn" @click="onShowActPre">上一页</a>
+                <a class="waves-effect waves-light btn" @click="onShowAct">赛况表</a>
+                <a class="waves-effect waves-light btn" @click="onShowActNext">下一页</a>
+                <a class="waves-effect waves-light btn" @click="onHideAct">隐藏</a>
+                <a class="waves-effect waves-light btn" @click="onPickUpAct">出阵并隐藏</a>
+                <a class="waves-effect waves-light btn" @click="onPickUp8">双败出阵</a>
             </div>
             <div class="row">
-                <a class="waves-effect waves-light btn" @click="onAddLeftFoul">蓝规++</a>
-                <a class="waves-effect waves-light btn" @click="onMinLeftFoul">蓝规--</a>
-                <label style="font-size: 24px">[{{leftFoul}}]===口口口口口===[{{rightFoul}}]</label>
-                <a class="waves-effect waves-light btn" @click="onMinRightFoul">红规--</a>
-                <a class="waves-effect waves-light btn" @click="onAddRightFoul">红规++</a>
-            </div>
-            <div class="row">
-                <a class="waves-effect waves-light btn" @click="onSubmitGame">提交比赛结果</a>
-                <a class="waves-effect waves-light btn" @click="onShowWin">显示胜方</a>
-                <a class="waves-effect waves-light btn" @click="onHideWin">隐藏胜方</a>
-                <a class="waves-effect waves-light btn" @click="onRefresh">Refresh</a>
+                倒计时：
+                <br>
+                提示文字（最多五个字）：<input id="cdText" v-model="cdText" style="width: 100px">
+                计时多少秒：<input id="cdSec" v-model="cdSec" style="width: 100px">
+                <br>
+                <a class="waves-effect waves-light btn" @click="onCountDownIn">倒计时面板淡入</a>
+                <a class="waves-effect waves-light btn" @click="onCountDownOut">倒计时面板淡出</a>
             </div>
         </div>
     </div>
-
-    <div class="row">
-        <a class="waves-effect waves-light btn" @click="onShowActPre">上一页</a>
-        <a class="waves-effect waves-light btn" @click="onShowAct">赛况表</a>
-        <a class="waves-effect waves-light btn" @click="onShowActNext">下一页</a>
-        <a class="waves-effect waves-light btn" @click="onHideAct">隐藏</a>
-        <a class="waves-effect waves-light btn" @click="onPickUpAct">出阵并隐藏</a>
-        <a class="waves-effect waves-light btn" @click="onPickUp8">双败出阵</a>
-    </div>
-    <div class="row">
-        倒计时：
-        <br>
-        提示文字（最多五个字）：<input id="cdText" v-model="cdText" style="width: 100px">
-        计时多少秒：<input id="cdSec" v-model="cdSec" style="width: 100px">
-        <br>
-        <a class="waves-effect waves-light btn" @click="onCountDownIn">倒计时面板淡入</a>
-        <a class="waves-effect waves-light btn" @click="onCountDownOut">倒计时面板淡出</a>
+    <div id="tab2" class="col s12">
+        <div class="card-panel grey lighten-3">
+            <a class="waves-effect waves-light btn" @click="onFTShow">战团介绍</a>
+        </div>
     </div>
 </div>
+
 <div id="ex">
 
 </div>

@@ -116,10 +116,10 @@ export class BaseDB {
     //         // this.syncDataMap(callback);
     //     });
     // }
-    updateDocArr(docArr) {
+    updateDocArr(docArr,callback?) {
         for (var i = 0; i < docArr.length; i++) {
             var doc = docArr[i];
-            this.ds().update({'_id': doc._id}, doc,{upsert:true},null);
+            this.ds().update({'_id': doc._id}, doc, {upsert: true}, callback);
         }
         // this.ds().find({'$or': docArr}, (err, docs)=> {
         //
@@ -136,18 +136,6 @@ export class BaseDB {
 }
 
 class ActivityDB extends BaseDB {
-    // addRound(data, callback) {
-    //     data.round = this.config.idUsed;
-    //     this.dataStore.insert(data, (err, newDoc) => {
-    //         if (!err) {
-    //             var newId = this.saveIdUsed();
-    //         }
-    //         if (callback)
-    //             callback(err, newDoc);
-    //     })
-    // }
-
-
     getGameIdBase(roundId) {
         return roundId * 1000;
     }
@@ -516,19 +504,21 @@ export function initDB() {
     var playerDb: string = _path('app/db/player.db');
     var activityDb: string = _path('app/db/activity.db');
     var gameDbPath: string = _path('app/db/game.db');
+    var ftDbPath: string = _path('app/db/ft.db');
 
-    var huitiDbPath: string = _path('app/db/gameHuiTi.db');
-    var huitiPlayerDbPath: string = _path('app/db/playerHuiTi.db');
+    // var huitiDbPath: string = _path('app/db/gameHuiTi.db');
+    // var huitiPlayerDbPath: string = _path('app/db/playerHuiTi.db');
 
     db = {};
     db.player = new PlayerDB({filename: playerDb, autoload: true});
     db.activity = new ActivityDB({filename: activityDb, autoload: true});
     db.game = new GameDB({filename: gameDbPath, autoload: true});
+    db.ft = new BaseDB({filename: ftDbPath, autoload: true});
     //hui ti
-    db.gameHuiTi = new BaseDB({filename: huitiDbPath, autoload: true, indexName: '_id'});
-    db.playerHuiTi = new BaseDB({filename: huitiPlayerDbPath, autoload: true, indexName: '_id'});
+    // db.gameHuiTi = new BaseDB({filename: huitiDbPath, autoload: true, indexName: '_id'});
+    // db.playerHuiTi = new BaseDB({filename: huitiPlayerDbPath, autoload: true, indexName: '_id'});
 
-    db.externalInfo = new ExternalInfo();
+    // db.externalInfo = new ExternalInfo();
     console.log('initDB done!');
     // var ProtoBuf = require('protobufjs');
     // var builder = ProtoBuf.loadProtoFile(_path('app/proto/player.proto'));

@@ -148,15 +148,21 @@ export enum CommandId{
         ///screen
     cs_inScreenScore,
     inScreenScore,
+        //FT
+    cs_fadeInFTShow,
+    fadeInFTShow,
         // cs_fadeInComingActivity,
         // fadeInComingActivity,
         //db op
     cs_findPlayerData,
-    //// RKB
+        //// RKB
     cs_attack,
     attack,
+    cs_addHealth,
+    addHealth,
+    fadeInOK,
     cs_combo,
-    combo,
+    combo
 }
 class CommandItem {
     id: number;

@@ -37,9 +37,18 @@ export class RkbPanelView extends BasePanelView {
                 this.initStage(gameInfo);
             }
         })
+            .on(`${CommandId.fadeInOK}`, (data)=> {
+                console.log('fadeInOK');
+
+                // this.health.attackHandle(data);
+            })
             .on(`${CommandId.attack}`, (data)=> {
                 console.log('attack', data);
                 this.health.attackHandle(data);
+            })
+            .on(`${CommandId.addHealth}`, (data)=> {
+                console.log('addHealth', data);
+                this.health.addHealth(data);
             });
     }
 
@@ -54,12 +63,12 @@ export class RkbPanelView extends BasePanelView {
 
     on1PAttack() {
         console.log('on1PAttack');
-        var ad = 20 + (Math.random() + 50);
         this.opReq(`${CommandId.cs_attack}`, {target: 2});
     }
 
-    onMin1PHealth() {
-        console.log('onMin1PHealth');
+    onAdd1PHealth() {
+        console.log('onAdd1PHealth');
+        this.opReq(`${CommandId.cs_addHealth}`, {target: 1});
     }
 
     on2pAttack() {
@@ -67,8 +76,9 @@ export class RkbPanelView extends BasePanelView {
         this.opReq(`${CommandId.cs_attack}`, {target: 1});
     }
 
-    onMin2PHealth() {
-        console.log('onMin2PHealth');
+    onAdd2PHealth() {
+        console.log('onAdd2PHealth');
+        this.opReq(`${CommandId.cs_addHealth}`, {target: 2});
     }
 
 }

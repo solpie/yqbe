@@ -4,7 +4,7 @@ import {CommandId} from "../event/Command";
 import {ScParam} from "../SocketIOSrv";
 import {panelRouter} from "./PanelRouter";
 import {Request, Response} from "express";
-import {PlayerRkbInfo} from "../model/PlayerRkbInfo";
+import {PlayerRkbInfo, HEALTH_BAR_WIDTH} from "../model/PlayerRkbInfo";
 import Server = SocketIO.Server;
 import Socket = SocketIO.Socket;
 
@@ -36,10 +36,27 @@ export class RkbPanelHandle {
             cmdMap[`${CommandId.cs_attack}`] = (param) => {
                 return this.cs_attack(param);
             };
+
+            cmdMap[`${CommandId.cs_addHealth}`] = (param) => {
+                return this.cs_addHealth(param);
+            };
             var isSend = cmdMap[cmdId](param);
             if (!isSend)
                 res.sendStatus(200);
         })
+    }
+
+    cs_addHealth(param) {
+        var target = param.target;
+        var p1: PlayerRkbInfo = this.gameInfo.playerRkbInfoArr[0];
+        var p2: PlayerRkbInfo = this.gameInfo.playerRkbInfoArr[1];
+        if (target == 1) {
+            p1.hp = HEALTH_BAR_WIDTH;
+        }
+        else if (target == 2) {
+            p2.hp = HEALTH_BAR_WIDTH;
+        }
+        this.io.emit(`${CommandId.addHealth}`, ScParam({target: target, hp: HEALTH_BAR_WIDTH}))
     }
 
     cs_attack(param) {
@@ -50,11 +67,19 @@ export class RkbPanelHandle {
         if (target == 1) {
             ad = p2.attack + 50 * Math.random();
             p1.hp -= ad;
+            if (p1.hp <= 0) {
+                p1.hp = 0;
+                this.io.emit(`${CommandId.fadeInOK}`);
+            }
             this.io.emit(`${CommandId.attack}`, ScParam({target: target, hp: p1.hp, ad: ad}))
         }
         else if (target == 2) {
             ad = p1.attack + 50 * Math.random();
             p2.hp -= ad;
+            if (p2.hp <= 0) {
+                p2.hp = 0;
+                this.io.emit(`${CommandId.fadeInOK}`);
+            }
             this.io.emit(`${CommandId.attack}`, ScParam({target: target, hp: p2.hp, ad: ad}))
         }
     }

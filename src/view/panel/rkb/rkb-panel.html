@@ -1,3 +1,12 @@
+<style>
+    #rkb-panel {
+        opacity: .6;
+        left: 100px;
+        top: 200px;
+        position: absolute;
+        width: 1500px;
+    }
+</style>
 <div id="rkb-panel" class="card-panel grey lighten-3" v-if="op">
     <div class="row">
         <div class="col" v-for="playerInfo in playerInfoArr">
@@ -13,9 +22,9 @@
     </div>
     <div class="row">
         <a class="waves-effect waves-light btn" @click="on1PAttack">1p A</a>
-        <a class="waves-effect waves-light btn" @click="onMin1PHealth">1p--</a>
+        <a class="waves-effect waves-light btn" @click="onAdd1PHealth">1p回复</a>
         <label>///////__________\\\\\\\</label>
         <a class="waves-effect waves-light btn" @click="on2pAttack">2p A</a>
-        <a class="waves-effect waves-light btn" @click="onMin2PHealth">2p--</a>
+        <a class="waves-effect waves-light btn" @click="onAdd2PHealth">2p回复</a>
     </div>
 </div>
