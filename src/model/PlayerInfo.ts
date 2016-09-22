@@ -1,5 +1,5 @@
 import {BaseInfo, obj2Class, prop} from "./BaseInfo";
-class PlayerDoc {
+export class PlayerDoc {
     id: number = 0;
     name: string = '';
     phone: number = 0;
@@ -14,7 +14,8 @@ class PlayerDoc {
     loseGameCount: number = 0;
     winGameCount: number = 0;
     size: string;//衣服尺寸
-    state:string;
+    state: string;
+    ftId: number = 0;
 }
 export var PlayerState1v1 = {
     FIGHTING: ' ',

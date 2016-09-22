@@ -5,7 +5,7 @@ import {PlayerInfo} from "../../../../model/PlayerInfo";
 import {ViewEvent} from "../../../../event/Const";
 import WatchOption = vuejs.WatchOption;
 declare var Cropper;
-var _this_:Profile;
+var _this_: Profile;
 @Component({
     template: require('./profile.html'),
     props: {
@@ -21,6 +21,12 @@ var _this_:Profile;
             type: String,
             required: true,
         },
+        ftId: {},
+        ftOptionArr: {
+            type: Array,
+            required: true,
+            default: []
+        },
         height: {
             type: String,
             required: true,
@@ -31,29 +37,31 @@ var _this_:Profile;
     }
 })
 export class Profile extends VueEx {
-    imagePath:string;
-    playerInfo:PlayerInfo;
-    stage:any;
-    bluePlayerCard:StagePlayerCard;
-    redPlayerCard:StagePlayerCard;
-    cropper:any;
+    imagePath: string;
+    playerInfo: PlayerInfo;
+    stage: any;
+    bluePlayerCard: StagePlayerCard;
+    redPlayerCard: StagePlayerCard;
+    cropper: any;
     //props
-    eloScore:number;
-    name:string;
-    realName:string;
-    style:number;
-    phone:number;
-    intro:string;
-    weight:string;
-    height:string;
-    qq:number;
-    avatar:string;
-    size:string;
+    eloScore: number;
+    name: string;
+    realName: string;
+    style: number;
+    phone: number;
+    intro: string;
+    weight: string;
+    height: string;
+    qq: number;
+    ftId: number;
+    avatar: string;
+    size: string;
+    ftOptionArr;
     //
 
-    isEdit:boolean;
-    editPlayerId:number;
-    isChangeAvatar:boolean;
+    isEdit: boolean;
+    editPlayerId: number;
+    isChangeAvatar: boolean;
 
     ready() {
         _this_ = this;
@@ -61,7 +69,9 @@ export class Profile extends VueEx {
         this.isEdit = false;
         this.isChangeAvatar = false;
 
-        this.$on(ViewEvent.PLAYER_EDIT, (playerId) => {
+        this.$on(ViewEvent.PLAYER_EDIT, (param) => {
+            var playerId = param.playerId;
+            this.ftOptionArr = param.ftOptionArr;
             this.isEdit = true;
             this.isChangeAvatar = false;
             this.post(`/db/player/${playerId}`, (data) => {
@@ -70,6 +80,7 @@ export class Profile extends VueEx {
                 this.editPlayerId = playerDoc.id;
                 this.stage = this.initCanvas(playerDoc.avatar, 1);
                 this.setProp(playerDoc, this);
+                // this.ftSelected = playerDoc.ftId;
                 this.avatar = playerDoc.avatar;
             });
             console.log(ViewEvent.PLAYER_EDIT, playerId);
@@ -77,11 +88,12 @@ export class Profile extends VueEx {
     }
 
     setProp(data, toObj) {
-        // 头像 虎扑ID  身高 体重 本场战绩 黑话
+        // 头像 虎扑ID  身高 体重 本场战绩 黑话 战团ID
         toObj.name = data.name;
         toObj.weight = data.weight;
         toObj.height = data.height;
         toObj.intro = data.intro;
+        toObj.ftId = data.ftId;
     }
 
 
@@ -91,7 +103,7 @@ export class Profile extends VueEx {
             _this_.bluePlayerCard.setName(val);
             _this_.redPlayerCard.setName(val);
         }
-    }4
+    }
 
     onDeletePlayer() {
         console.log('onDeletePlayer');
@@ -110,7 +122,7 @@ export class Profile extends VueEx {
         event.stopPropagation();
         console.log('onSubmitInfo');
         $(".cropper-container").hide();
-        var playerDoc:any = {};
+        var playerDoc: any = {};
         this.setProp(this, playerDoc);
         if (this.isEdit) {
             var postUpdate = () => {
@@ -179,7 +191,7 @@ export class Profile extends VueEx {
         };
     }
 
-    onUpdateCropPreview(cropData:any) {
+    onUpdateCropPreview(cropData: any) {
         var scale = cropData.width / 180;
         if (this.bluePlayerCard && this.bluePlayerCard.avatarBmp) {
             this.bluePlayerCard.avatarBmp.x = -cropData.x / scale;
@@ -219,5 +231,10 @@ export class Profile extends VueEx {
         redPlayerCard.x = 250;
         stage.addChild(redPlayerCard);
         return stage;
+    }
+
+    onFtSelected(v) {
+        // this.ftId = this.ftSelected;
+        console.log('onFtSelected', v, this.ftId);
     }
 }

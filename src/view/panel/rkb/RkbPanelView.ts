@@ -39,7 +39,6 @@ export class RkbPanelView extends BasePanelView {
         })
             .on(`${CommandId.fadeInOK}`, (data)=> {
                 console.log('fadeInOK');
-
                 // this.health.attackHandle(data);
             })
             .on(`${CommandId.attack}`, (data)=> {

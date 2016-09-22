@@ -25,12 +25,13 @@
                         <!--<label for="weight">体重(KG)</label>-->
                     </div>
                 </div>
-
                 <div class="row">
-                    <div class="input-field col s12">
-                        一句话介绍 <input id="size" v-model="intro"  type="text" class="validate">
-                        <!--<label for="size">一句话介绍</label>-->
-                    </div>
+                    战团： <select class="browser-default" v-model="ftId" @change="onFtSelected"
+                            style="width: 150px">
+                       <option v-for="option in ftOptionArr" v-bind:value="option.value">
+                            {{ option.text }}
+                        </option>
+                    </select>
                     <!--<div class="input-field col s2">-->
                         <!--<input id="backNumber" v-model="backNumber" number type="text" class="validate">-->
                         <!--<label for="backNumber">球衣号码</label>-->

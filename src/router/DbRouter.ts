@@ -1,5 +1,5 @@
 import {db} from "../model/DbInfo";
-import {ExternalInfo} from "../model/external/ExternalInfo";
+import {mapToArr} from "../utils/JsFunc";
 // import {Act619} from "../event/Const";
 export var dbRouter = require('express').Router();
 
@@ -47,14 +47,19 @@ dbRouter.post('/game/', function (req: any, res: any) {
     res.send({gameMap: db.game.dataMap});
 });
 
-
-dbRouter.post('/external/player', function (req: any, res: any) {
-    res.send({playerInfoMap: db.playerHuiTi.dataMap})
+////  /db/ft
+dbRouter.get('/ft', function (req: any, res: any) {
+    var ftArr = mapToArr(db.ft.dataMap);
+    res.send({ftArr: ftArr});
 });
 
-dbRouter.get('/external/import', function (req: any, res: any) {
-    //https://github.com/SheetJS/js-xlsx
-    console.log('/db/external');
-    ExternalInfo.importHuiTi();
-    res.sendStatus(200);
-});
+// dbRouter.post('/external/player', function (req: any, res: any) {
+//     res.send({playerInfoMap: db.playerHuiTi.dataMap})
+// });
+//
+// dbRouter.get('/external/import', function (req: any, res: any) {
+//     //https://github.com/SheetJS/js-xlsx
+//     console.log('/db/external');
+//     ExternalInfo.importHuiTi();
+//     res.sendStatus(200);
+// });

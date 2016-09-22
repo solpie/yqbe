@@ -143,7 +143,6 @@ export class Stage1v1PanelView extends BasePanelView {
                 var gameIdx = param.gameIdx;
                 this.scorePanel.setGameIdx(gameIdx);
             })
-
             .on(`${CommandId.toggleTimer}`, (param) => {
                 if (param && param.hasOwnProperty('state')) {
                     console.log('set Timer:', param);
@@ -211,7 +210,6 @@ export class Stage1v1PanelView extends BasePanelView {
             .on(`${CommandId.resetGame}`, (param) => {
                 window.location.reload();
             })
-
             .on(`${CommandId.fadeInWinPanel}`, (param) => {
                 this.eventPanel.playerInfoCard.fadeInWinPlayer(param.isBlue, param.playerDoc);
             })
@@ -224,7 +222,6 @@ export class Stage1v1PanelView extends BasePanelView {
                 this.eventPanel.playerInfoCard.fadeInFinalPlayer(param.playerDoc);
 
             })
-
             .on(`${CommandId.fadeOutFinalPlayer}`, (param) => {
                 this.eventPanel.playerInfoCard.fadeOutWinPlayer();
             })
@@ -234,9 +231,11 @@ export class Stage1v1PanelView extends BasePanelView {
                 var cdText = param.cdText;
                 this.countDownRender.fadeInCountDown(cdSec, cdText);
             })
-
             .on(`${CommandId.fadeOutCountDown}`, (param)=> {
                 this.countDownRender.fadeOut();
+            })
+            .on(`${CommandId.fadeInFTShow}`, (data)=> {
+                console.log('fadeInFTShow', data);
             })
 
     }
@@ -527,6 +526,11 @@ export class Stage1v1PanelView extends BasePanelView {
     /////////////////////////////////
     onFTShow() {
         console.log('onFTShow');
+        this.opReq(`${CommandId.cs_fadeInFTShow}`);
+    }
+    onFTHide()
+    {
+        console.log('onFTHide');
         this.opReq(`${CommandId.cs_fadeInFTShow}`);
     }
 }

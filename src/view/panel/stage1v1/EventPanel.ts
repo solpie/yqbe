@@ -9,6 +9,7 @@ import Text = createjs.Text;
 import Bitmap = createjs.Bitmap;
 import SpriteContainer = createjs.SpriteContainer;
 import Ease = createjs.Ease;
+import {FTInfo} from "../../../model/FTInfo";
 export class EventPanel {
     ctn: Container;
     fireFx: any;
@@ -458,6 +459,14 @@ export class EventPanel {
             ctn.alpha = 1;
             ctn.removeAllChildren();
         });
+    }
+
+
+    fadeInFTIntro(param) {
+        var ftInfo:FTInfo = param.ftInfo;
+        var playerDocArr = ftInfo.memberArr;
+
+
     }
 
 

@@ -5,6 +5,7 @@ import {EloConf} from "../utils/EloUtil";
 import {ExternalInfo} from "./external/ExternalInfo";
 import {GameInfo} from "./GameInfo";
 import {TeamInfo} from "./TeamInfo";
+import {FTInfo} from "./FTInfo";
 export var db: any;
 var Datastore = require('nedb');
 
@@ -519,7 +520,40 @@ export function initDB() {
     // db.playerHuiTi = new BaseDB({filename: huitiPlayerDbPath, autoload: true, indexName: '_id'});
 
     // db.externalInfo = new ExternalInfo();
+
+
     console.log('initDB done!');
+    // var ftInfo = new FTInfo();
+    // ftInfo.id = 1;
+    // ftInfo.name = 'FTG';
+    // ftInfo.fullName = 'Fucked the goat';
+    // db.ft.ds().insert(ftInfo);
+    //
+    // ftInfo = new FTInfo();
+    // ftInfo.id = 2;
+    // ftInfo.name = 'TSH';
+    // ftInfo.fullName = 'The second hospital';
+    // db.ft.ds().insert(ftInfo);
+    //
+    // ftInfo = new FTInfo();
+    // ftInfo.id = 2;
+    // ftInfo.name = 'TSH';
+    // ftInfo.fullName = 'The second hospital';
+    // db.ft.ds().insert(ftInfo);
+    //
+    // ftInfo = new FTInfo();
+    // ftInfo.id = 3;
+    // ftInfo.name = 'Fe3O4';
+    // ftInfo.fullName = '四氧化三铁';
+    // db.ft.ds().insert(ftInfo);
+    //
+    // ftInfo = new FTInfo();
+    // ftInfo.id = 4;
+    // ftInfo.name = 'Gambia';
+    // ftInfo.fullName = '甘比亚';
+    // db.ft.ds().insert(ftInfo);
+
+
     // var ProtoBuf = require('protobufjs');
     // var builder = ProtoBuf.loadProtoFile(_path('app/proto/player.proto'));
     // var Player:any = builder.build('Player');

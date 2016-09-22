@@ -162,26 +162,6 @@ export class Stage1v1PanelHandle {
                 }
             };
             cmdMap[`${CommandId.cs_updatePlayer}`] = (param) => {
-                // if (this.gameInfo.gameState == GameInfo.GAME_STATE_ING) {
-                //     var playerId = param.playerId;
-                //     // if (playerId == ServerConf.king) {
-                //     //     param.isKing = true;
-                //     // }
-                //     var playerIdx = param.idx;
-                //     // if (!this.exPlayerIdMap[playerId]) {
-                //     //     if (actPlayerIdArr().indexOf(playerId) < 0) {
-                //     //         this.exPlayerIdMap[playerId] = playerId;
-                //     //         console.log('ex player', playerId);
-                //     //     }
-                //     // }
-                //     db.player.syncDataMap(()=> {
-                //         param.playerDoc = db.player.dataMap[playerId];
-                //         this.gameInfo.setPlayerInfoByIdx(playerIdx, db.player.getPlayerInfoById(playerId));
-                //         db.game.updatePlayerByPos(this.gameInfo.id, playerIdx, playerId);
-                //         // param.avgEloScore = this.gameInfo.getAvgEloScore();
-                //         this.io.emit(`${CommandId.updatePlayer}`, ScParam(param))
-                //     });
-                // }
                 return this.cs_updatePlayer(param);
             };
 
@@ -215,8 +195,15 @@ export class Stage1v1PanelHandle {
                     var updatePlayerDocArr = [];
                     for (var i = 0; i < playerIdArr.length; i++) {
                         var playerDoc = db.player.dataMap[i + 1];
-                        playerDoc.id += 100;
-                        updatePlayerDocArr.push(playerDoc);
+                        var playerDoc2 = db.player.dataMap[playerIdArr[i]];
+                        if (playerDoc && (playerDoc2.name != playerDoc.name)) {
+                            var empty = 100;
+                            while (db.player.dataMap[empty]) {
+                                empty++;
+                            }
+                            playerDoc.id = empty;
+                            updatePlayerDocArr.push(playerDoc);
+                        }
                     }
                     for (var i = 0; i < playerIdArr.length; i++) {
                         var playerDoc2 = db.player.dataMap[playerIdArr[i]];
@@ -577,6 +564,7 @@ export class Stage1v1PanelHandle {
     }
 
     cs_fadeInFTShow(param: any) {
+        var ftInfo
         this.io.emit(`${CommandId.fadeInFTShow}`);
     }
 
