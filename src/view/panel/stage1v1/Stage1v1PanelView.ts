@@ -1,6 +1,6 @@
 import {BasePanelView} from "../BasePanelView";
 import Component from "vue-class-component";
-import {PlayerInfo, PlayerState1v1} from "../../../model/PlayerInfo";
+import {PlayerInfo, PlayerState1v1, PlayerDoc} from "../../../model/PlayerInfo";
 import {PanelId, TimerState} from "../../../event/Const";
 import {CommandId} from "../../../event/Command";
 import {ScorePanel} from "./ScorePanel";
@@ -68,8 +68,11 @@ export class Stage1v1PanelView extends BasePanelView {
         if (!pid)
             pid = PanelId.stage1v1Panel;
         var io = super.ready(pid, isInitCanvas);
-        this.initIO(io);
-        this.initConsoleCmd();
+        if (this.isAuto)
+            this.initAuto(io);
+        else
+            this.initIO(io);
+        // this.initConsoleCmd();
     }
 
     initConsoleCmd() {
@@ -234,8 +237,10 @@ export class Stage1v1PanelView extends BasePanelView {
             .on(`${CommandId.fadeOutCountDown}`, (param)=> {
                 this.countDownRender.fadeOut();
             })
+            /////ft    view
             .on(`${CommandId.fadeInFTShow}`, (data)=> {
                 console.log('fadeInFTShow', data);
+                this.eventPanel.fadeInFTIntro(data);
             })
 
     }
@@ -526,11 +531,77 @@ export class Stage1v1PanelView extends BasePanelView {
     /////////////////////////////////
     onFTShow() {
         console.log('onFTShow');
-        this.opReq(`${CommandId.cs_fadeInFTShow}`);
+        this.opReq(`${CommandId.cs_fadeInFTShow}`, {idx: 0});
     }
-    onFTHide()
-    {
+
+    onFTHide() {
         console.log('onFTHide');
         this.opReq(`${CommandId.cs_fadeInFTShow}`);
+    }
+
+    private initAuto(io) {
+        io.on('connect', ()=> {
+            console.log('hupuAuto socket connected');
+            io.emit('passerbyking', {
+                game_id: 10000
+            })
+        })
+        io.on('wall', (data: any)=> {
+            var event = data.et;
+            var eventMap = {};
+            eventMap['updateScore'] = ()=> {
+                if (data.leftScore != null) {
+                    this.scorePanel.setLeftScore(data.leftScore);
+                }
+                if (data.rightScore != null) {
+                    this.scorePanel.setRightScore(data.rightScore);
+                }
+            };
+            eventMap['startGame'] = ()=> {
+                this.scorePanel.set35ScoreLight(data.winScore);
+                this.scorePanel.setGameIdx(data.gameIdx);
+
+                var leftPlayerInfo = new PlayerInfo();
+                var playerData = data.player.left;
+                leftPlayerInfo.name(playerData.name);
+                leftPlayerInfo.avatar(playerData.avatar);
+                leftPlayerInfo.winGameCount(playerData.winAmount);
+                leftPlayerInfo.loseGameCount(playerData.loseAmount);
+                this.playerPanel.setPlayer(0, leftPlayerInfo);
+
+                var rightPlayerInfo = new PlayerInfo();
+                playerData = data.player.right;
+                rightPlayerInfo.name(playerData.name);
+                rightPlayerInfo.avatar(playerData.avatar);
+                rightPlayerInfo.winGameCount(playerData.winAmount);
+                rightPlayerInfo.loseGameCount(playerData.loseAmount);
+                this.playerPanel.setPlayer(1, rightPlayerInfo);
+                // this.playerPanel.setPlayer(0)
+            };
+            eventMap['commitGame'] = ()=> {
+                var isBlue = data.et == 0;
+                // var playerDoc: PlayerDoc = new PlayerDoc();
+                // playerDoc.name = data.player.name;
+                // playerDoc.avatar = data.player.avatar;
+                data.player.winGameCount = data.player.winAmount;
+                data.player.loseGameCount = data.player.loseAmount;
+                // playerDoc.weight = data.player.weight;
+                // playerDoc.height = data.player.height;
+                // playerDoc.intro = data.player.intro;
+                this.eventPanel.playerInfoCard.fadeInWinPlayer(isBlue, data.player);
+                // this.eventPanel.fadeInWinPanel()
+            };
+            eventMap['fadeInCountDown'] = ()=> {
+                var text = data.text;
+                var cdSec = data.cdSec;
+                var type = data.type;
+                console.log('fadeInCountDown', data);
+            };
+            eventMap['fadeOutCountDown'] = ()=> {
+                console.log('fadeOutCountDown', data);
+            };
+            if (eventMap[event])
+                eventMap[event]();
+        });
     }
 }

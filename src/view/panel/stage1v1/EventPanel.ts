@@ -4,12 +4,12 @@ import {PlayerInfo, PlayerState1v1} from "../../../model/PlayerInfo";
 import {TeamInfo} from "../../../model/TeamInfo";
 import {CreateJsEx} from "../CreateJsEx";
 import {PlayerInfoCard} from "./PlayerInfoCard";
+import {FTInfo} from "../../../model/FTInfo";
 import Container = createjs.Container;
 import Text = createjs.Text;
 import Bitmap = createjs.Bitmap;
 import SpriteContainer = createjs.SpriteContainer;
 import Ease = createjs.Ease;
-import {FTInfo} from "../../../model/FTInfo";
 export class EventPanel {
     ctn: Container;
     fireFx: any;
@@ -463,9 +463,28 @@ export class EventPanel {
 
 
     fadeInFTIntro(param) {
-        var ftInfo:FTInfo = param.ftInfo;
+        var idx = param.idx;
+        var ftInfo: FTInfo = param.ftInfoArr[idx];
         var playerDocArr = ftInfo.memberArr;
-
+        var bg = new Bitmap('/img/panel/stage1v1/ft/opBg.png');
+        this.ctn.addChild(bg);
+        var scale: number = 440 / 516;
+        var px = 100;
+        for (var i = 0; i < playerDocArr.length; i++) {
+            var playerDoc = playerDocArr[i];
+            var playerCard: Container = PlayerInfoCard.ftOpenPlayerCard(playerDoc);
+            playerCard.x = px;
+            playerCard.y = 345;
+            if (i == 2) {
+                px += 390;
+                playerCard.y -= 42;
+            }
+            else {
+                px += 338;
+                playerCard.scaleX = playerCard.scaleY = scale;
+            }
+            this.ctn.addChild(playerCard);
+        }
 
     }
 

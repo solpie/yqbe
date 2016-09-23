@@ -3,13 +3,15 @@ import {ViewConst} from "../../event/Const";
 import Stage = createjs.Stage;
 import Container = createjs.Container;
 export class BasePanelView extends VueEx {
-    op:boolean;
-    stageWidth:number;
-    stageHeight:number;
-    stage:Stage;
-    ctn:Container;
-    opReq:(cmdId:string, param?:any, callback?:any)=>void;
-    isInitCanvas:boolean;
+    op: boolean;
+    isAuto:boolean;
+    stageWidth: number;
+    stageHeight: number;
+    stage: Stage;
+    ctn: Container;
+    opReq: (cmdId: string, param?: any, callback?: any)=>void;
+    isInitCanvas: boolean;
+
     initCanvas() {
         this.stageWidth = ViewConst.STAGE_WIDTH;
         this.stageHeight = ViewConst.STAGE_HEIGHT;
@@ -30,18 +32,20 @@ export class BasePanelView extends VueEx {
         }
     }
 
-    ready(pid?:string, isInitCanvas:boolean = true) {
+    ready(pid?: string, isInitCanvas: boolean = true) {
         this.isInitCanvas = isInitCanvas;
         if (isInitCanvas)
             this.initCanvas();
-        this.opReq = (cmdId:string, param:any, callback:any)=> {
+        this.opReq = (cmdId: string, param: any, callback: any)=> {
             this.$http.post(`/panel/${pid}/${cmdId}`,
                 param,
                 callback);
         };
-        var panel:any = this.$parent;
+        var panel: any = this.$parent;
         this.op = panel.isOp;
-        console.log("BasePanelView.ready", panel.isOp);
+        this.isAuto = panel.isAuto;
+
+        console.log("BasePanelView.ready isOp", panel.isOp);
         return panel.connect();
     }
 }

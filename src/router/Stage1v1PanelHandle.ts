@@ -11,6 +11,7 @@ import {PlayerInfo, PlayerState1v1} from "../model/PlayerInfo";
 import {Game1v1Info, bracketMap} from "../model/Game1v1Info";
 import {mapToArr, ascendingProp} from "../utils/JsFunc";
 import {MatchSvg} from "../model/BracketInfo";
+import {FTInfo} from "../model/FTInfo";
 import Server = SocketIO.Server;
 import Socket = SocketIO.Socket;
 export class Stage1v1PanelHandle {
@@ -24,6 +25,7 @@ export class Stage1v1PanelHandle {
     // playerCount: number;
     nextPlayerIdArr = [-1, -1];
     playerQue: Array<any> = [];
+    hupuWsUrl: string;
 
     constructor(io: Server) {
         console.log('StagePanelHandle!!');
@@ -47,6 +49,7 @@ export class Stage1v1PanelHandle {
                 console.log('disconnect');
             });
         this.initOp();
+        this.initHupuAuto()
     }
 
     isInit;
@@ -564,8 +567,19 @@ export class Stage1v1PanelHandle {
     }
 
     cs_fadeInFTShow(param: any) {
-        var ftInfo
-        this.io.emit(`${CommandId.fadeInFTShow}`);
+        var ftInfoArr = mapToArr(db.ft.dataMap);
+        for (var i = 0; i < ftInfoArr.length; i++) {
+            var ftInfo: FTInfo = ftInfoArr[i];
+            ftInfo.memberArr = [];
+            for (var playerId in db.player.dataMap) {
+                var playerDoc = db.player.dataMap[playerId];
+                if (playerDoc.ftId && playerDoc.ftId == ftInfo.id) {
+                    ftInfo.memberArr.push(playerDoc)
+                }
+            }
+        }
+
+        this.io.emit(`${CommandId.fadeInFTShow}`, ScParam({ftInfoArr: ftInfoArr, idx: param.idx}));
     }
 
     startGame(gameId) {
@@ -669,4 +683,15 @@ export class Stage1v1PanelHandle {
     }
 
 
+    private initHupuAuto() {
+        var unirest = require('unirest');
+        unirest.get('http://test.jrstvapi.hupu.com/zhubo/getNodeServer')
+            .end(function (response) {
+                console.log(response.body);
+                var a = JSON.parse(response.body);
+                if (a && a.length) {
+                    ServerConf.hupuWsUrl = a[0];
+                }
+            });
+    }
 }

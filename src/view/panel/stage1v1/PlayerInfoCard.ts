@@ -1,10 +1,11 @@
 import Container = createjs.Container;
-import {PlayerInfo} from "../../../model/PlayerInfo";
+import {PlayerInfo, PlayerDoc} from "../../../model/PlayerInfo";
 import {loadImg} from "../../../utils/JsFunc";
 import {CreateJsEx} from "../CreateJsEx";
 import {fadeOutCtn} from "../../../utils/Fx";
 import {ViewConst} from "../../../event/Const";
 import Text = createjs.Text;
+import Bitmap = createjs.Bitmap;
 export class PlayerInfoCard {
     ctn: Container;
 
@@ -157,6 +158,58 @@ export class PlayerInfoCard {
             ctn.addChild(winLoseText);
             callback(p);
         });
+        return ctn;
+    }
+
+    static ftOpenPlayerCard(playerDoc: PlayerDoc): Container {
+        var ctn = new Container();
+        var bg = new Bitmap('/img/panel/stage1v1/ft/ftPlayerCard.png');
+        ctn.addChild(bg);
+
+
+        loadImg(playerDoc.avatar, ()=> {
+            var avatar = new Bitmap(playerDoc.avatar);
+            var scale = 104 / avatar.getBounds().height;
+            avatar.scaleY = avatar.scaleX = scale;
+            avatar.x = 46;
+            avatar.alpha = 0.7;
+            avatar.y = 62;
+            ctn.addChildAt(avatar, 0);
+        });
+
+        var nameText: Text;
+        var centerPx = 170;
+        var col = '#f1c236';
+        nameText = new Text(playerDoc.name, "bold 30px Arial", col);
+        nameText.textAlign = 'center';
+        nameText.x = centerPx;
+        nameText.y = 191;
+        ctn.addChild(nameText);
+
+        var scoreText: Text;
+        scoreText = new Text((playerDoc.ftScore ? playerDoc.ftScore : 0) + "分", "bold 30px Arial", "#fff");
+        scoreText.textAlign = 'center';
+        scoreText.x = centerPx;
+        scoreText.y = 240;
+        ctn.addChild(scoreText);
+
+        var locationText: Text;
+        locationText = new Text((playerDoc.location ? playerDoc.location : '上海'), "18px Arial", "#fff");
+        locationText.textAlign = 'center';
+        locationText.x = centerPx;
+        locationText.y = 305;
+        ctn.addChild(locationText);
+
+        var heightText: Text = new Text(`身高：${playerDoc.height} cm`, "18px Arial", '#fff');
+        heightText.x = 35;
+        heightText.y = 342;
+        ctn.addChild(heightText);
+
+        var weightText: Text = new Text(`体重：${playerDoc.weight} kg`, "18px Arial", '#fff');
+        weightText.x = 195;
+        weightText.y = heightText.y;
+        ctn.addChild(weightText);
+
         return ctn;
     }
 

@@ -18,6 +18,7 @@ export class OpLinks {
                 {title: "screen1v1 ob", url: "/panel/#!/screen1v1/ob"},
                 {title: "bracket1v1 ob", url: "/panel/#!/bracket/ob"},
                 {title: "stage1v1 op", url: "/panel/#!/stage1v1/op"},
+                {title: "stage1v1 auto", url: "/panel/#!/stage1v1/auto"},
                 {title: "rkb op", url: "/panel/#!/rkb/op"},
                 // {title: "stage ob", url: "/panel/#!/stage/ob"},
                 // {title: "stage op mobile", url: "/m/#!/panel/stage/op"}
