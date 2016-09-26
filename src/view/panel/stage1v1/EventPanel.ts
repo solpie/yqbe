@@ -10,6 +10,7 @@ import Text = createjs.Text;
 import Bitmap = createjs.Bitmap;
 import SpriteContainer = createjs.SpriteContainer;
 import Ease = createjs.Ease;
+import Shape = createjs.Shape;
 export class EventPanel {
     ctn: Container;
     fireFx: any;
@@ -552,12 +553,62 @@ export class EventPanel {
         for (var i = 0; i < playerDocArr.length; i++) {
             var playerDoc: any = playerDocArr[i];
             if (!playerDoc.active) {
-                var playerIntroText = new Text(cnWrap('【' + playerDoc.name + '】：' + playerDoc.intro , 46), "22px Arial", "#fff");
+                var playerIntroText = new Text(cnWrap('【' + playerDoc.name + '】：' + playerDoc.intro, 46), "22px Arial", "#fff");
                 playerIntroText.lineHeight = 26;
                 playerIntroText.y = txtY;
                 chatCtn.addChild(playerIntroText);
                 txtY += playerIntroText.getMeasuredHeight();
             }
+        }
+    }
+
+    fadeInPlayerRank(param) {
+        this.ctn.removeAllChildren();
+        var bg = new Bitmap('/img/panel/stage1v1/ft/ftRankBg.jpg');
+        this.ctn.addChild(bg);
+        var playerItem = (playerDoc: PlayerDoc)=> {
+            var ctn = new Container();
+            var bg = new Bitmap('/img/panel/stage1v1/ft/ftRankPlayer.jpg');
+            ctn.addChild(bg);
+
+            loadImg(playerDoc.avatar, ()=> {
+                var avatar = new Bitmap(playerDoc.avatar);
+                avatar.y = 18;
+                console.log('aw ', avatar.getBounds().width);
+                avatar.scaleX = avatar.scaleY = 119 / avatar.getBounds().height;
+                console.log('aw ', avatar.getBounds().width);
+                avatar.x = 18 + (130 - avatar.getBounds().width * avatar.scaleX) / 2;
+                ctn.addChild(avatar);
+
+                var m = new Shape();
+                m.graphics.beginFill('#000').dr(0, 0, 130, 130);
+                m.x = m.y = 18;
+                avatar.mask = m;
+            });
+
+            var nameText = new Text(playerDoc.name, "bold 40px Arial", "#fff");
+            nameText.x = 160;
+            nameText.y = 40;
+            ctn.addChild(nameText);
+
+            var ftInfo = param.ftMap[playerDoc.ftId];
+            var ftName = ftInfo ? ftInfo.name : '无';
+            var ftText = new Text(ftName, "22px Arial", "#fff");
+            ftText.x = 268;
+            ftText.y = 95;
+            ctn.addChild(ftText);
+
+            return ctn;
+        };
+        for (var i = 0; i < 5; i++) {
+            var curItem = playerItem(param.curPlayerDocArr[i]);
+            curItem.x = 45;
+            curItem.y = 140 + i * 185;
+            this.ctn.addChild(curItem);
+            var totalItem = playerItem(param.totalPlayerDocArr[i]);
+            totalItem.x = 1005;
+            totalItem.y = curItem.y;
+            this.ctn.addChild(totalItem);
         }
     }
 }

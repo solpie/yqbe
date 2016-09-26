@@ -9,7 +9,7 @@ import {ScParam, screenPanelHanle} from "../SocketIOSrv";
 import {db} from "../model/DbInfo";
 import {PlayerInfo, PlayerState1v1, PlayerDoc} from "../model/PlayerInfo";
 import {Game1v1Info, bracketMap} from "../model/Game1v1Info";
-import {mapToArr, ascendingProp} from "../utils/JsFunc";
+import {mapToArr, ascendingProp, descendingProp} from "../utils/JsFunc";
 import {MatchSvg} from "../model/BracketInfo";
 import {FTInfo} from "../model/FTInfo";
 import Server = SocketIO.Server;
@@ -622,7 +622,20 @@ export class Stage1v1PanelHandle {
     }
 
     private cs_fadeInPlayerRank(param: any) {
+        var curPlayerDocArr;
+        var totalPlayerDocArr;
+        var playerDocArr = mapToArr(db.player.dataMap);
+        playerDocArr = playerDocArr.sort(descendingProp('ftScore'));
+        totalPlayerDocArr = playerDocArr.slice(0, 5);
+        playerDocArr = playerDocArr.sort(descendingProp('curFtScore'));
+        curPlayerDocArr = playerDocArr.slice(0, 5);
+        var ftMap = db.ft.dataMap;
+        this.io.emit(`${CommandId.fadeInPlayerRank}`, ScParam({
+            ftMap: ftMap,
+            curPlayerDocArr: curPlayerDocArr,
+            totalPlayerDocArr: totalPlayerDocArr
 
+        }));
     }
 
     startGame(gameId) {

@@ -262,6 +262,10 @@ export class Stage1v1PanelView extends BasePanelView {
                 console.log('fadeOutFtShow', data);
                 this.eventPanel.fadeOutFtShow();
             })
+            .on(`${CommandId.fadeInPlayerRank}`, (data)=> {
+                console.log('fadeInPlayerRank', data);
+                this.eventPanel.fadeInPlayerRank(data);
+            })
 
     }
 

@@ -16,6 +16,7 @@
     "pack": "npm run electron-packager&&npm run copy-node_modules&&explorer YuanQiTV-Billiard-win32-x64",
     "app": "npm run build && electron app --enable-logging",
     "electron-packager": "electron-packager app YuanQiTV-Billiard --ignore=node_modules/electron-* --platform=win32 --arch=x64 --overwrite",
+    "electron-packager32": "electron-packager app YuanQiTV-Billiard --ignore=node_modules/electron-* --platform=win32 --arch=ia32 --overwrite",
     "copy-node_modules": "echo D|xcopy node_modules YuanQiTV-Billiard-win32-x64\\resources\\node_modules /EXCLUDE:node_modules.ignore /e /y",
     "copy-app": "node script/copy_app.js",
     "dtsm": "dtsm init",
