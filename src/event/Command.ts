@@ -151,6 +151,8 @@ export enum CommandId{
         //FT
     cs_fadeInFTShow,
     fadeInFTShow,
+    cs_fadeOutFTShow,
+    fadeOutFTShow,
         // cs_fadeInComingActivity,
         // fadeInComingActivity,
         //db op

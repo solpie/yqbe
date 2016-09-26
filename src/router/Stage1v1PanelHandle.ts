@@ -7,7 +7,7 @@ import {Response} from "express-serve-static-core";
 import {Request} from "express";
 import {ScParam, screenPanelHanle} from "../SocketIOSrv";
 import {db} from "../model/DbInfo";
-import {PlayerInfo, PlayerState1v1} from "../model/PlayerInfo";
+import {PlayerInfo, PlayerState1v1, PlayerDoc} from "../model/PlayerInfo";
 import {Game1v1Info, bracketMap} from "../model/Game1v1Info";
 import {mapToArr, ascendingProp} from "../utils/JsFunc";
 import {MatchSvg} from "../model/BracketInfo";
@@ -36,12 +36,13 @@ export class Stage1v1PanelHandle {
             .on("connect", (socket: Socket) => {
                 var actDoc = db.activity.getDocArr([3])[0];
                 var matchArr = this.refreshBracket(actDoc);
-
+                var ftArr = mapToArr(db.ft.dataMap);
                 socket.emit(`${CommandId.initPanel}`, ScParam({
                     gameInfo: this.gameInfo,
                     isDev: ServerConf.isDev,
                     lastLoserPlayerInfo: this.lastLoserPlayerInfo,
                     matchArr: matchArr,
+                    ftArr: ftArr,
                     kingPlayer: ServerConf.king
                 }));
             })
@@ -191,37 +192,7 @@ export class Stage1v1PanelHandle {
 
 
             cmdMap[`${CommandId.cs_setActPlayer}`] = (param) => {
-                var playerIdArr = param.playerIdArr;
-                if (playerIdArr && playerIdArr.length) {
-
-                    var countPlayerId = [];
-                    var updatePlayerDocArr = [];
-                    for (var i = 0; i < playerIdArr.length; i++) {
-                        var playerDoc = db.player.dataMap[i + 1];
-                        var playerDoc2 = db.player.dataMap[playerIdArr[i]];
-                        if (playerDoc && (playerDoc2.name != playerDoc.name)) {
-                            var empty = 100;
-                            while (db.player.dataMap[empty]) {
-                                empty++;
-                            }
-                            playerDoc.id = empty;
-                            updatePlayerDocArr.push(playerDoc);
-                        }
-                    }
-                    for (var i = 0; i < playerIdArr.length; i++) {
-                        var playerDoc2 = db.player.dataMap[playerIdArr[i]];
-                        playerDoc2.id = i + 1;
-                        updatePlayerDocArr.push(playerDoc2);
-                        countPlayerId.push(playerDoc2.id);
-                    }
-                    db.player.updateDocArr(updatePlayerDocArr, ()=> {
-                        db.player.syncDataMap();
-                    });
-
-                    var actDoc = this.getActDoc();
-                    actDoc.gameDataArr[0].playerIdArr = countPlayerId;
-                    db.activity.updateDocArr([actDoc]);
-                }
+                return this.cs_setActPlayer(param);
             };
 
             cmdMap[`${CommandId.cs_setGameIdx}`] = (param) => {
@@ -372,9 +343,13 @@ export class Stage1v1PanelHandle {
             cmdMap[`${CommandId.cs_saveGameRec}`] = (param)=> {
                 return this.cs_saveGameRec(param, res);
             };
-            ///
+            ///  FT
             cmdMap[`${CommandId.cs_fadeInFTShow}`] = (param)=> {
                 return this.cs_fadeInFTShow(param);
+            };
+
+            cmdMap[`${CommandId.cs_fadeOutFTShow}`] = (param)=> {
+                return this.cs_fadeOutFTShow(param);
             };
             var isSend = cmdMap[cmdId](param);
             if (!isSend)
@@ -543,18 +518,31 @@ export class Stage1v1PanelHandle {
                 else
                     this.nextPlayerIdArr[this.gameInfo.winner_Idx[1]] = this.playerQue[1];
                 this.nextPlayerIdArr[this.gameInfo.loser_Idx[1]] = this.gameInfo.loser_Idx[0];
-
-                // this.nextPlayerIdArr[0] = this.playerQue[0];
-                // this.nextPlayerIdArr[1] = this.playerQue[1];
-                // this.quePlayer(this.gameInfo.loser_Idx[0], false);
-                // this.quePlayer(this.gameInfo.loserId, false);
             }
             console.log('nextPlayerIdArr', this.nextPlayerIdArr);
 
             this.lastLoserPlayerInfo = this.gameInfo.loserPlayerInfo;
-            // var playerDocArr = this.gameInfo.getPlayerDocArr();
-            // this.quePlayer(playerDocArr[0], false);
             db.player.updatePlayerDoc(this.gameInfo.getPlayerDocArr(), null);
+
+
+            ///********************************save ft score
+            var bluePlayerDoc: PlayerDoc = this.gameInfo.getPlayerDocArr()[0];
+            var ftInfoArr = [];
+            var ftInfo: FTInfo = db.ft.dataMap[bluePlayerDoc.ftId];
+            if (ftInfo) {
+                ftInfo.score ? ftInfo.score += this.gameInfo.leftScore : ftInfo.score = this.gameInfo.leftScore;
+                ftInfoArr.push(ftInfo);
+            }
+            var redPlayerDoc: PlayerDoc = this.gameInfo.getPlayerDocArr()[1];
+            ftInfo = db.ft.dataMap[redPlayerDoc.ftId];
+            if (ftInfo) {
+                ftInfo.score ? ftInfo.score += this.gameInfo.rightScore : ftInfo.score = this.gameInfo.rightScore;
+                ftInfoArr.push(ftInfo);
+            }
+            db.ft.updateDocArr(ftInfoArr,()=>{
+                db.ft.syncDataMap();
+            });
+            //*********************************************
             res.send(true);
         }
         return ServerConst.SEND_ASYNC;
@@ -566,20 +554,68 @@ export class Stage1v1PanelHandle {
         this.io.emit(`${CommandId.updateWinScore}`, ScParam(param));
     }
 
+    cs_setActPlayer(param) {
+        var playerIdArr = param.playerIdArr;
+        if (playerIdArr && playerIdArr.length) {
+            var countPlayerId = [];
+            var updatePlayerDocArr = [];
+            for (var i = 0; i < playerIdArr.length; i++) {
+                var playerDoc = db.player.dataMap[i + 1];
+                var playerDoc2 = db.player.dataMap[playerIdArr[i]];
+                if (playerDoc && (playerDoc2.name != playerDoc.name)) {
+                    var empty = 100;
+                    while (db.player.dataMap[empty]) {
+                        empty++;
+                    }
+                    playerDoc.id = empty;
+                    updatePlayerDocArr.push(playerDoc);
+                }
+            }
+            for (var i = 0; i < playerIdArr.length; i++) {
+                var playerDoc2 = db.player.dataMap[playerIdArr[i]];
+                playerDoc2.id = i + 1;
+                playerDoc2.active = true;
+                updatePlayerDocArr.push(playerDoc2);
+                countPlayerId.push(playerDoc2.id);
+            }
+            db.player.updateDocArr(updatePlayerDocArr, ()=> {
+                db.player.syncDataMap();
+            });
+
+            var actDoc = this.getActDoc();
+            actDoc.gameDataArr[0].playerIdArr = countPlayerId;
+            db.activity.updateDocArr([actDoc]);
+        }
+    }
+
     cs_fadeInFTShow(param: any) {
+        var playerIdArr = this.getActDoc().gameDataArr[0].playerIdArr;
+
         var ftInfoArr = mapToArr(db.ft.dataMap);
+        var playerDoc;
         for (var i = 0; i < ftInfoArr.length; i++) {
             var ftInfo: FTInfo = ftInfoArr[i];
             ftInfo.memberArr = [];
+            // for (var j = 0; j < playerIdArr.length; j++) {
+            //     var playerId = playerIdArr[j];
+            //     playerDoc = db.player.dataMap[playerId];
+            //
+            // }
             for (var playerId in db.player.dataMap) {
-                var playerDoc = db.player.dataMap[playerId];
+                playerDoc = db.player.dataMap[playerId];
                 if (playerDoc.ftId && playerDoc.ftId == ftInfo.id) {
+                    playerDoc.active = playerIdArr.indexOf(Number(playerId)) > -1;
                     ftInfo.memberArr.push(playerDoc)
                 }
             }
         }
 
-        this.io.emit(`${CommandId.fadeInFTShow}`, ScParam({ftInfoArr: ftInfoArr, idx: param.idx}));
+        this.io.emit(`${CommandId.fadeInFTShow}`, ScParam({ftInfoArr: ftInfoArr, idx: param.idx, ftId: param.ftId}));
+    }
+
+
+    private cs_fadeOutFTShow(param: any) {
+        this.io.emit(`${CommandId.fadeOutFTShow}`);
     }
 
     startGame(gameId) {
@@ -694,4 +730,5 @@ export class Stage1v1PanelHandle {
                 }
             });
     }
+
 }

@@ -16,7 +16,9 @@ export class PlayerDoc {
     size: string;//衣服尺寸
     state: string;
     ftId: number = 0;
+    active: boolean;
     ftScore: number = 0;
+    intro:string;
     location: string = '上海'
 }
 export var PlayerState1v1 = {

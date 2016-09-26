@@ -20,4 +20,6 @@ export class EventPanel {
         this.ctn.addChild(bmpO);
         createjs.Tween.get(bmpO, {x: 1500, scaleX: 1, scaleY: 1}, 200);
     }
+
+
 }

@@ -1,6 +1,6 @@
 import {BasePanelView} from "../BasePanelView";
 import Component from "vue-class-component";
-import {PlayerInfo, PlayerState1v1, PlayerDoc} from "../../../model/PlayerInfo";
+import {PlayerInfo, PlayerState1v1} from "../../../model/PlayerInfo";
 import {PanelId, TimerState} from "../../../event/Const";
 import {CommandId} from "../../../event/Command";
 import {ScorePanel} from "./ScorePanel";
@@ -20,6 +20,8 @@ import {CountDownPanel} from "./CountDownPanel";
         leftFoul: {},
         rightFoul: {},
         cmdString: {},
+        ftId: {},
+        ftOptionArr: {},
         playerNumArr: {
             type: Array,
             default: ['0', '0']
@@ -64,6 +66,10 @@ export class Stage1v1PanelView extends BasePanelView {
 
     pickUp8Map: any;
 
+    //ft
+    ftOptionArr: any;
+    ftId: any;
+
     ready(pid?: string, isInitCanvas: boolean = true) {
         if (!pid)
             pid = PanelId.stage1v1Panel;
@@ -102,6 +108,14 @@ export class Stage1v1PanelView extends BasePanelView {
                 this.rightFoul = data.gameInfo.rightFoul;
                 // if (data.lastLoserPlayerInfo)
                 data.gameInfo.lastLoserPlayerInfo = data.lastLoserPlayerInfo;
+                if (this.op) {
+                    var ftArr = data.ftArr;
+                    this.ftOptionArr = [];
+                    for (var i = 0; i < ftArr.length; i++) {
+                        var ft = ftArr[i];
+                        this.ftOptionArr.push({text: ft.name, value: ft.id});
+                    }
+                }
                 this.initStage(data.gameInfo);
             }
         });
@@ -190,12 +204,12 @@ export class Stage1v1PanelView extends BasePanelView {
                 var playerDoc = param.playerDoc;
                 this.eventPanel.updatePlayerState(playerDoc);
             })
-            .on(`${CommandId.updateKingPlayer}`, (param) => {
-                // var kingPlayer = param.kingPlayer;
-                //
-                // console.log('updateKingPlayer', param);
-                //
-            })
+            // .on(`${CommandId.updateKingPlayer}`, (param) => {
+            //     // var kingPlayer = param.kingPlayer;
+            //     //
+            //     // console.log('updateKingPlayer', param);
+            //     //
+            // })
             .on(`${CommandId.startingLine}`, (param) => {
                 var playerDocArr = param.playerDocArr;
                 for (var i = 0; i < playerDocArr.length; i++) {
@@ -241,6 +255,10 @@ export class Stage1v1PanelView extends BasePanelView {
             .on(`${CommandId.fadeInFTShow}`, (data)=> {
                 console.log('fadeInFTShow', data);
                 this.eventPanel.fadeInFTIntro(data);
+            })
+            .on(`${CommandId.fadeOutFTShow}`, (data)=> {
+                console.log('fadeOutFtShow', data);
+                this.eventPanel.fadeOutFtShow();
             })
 
     }
@@ -530,26 +548,34 @@ export class Stage1v1PanelView extends BasePanelView {
 
     /////////////////////////////////
     onFTShow() {
-        console.log('onFTShow');
-        this.opReq(`${CommandId.cs_fadeInFTShow}`, {idx: 0});
+        console.log('onFTShow ftId:', this.ftId);
+        this.opReq(`${CommandId.cs_fadeInFTShow}`, {idx: 0, ftId: this.ftId});
     }
 
     onFTHide() {
         console.log('onFTHide');
-        this.opReq(`${CommandId.cs_fadeInFTShow}`);
+        this.opReq(`${CommandId.cs_fadeOutFTShow}`);
     }
 
     private initAuto(io) {
+        this.scorePanel = new ScorePanel(this, true);
+        // this.scorePanel.init(gameDoc);
+        this.playerPanel = new PlayerPanel(this, true);
+        // this.playerPanel.init(gameDoc);
+        // this.gameId = gameDoc.id;
+        this.eventPanel = new EventPanel(this);
+        this.countDownRender = new CountDownPanel(this.stage);
         io.on('connect', ()=> {
             console.log('hupuAuto socket connected');
             io.emit('passerbyking', {
-                game_id: 10000
+                game_id: 1009
             })
         })
         io.on('wall', (data: any)=> {
             var event = data.et;
             var eventMap = {};
             eventMap['updateScore'] = ()=> {
+                console.log('updateScore', data);
                 if (data.leftScore != null) {
                     this.scorePanel.setLeftScore(data.leftScore);
                 }
@@ -579,7 +605,7 @@ export class Stage1v1PanelView extends BasePanelView {
                 // this.playerPanel.setPlayer(0)
             };
             eventMap['commitGame'] = ()=> {
-                var isBlue = data.et == 0;
+                var isBlue = data.idx == 0;
                 // var playerDoc: PlayerDoc = new PlayerDoc();
                 // playerDoc.name = data.player.name;
                 // playerDoc.avatar = data.player.avatar;
@@ -595,9 +621,11 @@ export class Stage1v1PanelView extends BasePanelView {
                 var text = data.text;
                 var cdSec = data.cdSec;
                 var type = data.type;
+                this.countDownRender.fadeInCountDown(cdSec, text);
                 console.log('fadeInCountDown', data);
             };
             eventMap['fadeOutCountDown'] = ()=> {
+                this.countDownRender.fadeOut();
                 console.log('fadeOutCountDown', data);
             };
             if (eventMap[event])

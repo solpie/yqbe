@@ -21,6 +21,13 @@
                     <a class="modal-trigger waves-effect waves-light btn" @click="onAddPlayerList">参赛玩家选取</a>
                 <p>
                     <a class="modal-trigger waves-effect waves-light btn" @click="onClearActPlayerGameRec">清除战绩</a>
+                <p>
+                    战团： <select class="browser-default" v-model="ftId" @change="onFtSelected"
+                                style="width: 150px">
+                    <option v-for="option in ftOptionArr" v-bind:value="option.value">
+                        {{ option.text }}
+                    </option>
+                </select>
                 <p class="lead">
                 </p>
                 <hr class="m-y-md">

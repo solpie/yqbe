@@ -1,4 +1,4 @@
-import {PlayerInfo} from "./PlayerInfo";
+import {PlayerInfo, PlayerDoc} from "./PlayerInfo";
 import {setPropTo} from "./BaseInfo";
 import {TimerState} from "../event/Const";
 export var bracketMap = {
@@ -21,8 +21,8 @@ export class Game1v1Info {
     leftScore: number;
     rightScore: number;
 
-    leftFoul:number = 0;
-    rightFoul:number = 0;
+    leftFoul: number = 0;
+    rightFoul: number = 0;
 
     playerInfoArr: PlayerInfo[] = new Array(2);
     gameIdx: number = 0;//场次
@@ -78,22 +78,29 @@ export class Game1v1Info {
         this.playerInfoArr[pos] = playerInfo;
         return playerInfo;
     }
-    winner_Idx:any;
-    loser_Idx:any;
+
+    winner_Idx: any;
+    loser_Idx: any;
+
     saveGameResult() {
         if (this.gameState === 0) {
             var isBlueWin = this.leftScore > this.rightScore;
+            var bluePlayerDoc = this.playerInfoArr[0].playerData;
+            var redPlayerDoc = this.playerInfoArr[1].playerData;
+            bluePlayerDoc.ftScore ? bluePlayerDoc.ftScore += this.leftScore : bluePlayerDoc.ftScore = this.leftScore;
+            redPlayerDoc.ftScore ? redPlayerDoc.ftScore += this.rightScore : redPlayerDoc.ftScore = this.rightScore;
+            // this.playerInfoArr[0].playerData.ftScore?
             if (isBlueWin) {
                 this.loserPlayerInfo = this.playerInfoArr[1];
                 this.loserPlayerInfo.isBlue = false;
-                this.winner_Idx = [this.playerInfoArr[0].playerData.id,0];
-                this.loser_Idx = [this.playerInfoArr[1].playerData.id,1];
+                this.winner_Idx = [this.playerInfoArr[0].playerData.id, 0];
+                this.loser_Idx = [this.playerInfoArr[1].playerData.id, 1];
                 PlayerInfo.addWinGameAmount(this.playerInfoArr[0].playerData);
                 PlayerInfo.addLoseGameAmount(this.playerInfoArr[1].playerData);
             }
             else {
-                this.winner_Idx = [this.playerInfoArr[1].playerData.id,1];
-                this.loser_Idx = [this.playerInfoArr[0].playerData.id,0];
+                this.winner_Idx = [this.playerInfoArr[1].playerData.id, 1];
+                this.loser_Idx = [this.playerInfoArr[0].playerData.id, 0];
 
                 this.loserPlayerInfo = this.playerInfoArr[0];
                 this.loserPlayerInfo.isBlue = true;
@@ -110,7 +117,7 @@ export class Game1v1Info {
     }
 
 
-    getPlayerDocArr() {
+    getPlayerDocArr():Array<PlayerDoc> {
         var a = [];
         for (var i = 0; i < this.playerInfoArr.length; i++) {
             a.push(this.playerInfoArr[i].playerData);

@@ -1,6 +1,6 @@
-import {loadImg} from "../../../utils/JsFunc";
+import {loadImg, descendingProp, cnWrap} from "../../../utils/JsFunc";
 import {ViewConst} from "../../../event/Const";
-import {PlayerInfo, PlayerState1v1} from "../../../model/PlayerInfo";
+import {PlayerInfo, PlayerState1v1, PlayerDoc} from "../../../model/PlayerInfo";
 import {TeamInfo} from "../../../model/TeamInfo";
 import {CreateJsEx} from "../CreateJsEx";
 import {PlayerInfoCard} from "./PlayerInfoCard";
@@ -461,32 +461,99 @@ export class EventPanel {
         });
     }
 
+    commonFadeOut() {
+        var ctn = this.ctn;
+        createjs.Tween.get(ctn).to({alpha: 0}, 100).call(function () {
+            ctn.alpha = 1;
+            ctn.removeAllChildren();
+        });
+    }
+
+    fadeOutFtShow() {
+        this.commonFadeOut();
+    }
 
     fadeInFTIntro(param) {
         var idx = param.idx;
-        var ftInfo: FTInfo = param.ftInfoArr[idx];
-        var playerDocArr = ftInfo.memberArr;
+        var ftId = param.ftId;
+        var ftInfo: FTInfo;
+        for (var i = 0; i < param.ftInfoArr.length; i++) {
+            ftInfo = param.ftInfoArr[i];
+            if (ftId == ftInfo.id) {
+                break;
+            }
+        }
+        // var ftInfo: FTInfo = param.ftInfoArr[idx];
+        var playerDocArr: Array<PlayerDoc> = ftInfo.memberArr;
         var bg = new Bitmap('/img/panel/stage1v1/ft/opBg.png');
         this.ctn.addChild(bg);
         var scale: number = 440 / 516;
         var px = 100;
-        for (var i = 0; i < playerDocArr.length; i++) {
-            var playerDoc = playerDocArr[i];
-            var playerCard: Container = PlayerInfoCard.ftOpenPlayerCard(playerDoc);
-            playerCard.x = px;
-            playerCard.y = 345;
-            if (i == 2) {
-                px += 390;
-                playerCard.y -= 42;
+        playerDocArr = playerDocArr.sort(descendingProp('ftScore'));
+        var order = new Array(5);
+        order[2] = playerDocArr[0];
+        order[1] = playerDocArr[1];
+        order[3] = playerDocArr[2];
+        order[0] = playerDocArr[3];
+        order[4] = playerDocArr[4];
+        // var disActivePlayerArr = [];
+        for (var i = 0; i < order.length; i++) {
+            var playerDoc = order[i];
+            if (playerDoc.active) {
+                var playerCard: Container = PlayerInfoCard.ftOpenPlayerCard(playerDoc);
+                playerCard.x = px;
+                playerCard.y = 345;
+                if (i == 2) {
+                    px += 390;
+                    playerCard.y -= 42;
+                }
+                else {
+                    px += 338;
+                    playerCard.scaleX = playerCard.scaleY = scale;
+                }
+                this.ctn.addChild(playerCard);
             }
-            else {
-                px += 338;
-                playerCard.scaleX = playerCard.scaleY = scale;
-            }
-            this.ctn.addChild(playerCard);
         }
 
+        var ftNameText = new Text(ftInfo.name, "bold 30px Arial", '#fff');
+        ftNameText.textAlign = 'center';
+        ftNameText.x = 1920 / 2;
+        ftNameText.y = 168;
+        this.ctn.addChild(ftNameText);
+
+        var ftIntroText = new Text(ftInfo.fullName, " 24px Arial", '#fff');
+        ftIntroText.textAlign = 'center';
+        ftIntroText.x = 1920 / 2;
+        ftIntroText.y = 208;
+        this.ctn.addChild(ftIntroText);
+
+
+        var ftScore = new Text((ftInfo.score ? ftInfo.score : 0) + "分", "22px Arial", "#fff");
+        ftScore.textAlign = 'right';
+        ftScore.x = 1847;
+        ftScore.y = 205;
+        this.ctn.addChild(ftScore);
+
+
+        ////// ft chat
+        var chatCtn = new Container();
+        chatCtn.x = 78;
+        chatCtn.y = 862;
+        this.ctn.addChild(chatCtn);
+
+        var txtY = 0;
+        var txt = '';
+
+        for (var i = 0; i < playerDocArr.length; i++) {
+            var playerDoc: any = playerDocArr[i];
+            if (!playerDoc.active) {
+                var playerIntroText = new Text(cnWrap('[' + playerDoc.name + '] : ' + playerDoc.intro , 46), "22px Arial", "#fff");
+                playerIntroText.lineHeight = 26;
+                playerIntroText.y = txtY;
+                chatCtn.addChild(playerIntroText);
+                txtY += playerIntroText.getMeasuredHeight();
+            }
+
+        }
     }
-
-
 }

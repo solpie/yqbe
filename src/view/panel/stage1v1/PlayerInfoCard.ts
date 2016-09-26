@@ -1,6 +1,6 @@
 import Container = createjs.Container;
 import {PlayerInfo, PlayerDoc} from "../../../model/PlayerInfo";
-import {loadImg} from "../../../utils/JsFunc";
+import {loadImg, cnWrap} from "../../../utils/JsFunc";
 import {CreateJsEx} from "../CreateJsEx";
 import {fadeOutCtn} from "../../../utils/Fx";
 import {ViewConst} from "../../../event/Const";
@@ -123,30 +123,13 @@ export class PlayerInfoCard {
             }
             ctn.addChild(playerInfoText);
 
-            // var cnLength = function (text) {
-            //     var arr = text.match(/[^x00-xff]/ig);
-            //     return text.length + (arr == null ? 0 : arr.length);
-            // };
-            //
-            // var wrap = (text, num = 12)=> {
-            //     var outText = '';
-            //     for (var i = 0; ; i++) {
-            //         if (i * num < cnLength(text))
-            //             outText += text.substr(i * num, (i + 1) * num) + '\n';
-            //         else
-            //             break;
-            //     }
-            //     return outText;
-            // };
-
-
             if (p.isBlue)
                 $('#ex').append(`<textarea class="PlayerIntro BlueIntro" >${PlayerInfo.intro(p)}</textarea>`);
             else
                 $('#ex').append(`<textarea class="PlayerIntro RedIntro"  >${PlayerInfo.intro(p)}</textarea>`);
 
 
-            var winLoseText: Text = new createjs.Text(`${p.winGameCount()}胜 / ${p.loseGameCount()}负`, "25px Arial", '#f1c236');
+            var winLoseText: Text = new createjs.Text(`${p.winGameCount()}胜 / ${p.loseGameCount()}负 ${p.playerData.ftScore}分`, "25px Arial", '#f1c236');
             winLoseText.textAlign = 'center';
             winLoseText.x = nameText.x;
             winLoseText.y = 410;
@@ -165,7 +148,6 @@ export class PlayerInfoCard {
         var ctn = new Container();
         var bg = new Bitmap('/img/panel/stage1v1/ft/ftPlayerCard.png');
         ctn.addChild(bg);
-
 
         loadImg(playerDoc.avatar, ()=> {
             var avatar = new Bitmap(playerDoc.avatar);
@@ -202,13 +184,19 @@ export class PlayerInfoCard {
 
         var heightText: Text = new Text(`身高：${playerDoc.height} cm`, "18px Arial", '#fff');
         heightText.x = 35;
-        heightText.y = 342;
+        heightText.y = 343;
         ctn.addChild(heightText);
 
         var weightText: Text = new Text(`体重：${playerDoc.weight} kg`, "18px Arial", '#fff');
         weightText.x = 195;
         weightText.y = heightText.y;
         ctn.addChild(weightText);
+
+        var introText: Text = new Text(cnWrap(playerDoc.intro, 20), "22px Arial", '#fff');
+        introText.x = 30;
+        introText.lineHeight = 26;
+        introText.y = 375;
+        ctn.addChild(introText);
 
         return ctn;
     }

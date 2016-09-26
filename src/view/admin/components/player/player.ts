@@ -22,6 +22,7 @@ import {CommandId} from "../../../../event/Command";
     },
     props: {
         total: {},
+        ftId: {},
         ftOptionArr: {
             type: Array,
             required: true,
@@ -40,9 +41,12 @@ export class Player extends VueEx {
     pickPlayerIdArr: number[] = [];
     pickPlayerIdArrArr: Array<number[]> = [];
     countPage: number[];
+    ftId;
     ftOptionArr;
     isOpen: boolean;
     total: number;
+
+    playerMap: any;
 
     data(): any {
         return {
@@ -71,6 +75,7 @@ export class Player extends VueEx {
             var pageCount = 16;
             var count = 0;
             this.countPage = [1];
+            this.playerMap = res.data.PlayerMap;
             for (var playerId in res.data.PlayerMap) {
                 count++;
                 if (count === pageCount) {
@@ -88,8 +93,7 @@ export class Player extends VueEx {
                 this.ftOptionArr.push({text: ft.name, value: ft.id});
             }
             console.log('ft res:', res, this.ftOptionArr);
-
-        })
+        });
     }
 
     onPickPlayer(playerId) {
@@ -134,6 +138,15 @@ export class Player extends VueEx {
         ($('#modal-player') as any).openModal();
         this.message = "编辑球员";
         this.$broadcast(ViewEvent.PLAYER_EDIT, {playerId: playerId, ftOptionArr: this.ftOptionArr});
+    }
+
+    onFtSelected() {
+        this.playerArr = [];
+        for (var playerId in this.playerMap) {
+            var playerDoc = this.playerMap[playerId];
+            if (playerDoc.ftId == this.ftId)
+                this.playerArr.push(playerDoc);
+        }
     }
 
 
