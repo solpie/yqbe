@@ -487,6 +487,13 @@ export class EventPanel {
         var playerDocArr: Array<PlayerDoc> = ftInfo.memberArr;
         var bg = new Bitmap('/img/panel/stage1v1/ft/opBg.png');
         this.ctn.addChild(bg);
+
+        ///ft logo
+        var logo = new Bitmap(ftInfo.logo);
+        logo.x = 647;
+        logo.y = 165;
+        this.ctn.addChild(logo);
+
         var scale: number = 440 / 516;
         var px = 100;
         playerDocArr = playerDocArr.sort(descendingProp('ftScore'));
@@ -542,18 +549,15 @@ export class EventPanel {
         this.ctn.addChild(chatCtn);
 
         var txtY = 0;
-        var txt = '';
-
         for (var i = 0; i < playerDocArr.length; i++) {
             var playerDoc: any = playerDocArr[i];
             if (!playerDoc.active) {
-                var playerIntroText = new Text(cnWrap('[' + playerDoc.name + '] : ' + playerDoc.intro , 46), "22px Arial", "#fff");
+                var playerIntroText = new Text(cnWrap('【' + playerDoc.name + '】：' + playerDoc.intro , 46), "22px Arial", "#fff");
                 playerIntroText.lineHeight = 26;
                 playerIntroText.y = txtY;
                 chatCtn.addChild(playerIntroText);
                 txtY += playerIntroText.getMeasuredHeight();
             }
-
         }
     }
 }

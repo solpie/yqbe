@@ -153,6 +153,10 @@ export enum CommandId{
     fadeInFTShow,
     cs_fadeOutFTShow,
     fadeOutFTShow,
+    cs_fadeInPlayerRank,
+    fadeInPlayerRank,
+    cs_fadeInFtRank,
+    fadeInFtRank,
         // cs_fadeInComingActivity,
         // fadeInComingActivity,
         //db op

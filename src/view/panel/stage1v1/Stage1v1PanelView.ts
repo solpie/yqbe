@@ -8,6 +8,7 @@ import {PlayerPanel} from "./PlayerPanel";
 import {EventPanel} from "./EventPanel";
 import {loadImgArr, descendingProp, mapToArr} from "../../../utils/JsFunc";
 import {CountDownPanel} from "./CountDownPanel";
+import $route = vuejs.$route;
 @Component({
     template: require('./stage1v1-panel.html'),
     props: {
@@ -78,6 +79,7 @@ export class Stage1v1PanelView extends BasePanelView {
             this.initAuto(io);
         else
             this.initIO(io);
+        console.log('router', this.$route.params);
         // this.initConsoleCmd();
     }
 
@@ -557,6 +559,16 @@ export class Stage1v1PanelView extends BasePanelView {
         this.opReq(`${CommandId.cs_fadeOutFTShow}`);
     }
 
+    onFtFadeInPlayerRank() {
+        console.log('onFtFadeInPlayerRank');
+        this.opReq(`${CommandId.cs_fadeInPlayerRank}`);
+    }
+
+    onFtFadeInFtRankHide() {
+        console.log('onFtFadeInFtRankHide');
+        this.opReq(`${CommandId.cs_fadeInFtRank}`);
+    }
+
     private initAuto(io) {
         this.scorePanel = new ScorePanel(this, true);
         // this.scorePanel.init(gameDoc);
@@ -568,7 +580,7 @@ export class Stage1v1PanelView extends BasePanelView {
         io.on('connect', ()=> {
             console.log('hupuAuto socket connected');
             io.emit('passerbyking', {
-                game_id: 1009
+                game_id: this.$route.params.game_id
             })
         })
         io.on('wall', (data: any)=> {

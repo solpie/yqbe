@@ -344,6 +344,9 @@ export class Stage1v1PanelHandle {
                 return this.cs_saveGameRec(param, res);
             };
             ///  FT
+            cmdMap[`${CommandId.cs_fadeInPlayerRank}`] = (param)=> {
+                return this.cs_fadeInPlayerRank(param);
+            };
             cmdMap[`${CommandId.cs_fadeInFTShow}`] = (param)=> {
                 return this.cs_fadeInFTShow(param);
             };
@@ -539,7 +542,7 @@ export class Stage1v1PanelHandle {
                 ftInfo.score ? ftInfo.score += this.gameInfo.rightScore : ftInfo.score = this.gameInfo.rightScore;
                 ftInfoArr.push(ftInfo);
             }
-            db.ft.updateDocArr(ftInfoArr,()=>{
+            db.ft.updateDocArr(ftInfoArr, ()=> {
                 db.ft.syncDataMap();
             });
             //*********************************************
@@ -616,6 +619,10 @@ export class Stage1v1PanelHandle {
 
     private cs_fadeOutFTShow(param: any) {
         this.io.emit(`${CommandId.fadeOutFTShow}`);
+    }
+
+    private cs_fadeInPlayerRank(param: any) {
+
     }
 
     startGame(gameId) {
@@ -730,5 +737,6 @@ export class Stage1v1PanelHandle {
                 }
             });
     }
+
 
 }

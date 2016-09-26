@@ -18,6 +18,7 @@ export class PlayerDoc {
     ftId: number = 0;
     active: boolean;
     ftScore: number = 0;
+    curFtScore: number = 0;
     intro:string;
     location: string = '上海'
 }

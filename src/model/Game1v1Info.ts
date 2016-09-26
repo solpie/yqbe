@@ -88,7 +88,9 @@ export class Game1v1Info {
             var bluePlayerDoc = this.playerInfoArr[0].playerData;
             var redPlayerDoc = this.playerInfoArr[1].playerData;
             bluePlayerDoc.ftScore ? bluePlayerDoc.ftScore += this.leftScore : bluePlayerDoc.ftScore = this.leftScore;
+            bluePlayerDoc.curFtScore ? bluePlayerDoc.curFtScore += this.leftScore : bluePlayerDoc.curFtScore = this.leftScore;
             redPlayerDoc.ftScore ? redPlayerDoc.ftScore += this.rightScore : redPlayerDoc.ftScore = this.rightScore;
+            redPlayerDoc.curFtScore ? redPlayerDoc.curFtScore += this.rightScore : redPlayerDoc.curFtScore = this.rightScore;
             // this.playerInfoArr[0].playerData.ftScore?
             if (isBlueWin) {
                 this.loserPlayerInfo = this.playerInfoArr[1];

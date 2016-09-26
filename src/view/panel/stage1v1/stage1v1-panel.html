@@ -39,6 +39,10 @@
         left: 1270px;
     }
 </style>
+<script>
+    var urlParam = $route.params;
+    console.log('urlParam', $route, urlParam);
+</script>
 <div id="stage-panel" v-if="op" class="row">
     <div class="col s12">
         <ul class="tabs">
@@ -156,6 +160,9 @@
             </select>
             <a class="waves-effect waves-light btn" @click="onFTShow">战团介绍</a>
             <a class="waves-effect waves-light btn" @click="onFTHide">战团隐藏</a>
+            <a class="waves-effect waves-light btn" @click="onFtFadeInPlayerRank">个人排行</a>
+            <a class="waves-effect waves-light btn" @click="onFtFadeInFtRankHide">战团排行</a>
+            <a class="waves-effect waves-light btn" @click="onFtFadeOutRank">隐藏排行</a>
         </div>
     </div>
 </div>

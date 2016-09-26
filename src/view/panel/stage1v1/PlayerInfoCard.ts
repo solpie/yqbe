@@ -192,7 +192,7 @@ export class PlayerInfoCard {
         weightText.y = heightText.y;
         ctn.addChild(weightText);
 
-        var introText: Text = new Text(cnWrap(playerDoc.intro, 20), "22px Arial", '#fff');
+        var introText: Text = new Text(cnWrap(playerDoc.intro, 24), "22px Arial", '#fff');
         introText.x = 30;
         introText.lineHeight = 26;
         introText.y = 375;

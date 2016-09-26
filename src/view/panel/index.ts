@@ -63,6 +63,10 @@ router.map({
         component: BracketView,
         name: 'bracket'
     },
+    '/stage1v1/auto/:game_id': {
+        component: Stage1v1PanelView,
+        name: 'stage1v1'
+    },
     '/stage1v1/:op': {
         component: Stage1v1PanelView,
         name: 'stage1v1'
