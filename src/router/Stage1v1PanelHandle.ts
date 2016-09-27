@@ -546,6 +546,8 @@ export class Stage1v1PanelHandle {
                 db.ft.syncDataMap();
             });
             //*********************************************
+            // db.game.updateDocArr([this.gameInfo.getGameDoc()]);
+            db.game.create(this.gameInfo.getGameDoc());
             res.send(true);
         }
         return ServerConst.SEND_ASYNC;

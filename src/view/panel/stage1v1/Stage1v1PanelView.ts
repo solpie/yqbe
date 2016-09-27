@@ -590,6 +590,28 @@ export class Stage1v1PanelView extends BasePanelView {
         io.on('wall', (data: any)=> {
             var event = data.et;
             var eventMap = {};
+            eventMap['init'] = ()=> {
+                console.log('init', data);
+                this.scorePanel.set35ScoreLight(data.winScore);
+                this.scorePanel.setGameIdx(data.gameIdx);
+
+                var leftPlayerInfo = new PlayerInfo();
+                var playerData = data.player.left;
+                leftPlayerInfo.name(playerData.name);
+                leftPlayerInfo.avatar(playerData.avatar);
+                leftPlayerInfo.winGameCount(playerData.winAmount);
+                leftPlayerInfo.loseGameCount(playerData.loseAmount);
+                this.playerPanel.setPlayer(0, leftPlayerInfo);
+
+                var rightPlayerInfo = new PlayerInfo();
+                playerData = data.player.right;
+                rightPlayerInfo.name(playerData.name);
+                rightPlayerInfo.avatar(playerData.avatar);
+                rightPlayerInfo.winGameCount(playerData.winAmount);
+                rightPlayerInfo.loseGameCount(playerData.loseAmount);
+                this.playerPanel.setPlayer(1, rightPlayerInfo);
+
+            };
             eventMap['updateScore'] = ()=> {
                 console.log('updateScore', data);
                 if (data.leftScore != null) {
@@ -618,7 +640,9 @@ export class Stage1v1PanelView extends BasePanelView {
                 rightPlayerInfo.winGameCount(playerData.winAmount);
                 rightPlayerInfo.loseGameCount(playerData.loseAmount);
                 this.playerPanel.setPlayer(1, rightPlayerInfo);
-                // this.playerPanel.setPlayer(0)
+
+                this.scorePanel.resetTimer();
+                this.scorePanel.toggleTimer1(TimerState.START_STR);
             };
             eventMap['commitGame'] = ()=> {
                 var isBlue = data.idx == 0;

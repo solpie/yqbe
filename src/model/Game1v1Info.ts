@@ -37,10 +37,12 @@ export class Game1v1Info {
     timerState: number = 0;
     time: number = 0;
     loserPlayerInfo: PlayerInfo;
+    _startDate;
 
     constructor(gameDoc?: any) {
         this.rightScore = 0;
         this.leftScore = 0;
+        this._startDate = new Date().getTime();
         if (gameDoc) {
             setPropTo(gameDoc, this);
             var playerDocArr = this.playerInfoArr;
@@ -89,8 +91,12 @@ export class Game1v1Info {
             var redPlayerDoc = this.playerInfoArr[1].playerData;
             bluePlayerDoc.ftScore ? bluePlayerDoc.ftScore += this.leftScore : bluePlayerDoc.ftScore = this.leftScore;
             bluePlayerDoc.curFtScore ? bluePlayerDoc.curFtScore += this.leftScore : bluePlayerDoc.curFtScore = this.leftScore;
+            bluePlayerDoc.dtScore = this.leftScore;
+
             redPlayerDoc.ftScore ? redPlayerDoc.ftScore += this.rightScore : redPlayerDoc.ftScore = this.rightScore;
             redPlayerDoc.curFtScore ? redPlayerDoc.curFtScore += this.rightScore : redPlayerDoc.curFtScore = this.rightScore;
+            redPlayerDoc.dtScore = this.rightScore;
+
             // this.playerInfoArr[0].playerData.ftScore?
             if (isBlueWin) {
                 this.loserPlayerInfo = this.playerInfoArr[1];
@@ -118,8 +124,25 @@ export class Game1v1Info {
         return this.gameState != 0;
     }
 
+    getGameDoc() {
+        var g: any = {};
+        var date = new Date();
+        g.time = this.time;
+        var winner: any = this.playerInfoArr[this.winner_Idx[1]].playerData;
+        var loser: any = this.playerInfoArr[this.loser_Idx[1]].playerData;
+        g.idx = this.gameIdx;
+        g.start = this._startDate;
+        g.end = date.getTime();
+        var gameDoc = (playerDoc)=> {
+            return {name: playerDoc.name, _id: playerDoc._id, score: playerDoc.dtScore}
+        };
+        g.winner = gameDoc(winner);
+        g.loser = gameDoc(loser);
+        console.log('getGameDoc', g);
+        return g;
+    }
 
-    getPlayerDocArr():Array<PlayerDoc> {
+    getPlayerDocArr(): Array<PlayerDoc> {
         var a = [];
         for (var i = 0; i < this.playerInfoArr.length; i++) {
             a.push(this.playerInfoArr[i].playerData);
