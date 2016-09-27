@@ -192,6 +192,13 @@ export class Stage1v1PanelHandle {
                     // if (playerDoc.state == PlayerState1v1.FIGHTING) {
                     //     // this.io.emit(`${CommandId.updatePlayer}`, ScParam(param))
                     // }
+                    if (playerDoc.state == PlayerState1v1.Dead) {
+                        console.log('player state dead', playerDoc.name, this.playerQue, this.playerQue.length);
+                        var deadIdx = this.playerQue.indexOf(playerDoc.id);
+                        if (deadIdx > -1)
+                            this.playerQue.splice(deadIdx, 1);
+                        console.log('player state dead', playerDoc.name, this.playerQue, this.playerQue.length);
+                    }
                     console.log('cs_updatePlayerState', 'updatePlayerState', param);
                     this.io.emit(`${CommandId.updatePlayerState}`, ScParam(param))
                 });
@@ -664,7 +671,16 @@ export class Stage1v1PanelHandle {
     private cs_fadeInMixRank(param: any) {
         var totalPlayerDocArr;
         var playerDocArr = mapToArr(db.player.dataMap);
-        playerDocArr = playerDocArr.sort(descendingProp('ftScore'));
+        var pFilter = [];
+        for (var i = 0; i < playerDocArr.length; i++) {
+            var p = playerDocArr[i];
+            if (!p.ftScore)
+                p.ftScore = 0;
+            if (p.ftId) {
+                pFilter.push(p);
+            }
+        }
+        playerDocArr = pFilter.sort(descendingProp('ftScore'));
         totalPlayerDocArr = playerDocArr.slice(0, 5);
         var ftMap = db.ft.dataMap;
 

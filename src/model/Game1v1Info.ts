@@ -136,6 +136,9 @@ export class Game1v1Info {
         var gameDoc = (playerDoc)=> {
             return {name: playerDoc.name, _id: playerDoc._id, score: playerDoc.dtScore}
         };
+        g.blueFoul = this.leftFoul;
+        g.redFoul = this.rightFoul;
+
         g.winner = gameDoc(winner);
         g.loser = gameDoc(loser);
         console.log('getGameDoc', g);

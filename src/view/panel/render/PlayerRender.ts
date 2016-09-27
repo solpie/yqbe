@@ -130,7 +130,8 @@ export class StagePlayerCard extends Container {
             avatarBmp.scaleX = avatarBmp.scaleY = avtHeight / avatarBmp.getBounds().height;
         });
         ctn.addChildAt(avatarCtn, 0);
-        var winLoseText = new createjs.Text(`贡献:${playerDoc.ftScore} 胜负:${playerDoc.winGameCount} / ${playerDoc.loseGameCount}`, "bold 16px Arial", "#fff");
+
+        var winLoseText = new createjs.Text(`${playerDoc.winGameCount}胜 ${playerDoc.loseGameCount}负  贡献值:${playerDoc.ftScore}`, "16px Arial", "#fff");
         winLoseText.y = -2;
         this.eloScoreText = winLoseText;
         if (isBlue) {

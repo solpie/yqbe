@@ -129,7 +129,7 @@ export class PlayerInfoCard {
                 $('#ex').append(`<textarea class="PlayerIntro RedIntro"  >${PlayerInfo.intro(p)}</textarea>`);
 
 
-            var winLoseText: Text = new createjs.Text(`${p.winGameCount()}胜 / ${p.loseGameCount()}负 ${p.playerData.ftScore}分`, "25px Arial", '#f1c236');
+            var winLoseText: Text = new createjs.Text(`${p.winGameCount()}胜 / ${p.loseGameCount()}负 贡献值:${p.playerData.ftScore}`, "25px Arial", '#f1c236');
             winLoseText.textAlign = 'center';
             winLoseText.x = nameText.x;
             winLoseText.y = 410;
@@ -195,7 +195,7 @@ export class PlayerInfoCard {
         var introText: Text = new Text(cnWrap(playerDoc.intro, 24), "22px Arial", '#fff');
         introText.x = 30;
         introText.lineHeight = 26;
-        introText.y = 375;
+        introText.y = 382;
         ctn.addChild(introText);
 
         return ctn;

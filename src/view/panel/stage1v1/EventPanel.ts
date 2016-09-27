@@ -508,7 +508,7 @@ export class EventPanel {
         // var disActivePlayerArr = [];
         for (var i = 0; i < order.length; i++) {
             var playerDoc = order[i];
-            if (playerDoc.active) {
+            if (playerDoc && playerDoc.active) {
                 var playerCard: Container = PlayerInfoCard.ftOpenPlayerCard(playerDoc);
                 playerCard.x = px;
                 playerCard.y = 345;
@@ -594,6 +594,13 @@ export class EventPanel {
         logo.x = 18;
         logo.y = 18;
         ctn.addChild(logo);
+
+        if (rank12) {
+            var icon = new Bitmap('/img/panel/stage1v1/ft/rank' + rank12 + '.png')
+            icon.x = -20;
+            icon.y = -30;
+            ctn.addChild(icon);
+        }
 
         var nameText = new Text(ftDoc.name, "bold 40px Arial", "#fff");
         nameText.x = 160;

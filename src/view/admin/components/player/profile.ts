@@ -71,7 +71,7 @@ export class Profile extends VueEx {
 
         this.$on(ViewEvent.PLAYER_EDIT, (param) => {
             var playerId = param.playerId;
-            this.ftOptionArr = param.ftOptionArr;
+            this.ftOptionArr = param.ftOptionArr.concat({text: "退团保平安", value: 0});
             this.isEdit = true;
             this.isChangeAvatar = false;
             this.post(`/db/player/${playerId}`, (data) => {
@@ -134,7 +134,6 @@ export class Profile extends VueEx {
                     }
                 })
             };
-
 
             playerDoc.id = this.editPlayerId;
             if (this.isChangeAvatar) {
