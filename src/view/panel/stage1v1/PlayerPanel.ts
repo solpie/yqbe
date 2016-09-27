@@ -1,5 +1,5 @@
 /////////////////////////player panel
-import {PlayerInfo} from "../../../model/PlayerInfo";
+import {PlayerInfo, PlayerDoc} from "../../../model/PlayerInfo";
 import {StagePlayerCard} from "../render/PlayerRender";
 export class PlayerPanel {
     playerCardArr: StagePlayerCard[];
@@ -9,7 +9,7 @@ export class PlayerPanel {
         var ctn = parent.scorePanel.ctn;
         var playerInfo = new PlayerInfo();
         var px = 25;
-        var py = 12;
+        var py = 40;
         var invert = 150;
 
         for (var i = 0; i < 1; i++) {
@@ -42,7 +42,7 @@ export class PlayerPanel {
         this.playerCardArr[idx].setEloScore(eloScore);
     }
 
-    setPlayer(idx: number, playerInfo: PlayerInfo, isKing = false) {
+    setPlayer(idx: number, playerInfo: PlayerDoc, isKing = false) {
         var playerCard = this.playerCardArr[idx];
         playerCard.setPlayerInfo(playerInfo, 1, playerCard.isBlue);
         if (isKing) {
@@ -56,7 +56,7 @@ export class PlayerPanel {
             if (gameDoc.playerInfoArr[i]) {
                 // var playerInfo:PlayerInfo = new PlayerInfo(gameDoc.playerInfoArr[i]);
                 var playerInfo = new PlayerInfo(gameDoc.playerInfoArr[i]);
-                this.setPlayer(i, playerInfo);
+                this.setPlayer(i, playerInfo.playerData);
                 if (playerInfo.id() == gameDoc.kingPlayer) {
                     this.playerCardArr[i].setKingLabel();
                 }

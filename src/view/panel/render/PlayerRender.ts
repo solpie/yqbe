@@ -1,6 +1,7 @@
 import {loadImg} from "../../../utils/JsFunc";
-import {PlayerInfo} from "../../../model/PlayerInfo";
+import {PlayerInfo, PlayerDoc} from "../../../model/PlayerInfo";
 import {blink, delayCall} from "../../../utils/Fx";
+import {FTInfo} from "../../../model/FTInfo";
 import Text = createjs.Text;
 import Container = createjs.Container;
 import Bitmap = createjs.Bitmap;
@@ -9,7 +10,7 @@ export class StagePlayerCard extends Container {
     nameText: Text;
     eloScoreText: Text;
     backNumText: Text;
-    _styleCtn: Container;
+    // _styleCtn: Container;
     isBlue: boolean;
     avatarBmp: Bitmap;
     avatarCtn: Container;
@@ -21,7 +22,7 @@ export class StagePlayerCard extends Container {
         super();
         this.playerInfo = playerInfo;
         this.isDelayShow = isDelayShow;
-        this.setPlayerInfo(playerInfo, scale, isBlue);
+        this.setPlayerInfo(playerInfo.playerData, scale, isBlue);
     }
 
     setName(name: string) {
@@ -37,9 +38,9 @@ export class StagePlayerCard extends Container {
     }
 
     setStyle(style: number) {
-        this._styleCtn.removeAllChildren();
-        var styleIcon = new createjs.Bitmap(PlayerInfo.getStyleIcon(style));//694x132
-        this._styleCtn.addChild(styleIcon);
+        // this._styleCtn.removeAllChildren();
+        // var styleIcon = new createjs.Bitmap(PlayerInfo.getStyleIcon(style));//694x132
+        // this._styleCtn.addChild(styleIcon);
     }
 
     setKingLabel() {
@@ -59,11 +60,12 @@ export class StagePlayerCard extends Container {
         this.addChild(kingLabel);
     }
 
-    setPlayerInfo(playerInfo: PlayerInfo, scale = 1, isBlue = true) {
+    setPlayerInfo(playerDoc: PlayerDoc, scale = 1, isBlue = true) {
         this.isBlue = isBlue;
         //width 150
         var ctn = this;
         this.removeAllChildren();
+        var ofsX = 20;
 
         function _isBluePath(p) {
             if (isBlue)
@@ -71,33 +73,37 @@ export class StagePlayerCard extends Container {
             return p + "Red.png";
         }
 
-        var avatarFrame = new createjs.Bitmap(_isBluePath('/img/panel/stage1v1/avatarFrame'));//694x132
+        // var avatarFrame = new createjs.Bitmap(_isBluePath('/img/panel/stage1v1/avatarFrame'));//694x132
 
         var avatarCtn = new createjs.Container();
         this.avatarCtn = avatarCtn;
         if (isBlue) {
-            avatarCtn.x = 19;
-            avatarCtn.y = 1;
+            avatarCtn.x = 20 - ofsX;
         }
         else {
-            avatarCtn.x = 3;
-            avatarCtn.y = 1;
+            avatarCtn.x = -2 + ofsX;
         }
         var avatarMask = new createjs.Shape();
-        var sx = 44;
-        if (isBlue)
-            avatarMask.graphics.beginFill("#000000")
+        var sx = 48;
+        var avtHeight = 81;
+        var avtWidth = 145;
+        if (isBlue) {
+            avatarMask.x = 16;
+            avatarMask.graphics.beginFill("#000")
                 .moveTo(sx, 0)
-                .lineTo(0, 76)
-                .lineTo(180 - sx, 76)
-                .lineTo(180, 0)
+                .lineTo(0, avtHeight)
+                .lineTo(avtWidth - sx, avtHeight)
+                .lineTo(avtWidth, 0)
                 .lineTo(sx, 0);
+        }
+
         else {
-            avatarMask.graphics.beginFill("#000000")
+            avatarMask.x = 19;
+            avatarMask.graphics.beginFill("#000")
                 .moveTo(0, 0)
-                .lineTo(sx, 76)
-                .lineTo(180, 76)
-                .lineTo(180 - sx, 0)
+                .lineTo(sx, avtHeight)
+                .lineTo(avtWidth, avtHeight)
+                .lineTo(avtWidth - sx, 0)
                 .lineTo(0, 0);
         }
 
@@ -106,13 +112,12 @@ export class StagePlayerCard extends Container {
             avatarPath = '/img/panel/stage/blue.png';
         else
             avatarPath = '/img/panel/stage/red.png';
-        avatarPath = playerInfo.avatar() || avatarPath;
+        avatarPath = playerDoc.avatar || avatarPath;
         loadImg(avatarPath, ()=> {
             var avatarBmp = new createjs.Bitmap(avatarPath);
             avatarBmp.mask = avatarMask;
             avatarCtn.addChild(avatarMask);
             avatarCtn.addChild(avatarBmp);
-            // leftAvatarBmp = avatarBmp;
             this.avatarBmp = avatarBmp;
             if (this.isDelayShow) {
                 if (this._delayShowEnd) {
@@ -122,68 +127,52 @@ export class StagePlayerCard extends Container {
                     avatarBmp.alpha = 0;
                 }
             }
-            avatarBmp.scaleX = avatarBmp.scaleY = 180 / avatarBmp.getBounds().width;
+            avatarBmp.scaleX = avatarBmp.scaleY = avtHeight / avatarBmp.getBounds().height;
         });
-//        this.avatarArr.push(avatarCtn);
-        ctn.addChild(avatarCtn);
-        ctn.addChild(avatarFrame);
-
-        var backNumText = new createjs.Text(playerInfo.backNumber + "", "18px Arial", "#fff");
-        backNumText.y = 5;
-        this.backNumText = backNumText;
-        if (isBlue) {
-            backNumText.textAlign = "right";
-            backNumText.x = 182;
-        }
-        else {
-            backNumText.textAlign = "left";
-            backNumText.x = 15;
-        }
-        // ctn.addChild(backNumText);
-
-        console.log(`player${playerInfo.name()}game Count`, playerInfo.gameCount());
-        var winLoseText = new createjs.Text(`${playerInfo.winGameCount()} / ${playerInfo.loseGameCount()}`, "18px Arial", "#fff");
-        winLoseText.y = 59;
+        ctn.addChildAt(avatarCtn, 0);
+        var winLoseText = new createjs.Text(`贡献:${playerDoc.ftScore} 胜负:${playerDoc.winGameCount} / ${playerDoc.loseGameCount}`, "bold 16px Arial", "#fff");
+        winLoseText.y = -2;
         this.eloScoreText = winLoseText;
         if (isBlue) {
-            winLoseText.textAlign = "left";
-            winLoseText.x = 31;
+            winLoseText.textAlign = 'right';
+            winLoseText.x = 344;
         }
         else {
-            winLoseText.textAlign = "right";
-            winLoseText.x = 172;
+            winLoseText.x = -142;
         }
         ctn.addChild(winLoseText);
 
 
-        var styleCtn = new createjs.Container();
-        this._styleCtn = styleCtn;
-        var styleIcon = new createjs.Bitmap(PlayerInfo.getStyleIcon(playerInfo.style()));//694x132
-        if (isBlue) {
-            styleCtn.x = 110;
-        }
-        else {
-            styleCtn.x = 52;
-        }
-        styleCtn.y = 75;
-        blink(styleIcon);
-        styleCtn.addChild(styleIcon);
-//        this.styleArr.push(styleCtn);
-        ctn.addChild(styleCtn);
-
-        var nameText = new createjs.Text(playerInfo.name(), "bold 18px Arial", "#fff");
+        var nameText = new createjs.Text(playerDoc.name, "bold 24px Arial", "#fff");
         this.nameText = nameText;
-        nameText.y = 84;
+        nameText.y = 5;
         if (isBlue) {
-            nameText.textAlign = "left";
-            nameText.x = 16;
+            nameText.textAlign = 'right';
+            nameText.x = 58 - ofsX;
         }
         else {
-            nameText.textAlign = "right";
-            nameText.x = 185;
+            nameText.x = 137 + ofsX;
         }
-//        this.nameLabelArr.push(leftNameLabel);
         ctn.addChild(nameText);
+
+        var ftDoc: FTInfo = playerDoc['ftDoc'];
+        console.log('playerDoc', playerDoc);
+        var ftName = '所属战团：';
+        if (ftDoc)
+            ftName += ftDoc.name;
+        else
+            ftName += '无';
+
+        var ftNameText = new Text(ftName, '16px Arial', '#fff');
+        ftNameText.y = 40;
+        if (isBlue) {
+            ftNameText.textAlign = 'right';
+            ftNameText.x = 40 - ofsX;
+        }
+        else {
+            ftNameText.x = 160 + ofsX;
+        }
+        ctn.addChild(ftNameText);
         return ctn;
     }
 
@@ -197,9 +186,9 @@ export class StagePlayerCard extends Container {
                 blink(this.avatarBmp);
                 // this.avatarBmp.alpha = 0;
             }
-            if (this._styleCtn) {
-                blink(this._styleCtn);
-            }
+            // if (this._styleCtn) {
+            //     blink(this._styleCtn);
+            // }
             // this.avatarCtn.alpha = 1;
         });
         delayCall(delay, ()=> {

@@ -148,7 +148,7 @@ export class Stage1v1PanelView extends BasePanelView {
                     this.getElem('#playerImg' + data.idx).src = data.playerDoc.avatar;
                     this.getElem("#player" + data.idx).value = data.playerDoc.id;
                 }
-                this.playerPanel.setPlayer(data.idx, new PlayerInfo(data.playerDoc), data.isKing);
+                this.playerPanel.setPlayer(data.idx, data.playerDoc, data.isKing);
 
             })
             .on(`${CommandId.updatePlayerBackNum}`, (param) => {
@@ -265,6 +265,14 @@ export class Stage1v1PanelView extends BasePanelView {
             .on(`${CommandId.fadeInPlayerRank}`, (data)=> {
                 console.log('fadeInPlayerRank', data);
                 this.eventPanel.fadeInPlayerRank(data);
+            })
+            .on(`${CommandId.fadeInFtRank}`, (data)=> {
+                console.log('fadeInFtRank', data);
+                this.eventPanel.fadeInFtRank(data);
+            })
+            .on(`${CommandId.fadeInMixRank}`, (data)=> {
+                console.log('fadeInMixRank', data);
+                // this.eventPanel.fadeInFtRank(data);
             })
 
     }
@@ -601,7 +609,7 @@ export class Stage1v1PanelView extends BasePanelView {
                 leftPlayerInfo.avatar(playerData.avatar);
                 leftPlayerInfo.winGameCount(playerData.winAmount);
                 leftPlayerInfo.loseGameCount(playerData.loseAmount);
-                this.playerPanel.setPlayer(0, leftPlayerInfo);
+                this.playerPanel.setPlayer(0, leftPlayerInfo.playerData);
 
                 var rightPlayerInfo = new PlayerInfo();
                 playerData = data.player.right;
@@ -609,8 +617,7 @@ export class Stage1v1PanelView extends BasePanelView {
                 rightPlayerInfo.avatar(playerData.avatar);
                 rightPlayerInfo.winGameCount(playerData.winAmount);
                 rightPlayerInfo.loseGameCount(playerData.loseAmount);
-                this.playerPanel.setPlayer(1, rightPlayerInfo);
-
+                this.playerPanel.setPlayer(1, rightPlayerInfo.playerData);
             };
             eventMap['updateScore'] = ()=> {
                 console.log('updateScore', data);
@@ -631,7 +638,7 @@ export class Stage1v1PanelView extends BasePanelView {
                 leftPlayerInfo.avatar(playerData.avatar);
                 leftPlayerInfo.winGameCount(playerData.winAmount);
                 leftPlayerInfo.loseGameCount(playerData.loseAmount);
-                this.playerPanel.setPlayer(0, leftPlayerInfo);
+                this.playerPanel.setPlayer(0, leftPlayerInfo.playerData);
 
                 var rightPlayerInfo = new PlayerInfo();
                 playerData = data.player.right;
@@ -639,8 +646,9 @@ export class Stage1v1PanelView extends BasePanelView {
                 rightPlayerInfo.avatar(playerData.avatar);
                 rightPlayerInfo.winGameCount(playerData.winAmount);
                 rightPlayerInfo.loseGameCount(playerData.loseAmount);
-                this.playerPanel.setPlayer(1, rightPlayerInfo);
+                this.playerPanel.setPlayer(1, rightPlayerInfo.playerData);
 
+                window.location.reload();
                 this.scorePanel.resetTimer();
                 this.scorePanel.toggleTimer1(TimerState.START_STR);
             };

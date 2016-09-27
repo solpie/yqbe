@@ -66,7 +66,14 @@ export class Stage1v1PanelHandle {
             var playerId = playerIdArr[i];
             this.playerIdx[playerId] = i + 1;
         }
-        // this.playerCount = playerIdArr.length;
+
+        for (var playerId1 in db.player.dataMap) {
+            var playerDoc = db.player.dataMap[playerId1];
+            if (playerDoc.ftId) {
+                playerDoc.ftDoc = db.ft.dataMap[playerDoc.ftId];
+            }
+        }
+
         console.log('init1v1 playerIdx', this.playerIdx);
     }
 
@@ -347,6 +354,11 @@ export class Stage1v1PanelHandle {
             cmdMap[`${CommandId.cs_fadeInPlayerRank}`] = (param)=> {
                 return this.cs_fadeInPlayerRank(param);
             };
+
+            cmdMap[`${CommandId.cs_fadeInFtRank}`] = (param)=> {
+                return this.cs_fadeInFtRank(param);
+            };
+
             cmdMap[`${CommandId.cs_fadeInFTShow}`] = (param)=> {
                 return this.cs_fadeInFTShow(param);
             };
@@ -527,20 +539,19 @@ export class Stage1v1PanelHandle {
             this.lastLoserPlayerInfo = this.gameInfo.loserPlayerInfo;
             db.player.updatePlayerDoc(this.gameInfo.getPlayerDocArr(), null);
 
-
             ///********************************save ft score
             var bluePlayerDoc: PlayerDoc = this.gameInfo.getPlayerDocArr()[0];
             var ftInfoArr = [];
-            var ftInfo: FTInfo = db.ft.dataMap[bluePlayerDoc.ftId];
-            if (ftInfo) {
-                ftInfo.score ? ftInfo.score += this.gameInfo.leftScore : ftInfo.score = this.gameInfo.leftScore;
-                ftInfoArr.push(ftInfo);
+            var ftDoc = db.ft.dataMap[bluePlayerDoc.ftId];
+            if (ftDoc) {
+                FTInfo.saveScore(ftDoc, this.gameInfo.leftScore);
+                ftInfoArr.push(ftDoc);
             }
             var redPlayerDoc: PlayerDoc = this.gameInfo.getPlayerDocArr()[1];
-            ftInfo = db.ft.dataMap[redPlayerDoc.ftId];
-            if (ftInfo) {
-                ftInfo.score ? ftInfo.score += this.gameInfo.rightScore : ftInfo.score = this.gameInfo.rightScore;
-                ftInfoArr.push(ftInfo);
+            ftDoc = db.ft.dataMap[redPlayerDoc.ftId];
+            if (ftDoc) {
+                FTInfo.saveScore(ftDoc, this.gameInfo.rightScore);
+                ftInfoArr.push(ftDoc);
             }
             db.ft.updateDocArr(ftInfoArr, ()=> {
                 db.ft.syncDataMap();
@@ -623,20 +634,59 @@ export class Stage1v1PanelHandle {
         this.io.emit(`${CommandId.fadeOutFTShow}`);
     }
 
+    private cs_fadeInFtRank(param: any) {
+        var ftDocArr = mapToArr(db.ft.dataMap);
+        for (var i = 0; i < ftDocArr.length; i++) {
+            var ftDoc = ftDocArr[i];
+            if (!ftDoc.score) {
+                ftDoc.score = 0;
+            }
+            if (!ftDoc.curScore) {
+                ftDoc.curScore = 0;
+            }
+        }
+        //
+        // db.ft.updateDocArr(ftDocArr);
+        ftDocArr = ftDocArr.sort(descendingProp('curScore'));
+        var curFtDocArr = ftDocArr.slice(0, 5);
+
+        ftDocArr = ftDocArr.sort(descendingProp('score'));
+        var totalFtDocArr = ftDocArr.slice(0, 5);
+
+        this.io.emit(`${CommandId.fadeInFtRank}`, ScParam({
+            curFtDocArr: curFtDocArr,
+            totalFtDocArr: totalFtDocArr
+        }));
+    }
+
     private cs_fadeInPlayerRank(param: any) {
         var curPlayerDocArr;
         var totalPlayerDocArr;
         var playerDocArr = mapToArr(db.player.dataMap);
+
+        // for (var i = 0; i < playerDocArr.length; i++) {
+        //     var playerDoc = playerDocArr[i];
+        //     if (!playerDoc.ftScore) {
+        //         playerDoc.ftScore = 0;
+        //     }
+        //     if (!playerDoc.curFtScore) {
+        //         playerDoc.curFtScore = 0;
+        //     }
+        // }
+        // db.player.updateDocArr(playerDocArr);
+        console.log('Rank', playerDocArr);
         playerDocArr = playerDocArr.sort(descendingProp('ftScore'));
         totalPlayerDocArr = playerDocArr.slice(0, 5);
+        console.log('Rank', playerDocArr);
+
         playerDocArr = playerDocArr.sort(descendingProp('curFtScore'));
         curPlayerDocArr = playerDocArr.slice(0, 5);
+        console.log('Rank', playerDocArr);
         var ftMap = db.ft.dataMap;
         this.io.emit(`${CommandId.fadeInPlayerRank}`, ScParam({
             ftMap: ftMap,
             curPlayerDocArr: curPlayerDocArr,
             totalPlayerDocArr: totalPlayerDocArr
-
         }));
     }
 

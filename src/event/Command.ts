@@ -157,6 +157,8 @@ export enum CommandId{
     fadeInPlayerRank,
     cs_fadeInFtRank,
     fadeInFtRank,
+    cs_fadeInMixRank,
+    fadeInMixRank,
         // cs_fadeInComingActivity,
         // fadeInComingActivity,
         //db op

@@ -493,6 +493,7 @@ export class EventPanel {
         var logo = new Bitmap(ftInfo.logo);
         logo.x = 647;
         logo.y = 165;
+        logo.scaleX = logo.scaleY = 60 / 120;
         this.ctn.addChild(logo);
 
         var scale: number = 440 / 516;
@@ -544,21 +545,75 @@ export class EventPanel {
 
 
         ////// ft chat
-        var chatCtn = new Container();
-        chatCtn.x = 78;
-        chatCtn.y = 862;
-        this.ctn.addChild(chatCtn);
+        // var chatCtn = new Container();
+        // chatCtn.x = 78;
+        // chatCtn.y = 862;
+        // this.ctn.addChild(chatCtn);
+        //
+        // var txtY = 0;
+        // for (var i = 0; i < playerDocArr.length; i++) {
+        //     var playerDoc: any = playerDocArr[i];
+        //     if (!playerDoc.active) {
+        //         var playerIntroText = new Text(cnWrap('【' + playerDoc.name + '】：' + playerDoc.intro, 46), "22px Arial", "#fff");
+        //         playerIntroText.lineHeight = 26;
+        //         playerIntroText.y = txtY;
+        //         chatCtn.addChild(playerIntroText);
+        //         txtY += playerIntroText.getMeasuredHeight();
+        //     }
+        // }
+    }
 
-        var txtY = 0;
-        for (var i = 0; i < playerDocArr.length; i++) {
-            var playerDoc: any = playerDocArr[i];
-            if (!playerDoc.active) {
-                var playerIntroText = new Text(cnWrap('【' + playerDoc.name + '】：' + playerDoc.intro, 46), "22px Arial", "#fff");
-                playerIntroText.lineHeight = 26;
-                playerIntroText.y = txtY;
-                chatCtn.addChild(playerIntroText);
-                txtY += playerIntroText.getMeasuredHeight();
-            }
+    fadeInFtRank(param) {
+        this.ctn.removeAllChildren();
+
+        var bg = new Bitmap('/img/panel/stage1v1/ft/ftRankBg.jpg');
+        this.ctn.addChild(bg);
+
+        var ftItem = (ftDoc, rank12?)=> {
+            var ctn = new Container();
+            var itemBg = new Bitmap('/img/panel/stage1v1/ft/ftRankTeam.jpg');
+            ctn.addChild(itemBg);
+
+            var logo = new Bitmap(ftDoc.logo);
+            logo.x = 18;
+            logo.y = 18;
+            ctn.addChild(logo);
+
+            var nameText = new Text(ftDoc.name, "bold 40px Arial", "#fff");
+            nameText.x = 160;
+            nameText.y = 40;
+            ctn.addChild(nameText);
+
+            var ftIntroText = new Text(ftDoc.fullName + '', "22px Arial", "#fff");
+            ftIntroText.x = 160;
+            ftIntroText.y = 90;
+            ctn.addChild(ftIntroText);
+
+            var curScoreText = new Text((ftDoc.curScore ? ftDoc.curScore : 0) + '', "22px Arial", "#fff");
+            curScoreText.textAlign = 'right';
+            curScoreText.x = 620;
+            curScoreText.y = 95;
+            ctn.addChild(curScoreText);
+
+            var totalScoreText = new Text((ftDoc.score ? ftDoc.score : 0) + '', "22px Arial", "#fff");
+            totalScoreText.textAlign = 'right';
+            totalScoreText.x = 780;
+            totalScoreText.y = 95;
+            ctn.addChild(totalScoreText);
+
+            return ctn;
+        };
+
+        for (var i = 0; i < param.curFtDocArr.length; i++) {
+            var curFtItem = ftItem(param.curFtDocArr[i]);
+            curFtItem.x = 45;
+            curFtItem.y = 140 + i * 185;
+            this.ctn.addChild(curFtItem);
+
+            var totalFtItem = ftItem(param.totalFtDocArr[i]);
+            totalFtItem.x = 1005;
+            totalFtItem.y = curFtItem.y;
+            this.ctn.addChild(totalFtItem);
         }
     }
 
@@ -566,11 +621,13 @@ export class EventPanel {
         this.ctn.removeAllChildren();
         var bg = new Bitmap('/img/panel/stage1v1/ft/ftRankBg.jpg');
         this.ctn.addChild(bg);
-        var playerItem = (playerDoc: PlayerDoc)=> {
+        var playerItem = (playerDoc: PlayerDoc, rank12?)=> {
             var ctn = new Container();
-            var bg = new Bitmap('/img/panel/stage1v1/ft/ftRankPlayer.jpg');
-            ctn.addChild(bg);
+            var itemBg = new Bitmap('/img/panel/stage1v1/ft/ftRankPlayer.jpg');
+            ctn.addChild(itemBg);
 
+            var avtCtn = new Container();
+            ctn.addChild(avtCtn);
             loadImg(playerDoc.avatar, ()=> {
                 var avatar = new Bitmap(playerDoc.avatar);
                 avatar.y = 18;
@@ -578,13 +635,20 @@ export class EventPanel {
                 avatar.scaleX = avatar.scaleY = 119 / avatar.getBounds().height;
                 console.log('aw ', avatar.getBounds().width);
                 avatar.x = 18 + (130 - avatar.getBounds().width * avatar.scaleX) / 2;
-                ctn.addChild(avatar);
+                avtCtn.addChild(avatar);
 
                 var m = new Shape();
                 m.graphics.beginFill('#000').dr(0, 0, 130, 130);
                 m.x = m.y = 18;
                 avatar.mask = m;
             });
+
+            if (rank12) {
+                var icon = new Bitmap('/img/panel/stage1v1/ft/rank' + rank12 + '.png')
+                icon.x = -20;
+                icon.y = -30;
+                ctn.addChild(icon);
+            }
 
             var nameText = new Text(playerDoc.name, "bold 40px Arial", "#fff");
             nameText.x = 160;
@@ -598,14 +662,27 @@ export class EventPanel {
             ftText.y = 95;
             ctn.addChild(ftText);
 
+            var curScoreText = new Text((playerDoc.curFtScore ? playerDoc.curFtScore : 0) + '', "22px Arial", "#fff");
+            curScoreText.textAlign = 'right';
+            curScoreText.x = 620;
+            curScoreText.y = 95;
+            ctn.addChild(curScoreText);
+
+            var totalScoreText = new Text((playerDoc.ftScore ? playerDoc.ftScore : 0) + '', "22px Arial", "#fff");
+            totalScoreText.textAlign = 'right';
+            totalScoreText.x = 780;
+            totalScoreText.y = 95;
+            ctn.addChild(totalScoreText);
+
             return ctn;
         };
         for (var i = 0; i < 5; i++) {
-            var curItem = playerItem(param.curPlayerDocArr[i]);
+            var curItem = playerItem(param.curPlayerDocArr[i], (i == 0 || i == 1 ? i + 1 : null));
             curItem.x = 45;
             curItem.y = 140 + i * 185;
             this.ctn.addChild(curItem);
-            var totalItem = playerItem(param.totalPlayerDocArr[i]);
+
+            var totalItem = playerItem(param.totalPlayerDocArr[i], (i == 0 || i == 1 ? i + 1 : null));
             totalItem.x = 1005;
             totalItem.y = curItem.y;
             this.ctn.addChild(totalItem);

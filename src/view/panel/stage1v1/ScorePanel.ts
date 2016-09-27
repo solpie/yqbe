@@ -37,12 +37,12 @@ export class ScorePanel {
         parent.stage.addChild(scoreCtn);
 
         var bg;
-        if (is2v2)
-            bg = new createjs.Bitmap('/img/panel/stage/scoreBg1v1.png');
-        else
-            bg = new createjs.Bitmap('/img/panel/stage/scoreBg.png');
+        // if (is2v2)
+        bg = new createjs.Bitmap('/img/panel/stage1v1/scoreBg1v1.png');
+        // else
+        //     bg = new createjs.Bitmap('/img/panel/stage/scoreBg.png');
 
-        bg.x = 1;
+        // bg.x = 1;
         scoreCtn.addChild(bg);
 
         var timeText: Text = new createjs.Text("99:99", "28px Arial", "#fff");
