@@ -366,6 +366,10 @@ export class Stage1v1PanelHandle {
             cmdMap[`${CommandId.cs_fadeOutFTShow}`] = (param)=> {
                 return this.cs_fadeOutFTShow(param);
             };
+
+            cmdMap[`${CommandId.cs_fadeInMixRank}`] = (param)=> {
+                return this.cs_fadeInMixRank(param);
+            };
             var isSend = cmdMap[cmdId](param);
             if (!isSend)
                 res.sendStatus(200);
@@ -375,24 +379,25 @@ export class Stage1v1PanelHandle {
     cs_updatePlayer(param) {
         if (this.gameInfo.gameState == GameInfo.GAME_STATE_ING) {
             var playerId = param.playerId;
-            // if (playerId == ServerConf.king) {
-            //     param.isKing = true;
-            // }
             var playerIdx = param.idx;
-            // if (!this.exPlayerIdMap[playerId]) {
-            //     if (actPlayerIdArr().indexOf(playerId) < 0) {
-            //         this.exPlayerIdMap[playerId] = playerId;
-            //         console.log('ex player', playerId);
-            //     }
-            // }
             db.player.syncDataMap(()=> {
-                param.playerDoc = db.player.dataMap[playerId];
+                param.playerDoc = this.getFlyPlayerDoc(playerId);//db.player.dataMap[playerId];
                 this.gameInfo.setPlayerInfoByIdx(playerIdx, db.player.getPlayerInfoById(playerId));
                 db.game.updatePlayerByPos(this.gameInfo.id, playerIdx, playerId);
                 // param.avgEloScore = this.gameInfo.getAvgEloScore();
-                this.io.emit(`${CommandId.updatePlayer}`, ScParam(param))
+                this.io.emit(`${CommandId.updatePlayer}`, ScParam(param));
             });
         }
+    }
+
+    getFlyPlayerDoc(id) {
+        var playerDoc = db.player.dataMap[id];
+        if (playerDoc) {
+            if (playerDoc.ftId) {
+                playerDoc.ftDoc = db.ft.dataMap[playerDoc.ftId];
+            }
+        }
+        return playerDoc;
     }
 
     cs_changeColor(param) {
@@ -609,24 +614,21 @@ export class Stage1v1PanelHandle {
 
         var ftInfoArr = mapToArr(db.ft.dataMap);
         var playerDoc;
+        var flyFtInfoArr = [];
         for (var i = 0; i < ftInfoArr.length; i++) {
-            var ftInfo: FTInfo = ftInfoArr[i];
-            ftInfo.memberArr = [];
-            // for (var j = 0; j < playerIdArr.length; j++) {
-            //     var playerId = playerIdArr[j];
-            //     playerDoc = db.player.dataMap[playerId];
-            //
-            // }
+            var flyFtInfo: FTInfo = FTInfo.clone(ftInfoArr[i]);
+            flyFtInfoArr.push(flyFtInfo);
+            flyFtInfo.memberArr = [];
             for (var playerId in db.player.dataMap) {
                 playerDoc = db.player.dataMap[playerId];
-                if (playerDoc.ftId && playerDoc.ftId == ftInfo.id) {
+                if (playerDoc.ftId && playerDoc.ftId == flyFtInfo.id) {
                     playerDoc.active = playerIdArr.indexOf(Number(playerId)) > -1;
-                    ftInfo.memberArr.push(playerDoc)
+                    flyFtInfo.memberArr.push(playerDoc)
                 }
             }
         }
 
-        this.io.emit(`${CommandId.fadeInFTShow}`, ScParam({ftInfoArr: ftInfoArr, idx: param.idx, ftId: param.ftId}));
+        this.io.emit(`${CommandId.fadeInFTShow}`, ScParam({ftInfoArr: flyFtInfoArr, idx: param.idx, ftId: param.ftId}));
     }
 
 
@@ -656,6 +658,24 @@ export class Stage1v1PanelHandle {
         this.io.emit(`${CommandId.fadeInFtRank}`, ScParam({
             curFtDocArr: curFtDocArr,
             totalFtDocArr: totalFtDocArr
+        }));
+    }
+
+    private cs_fadeInMixRank(param: any) {
+        var totalPlayerDocArr;
+        var playerDocArr = mapToArr(db.player.dataMap);
+        playerDocArr = playerDocArr.sort(descendingProp('ftScore'));
+        totalPlayerDocArr = playerDocArr.slice(0, 5);
+        var ftMap = db.ft.dataMap;
+
+        var ftDocArr = mapToArr(db.ft.dataMap);
+        ftDocArr = ftDocArr.sort(descendingProp('score'));
+        var totalFtDocArr = ftDocArr.slice(0, 5);
+
+        this.io.emit(`${CommandId.fadeInMixRank}`, ScParam({
+            ftMap: ftMap,
+            totalFtDocArr: totalFtDocArr,
+            totalPlayerDocArr: totalPlayerDocArr
         }));
     }
 

@@ -13,8 +13,19 @@ export class FTInfo {
         this.memberArr = [];
     }
 
-    static saveScore(ftDoc,score) {
+    static saveScore(ftDoc, score) {
         ftDoc.score ? ftDoc.score += score : ftDoc.score = score;
         ftDoc.curScore ? ftDoc.curScore += score : ftDoc.curScore = score;
+    }
+
+    static  clone(ftDoc) {
+        var f = new FTInfo();
+        f.id = ftDoc.id;
+        f.name = ftDoc.name;
+        f.fullName = ftDoc.fullName;
+        f.logo = ftDoc.logo;
+        f.score = ftDoc.score;
+        f.curScore = ftDoc.curScore;
+        return f;
     }
 }

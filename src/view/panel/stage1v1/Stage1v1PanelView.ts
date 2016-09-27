@@ -272,7 +272,7 @@ export class Stage1v1PanelView extends BasePanelView {
             })
             .on(`${CommandId.fadeInMixRank}`, (data)=> {
                 console.log('fadeInMixRank', data);
-                // this.eventPanel.fadeInFtRank(data);
+                this.eventPanel.fadeInMixRank(data);
             })
 
     }
@@ -579,6 +579,11 @@ export class Stage1v1PanelView extends BasePanelView {
     onFtFadeInFtRankHide() {
         console.log('onFtFadeInFtRankHide');
         this.opReq(`${CommandId.cs_fadeInFtRank}`);
+    }
+
+    onFtFadeInMixRank() {
+        console.log('onFtFadeInMixRank');
+        this.opReq(`${CommandId.cs_fadeInMixRank}`);
     }
 
     private initAuto(io) {

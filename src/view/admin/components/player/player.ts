@@ -137,7 +137,7 @@ export class Player extends VueEx {
         console.log("onEdit", playerId);
         ($('#modal-player') as any).openModal();
         this.message = "编辑球员";
-        this.$broadcast(ViewEvent.PLAYER_EDIT, {playerId: playerId, ftOptionArr: this.ftOptionArr});
+        this.$broadcast(ViewEvent.PLAYER_EDIT, {playerId: playerId, ftOptionArr: this.ftOptionArr.concat()});
     }
 
     onFtSelected() {

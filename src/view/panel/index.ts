@@ -24,7 +24,7 @@ export class Panel extends VueEx {
         if (this.isAuto)
             wsUrl = hupuWsUrl;
         else
-            wsUrl = `http://${window.location.host}:${wsPort}/${this.pid}`;
+            wsUrl = `http://${window.location.hostname}:${wsPort}/${this.pid}`;
         console.log("init panel!!!", this.pid, this.isOp, wsUrl);
         return io.connect(wsUrl)
     }
