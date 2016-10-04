@@ -157,10 +157,6 @@ export class Stage1v1PanelHandle {
                 this.gameInfo.gameIdx = this.lastGameIdx + 1;
                 this.io.emit(`${CommandId.resetGame}`);
                 this.init1v1();
-                // if (this.nextPlayerIdArr[0] < 0) {
-                //     this.nextPlayerIdArr[0] = this.playerQue[0];
-                //     this.nextPlayerIdArr[1] = this.playerQue[1];
-                // }
                 cmdMap[`${CommandId.cs_updatePlayer}`]({playerId: this.nextPlayerIdArr2[0], idx: 0});
                 cmdMap[`${CommandId.cs_updatePlayer}`]({playerId: this.nextPlayerIdArr2[1], idx: 1});
                 console.log('player', this.nextPlayerIdArr2);
@@ -313,20 +309,6 @@ export class Stage1v1PanelHandle {
                 }
             };
 
-            cmdMap[`${CommandId.cs_clearActPlayerGameRec}`] = (param) => {
-                var playerDocArr = [];
-                for (var id in db.player.dataMap) {
-                    var playerDoc = db.player.dataMap[id];
-                    if (playerDoc) {
-                        playerDocArr.push(playerDoc);
-                        playerDoc.loseGameCount = 0;
-                        playerDoc.winGameCount = 0;
-                        playerDoc.state = null;
-                    }
-                }
-                db.player.updatePlayerDoc(playerDocArr);
-            };
-
             cmdMap[`${CommandId.cs_setBracketPlayer}`] = (param) => {
                 var playerIdArr = param.playerIdArr;
                 var actDoc = db.activity.getDocArr([3])[0];
@@ -334,9 +316,6 @@ export class Stage1v1PanelHandle {
                 console.log('bracket playerDocArr', playerDocArr);
                 if (playerDocArr.length == 8) {
                     for (var i = 0; i < 4; i++) {
-                        // playerDocArr[i * 2].seed = i * 2 + 1;
-                        // playerDocArr[i * 2 + 1].seed = i * 2 + 2;
-
                         playerDocArr[i * 2].score = 0;
                         playerDocArr[i * 2 + 1].score = 0;
                         actDoc.bracket[i + 1] = {
@@ -354,7 +333,6 @@ export class Stage1v1PanelHandle {
                     db.activity.ds().update({id: actDoc.id}, actDoc, ()=> {
                     });
 
-                    // var actDoc = db.activity.getDocArr([3])[0];
                     var matchArr = this.refreshBracket(actDoc);
                     this.io.emit(`${CommandId.refreshClient}`, ScParam({matchArr: matchArr}));
                 }
@@ -368,6 +346,9 @@ export class Stage1v1PanelHandle {
             cmdMap[`${CommandId.cs_changeColor}`] = (param)=> {
                 return this.cs_changeColor(param);
             };
+            cmdMap[`${CommandId.cs_clearActPlayerGameRec}`] = (param)=> {
+                return this.cs_clearActPlayerGameRec(param);
+            };
             cmdMap[`${CommandId.cs_updateWinScore}`] = (param)=> {
                 return this.cs_updateWinScore(param);
             };
@@ -376,6 +357,9 @@ export class Stage1v1PanelHandle {
             };
             cmdMap[`${CommandId.cs_setCursorPlayer}`] = (param)=> {
                 return this.cs_setCursorPlayer(param);
+            };
+            cmdMap[`${CommandId.cs_saveToTotalScore}`] = (param)=> {
+                return this.cs_saveToTotalScore(param);
             };
             ///  FT
             cmdMap[`${CommandId.cs_fadeInPlayerRank}`] = (param)=> {
@@ -425,6 +409,48 @@ export class Stage1v1PanelHandle {
             }
         }
         return playerDoc;
+    }
+
+    cs_clearActPlayerGameRec(param) {
+        var playerDocArr = [];
+        for (var id in db.player.dataMap) {
+            var playerDoc = db.player.dataMap[id];
+            if (playerDoc) {
+                playerDocArr.push(playerDoc);
+                playerDoc.loseGameCount = 0;
+                playerDoc.winGameCount = 0;
+                playerDoc.curFtScore = 0;
+                playerDoc.state = null;
+            }
+        }
+        db.player.updatePlayerDoc(playerDocArr);
+
+
+        var f = [];
+        for (var ftId in db.ft.dataMap) {
+            var ftDoc = FTInfo.clone(db.ft.dataMap[ftId]);
+            ftDoc.curScore = 0;
+            f.push(ftDoc);
+        }
+        db.ft.updateDocArr(f);
+    }
+
+    cs_saveToTotalScore(param) {
+        var a = [];
+        for (var playerId in db.player.dataMap) {
+            var playerDoc: PlayerDoc = db.player.dataMap[playerId];
+            playerDoc.ftScore = 0;
+            a.push(playerDoc);
+        }
+        db.player.updateDocArr(a);
+
+        var f = [];
+        for (var ftId in db.ft.dataMap) {
+            var ftDoc = FTInfo.clone(db.ft.dataMap[ftId]);
+            ftDoc.score = 0;
+            f.push(ftDoc);
+        }
+        db.ft.updateDocArr(f);
     }
 
     cs_setCursorPlayer(param) {
@@ -712,12 +738,12 @@ export class Stage1v1PanelHandle {
                 pFilter.push(p);
             }
         }
-        playerDocArr = pFilter.sort(descendingProp('ftScore'));
+        playerDocArr = pFilter.sort(descendingProp('curFtScore'));
         totalPlayerDocArr = playerDocArr.slice(0, 5);
         var ftMap = db.ft.dataMap;
 
         var ftDocArr = mapToArr(db.ft.dataMap);
-        ftDocArr = ftDocArr.sort(descendingProp('score'));
+        ftDocArr = ftDocArr.sort(descendingProp('curScore'));
         var totalFtDocArr = ftDocArr.slice(0, 5);
 
         this.io.emit(`${CommandId.fadeInMixRank}`, ScParam({

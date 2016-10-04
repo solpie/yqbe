@@ -96,6 +96,10 @@ export class Player extends VueEx {
         });
     }
 
+    onSaveToTotalScore() {
+        this.post(`/panel/stage1v1/${CommandId.cs_saveToTotalScore}`)
+    }
+
     onPickPlayer(playerId) {
         this.pickPlayerIdArr.push(playerId);
         if (this.pickPlayerIdArr.length == 4) {

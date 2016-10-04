@@ -9,6 +9,7 @@ import {EventPanel} from "./EventPanel";
 import {loadImgArr, descendingProp, mapToArr} from "../../../utils/JsFunc";
 import {CountDownPanel} from "./CountDownPanel";
 import $route = vuejs.$route;
+declare var Materialize;
 @Component({
     template: require('./stage1v1-panel.html'),
     props: {
@@ -311,7 +312,8 @@ export class Stage1v1PanelView extends BasePanelView {
             this.isUnLimitScore = gameDoc.unLimitScore;
             document.onkeyup = (e)=> {
                 var currKey = e.keyCode;
-                // console.log('key:', currKey);
+                var isShift = e.shiftKey;
+                console.log('key:', currKey);
                 if (currKey == 192) {
                     var $stagePanel = $('#stage-panel');
                     var display = $stagePanel.css('display');
@@ -320,6 +322,35 @@ export class Stage1v1PanelView extends BasePanelView {
                     else
                         $stagePanel.hide();
                     // console.log('key:', display);
+                }
+                else if (currKey == 219) {
+                    if (isShift)
+                        this.onMinLeftScore();
+                    else
+                    //add left score
+                        this.onAddLeftScore();
+                }
+                else if (currKey == 221) {
+                    if (isShift)
+                        this.onMinRightScore();
+                    else
+                    //add right score
+                        this.onAddRightScore();
+                }
+                else if (currKey == 59||currKey==186) {
+                    if (isShift)
+                        this.onMinLeftFoul();
+                    else
+                    //add left foul
+                        this.onAddLeftFoul();
+                }
+                else if (currKey == 222) {
+                    if (isShift)
+                        this.onMinRightFoul();
+                    else
+
+                    //add right foul
+                        this.onAddRightFoul();
                 }
             }
         }
@@ -355,41 +386,49 @@ export class Stage1v1PanelView extends BasePanelView {
         console.log('onAddLeftScore');
         this.opReq(`${CommandId.cs_addLeftScore}`,
             {param: 'addLeftScore'});
+        Materialize.toast('onAddLeftScore', 4000);
     }
 
     onAddRightScore() {
         console.log('onAddRightScore');
         this.opReq(`${CommandId.cs_addRightScore}`);
+        Materialize.toast('onAddRightScore', 4000);
     }
 
     onMinRightScore() {
         console.log('onMinRightScore');
         this.opReq(`${CommandId.cs_minRightScore}`);
+        Materialize.toast('onMinRightScore', 4000);
     }
 
     onMinLeftScore() {
         console.log('onMinLeftScore');
         this.opReq(`${CommandId.cs_minLeftScore}`);
+        Materialize.toast('onMinLeftScore', 4000);
     }
 
     onAddLeftFoul() {
         console.log('onAddLeftFoul');
         this.opReq(`${CommandId.cs_addLeftFoul}`);
+        Materialize.toast('onAddLeftFoul', 4000);
     }
 
     onAddRightFoul() {
         console.log('onAddRightFoul');
         this.opReq(`${CommandId.cs_addRightFoul}`);
+        Materialize.toast('onAddRightFoul', 4000);
     }
 
     onMinRightFoul() {
         console.log('onMinRightFoul');
         this.opReq(`${CommandId.cs_minRightFoul}`);
+        Materialize.toast('onMinRightFoul', 4000);
     }
 
     onMinLeftFoul() {
         console.log('onMinLeftFoul');
         this.opReq(`${CommandId.cs_minLeftFoul}`);
+        Materialize.toast('onMinLeftFoul', 4000);
     }
 
     onChangeColor() {
@@ -592,7 +631,7 @@ export class Stage1v1PanelView extends BasePanelView {
     onSetCursor() {
         var playerId = Number(this.cursorPlayerId);
         console.log('onSetCursor', this.cursorPlayerId, playerId);
-        this.opReq(`${CommandId.cs_setCursorPlayer}`, {playerId: playerId},(res)=>{
+        this.opReq(`${CommandId.cs_setCursorPlayer}`, {playerId: playerId}, (res)=> {
             alert(res);
         });
     }

@@ -1,5 +1,6 @@
 import {PlayerDoc} from "./PlayerInfo";
 export class FTInfo {
+    _id: string;
     id: number;
     name: string;
     fullName: string;
@@ -20,6 +21,7 @@ export class FTInfo {
 
     static  clone(ftDoc) {
         var f = new FTInfo();
+        f._id = ftDoc._id;
         f.id = ftDoc.id;
         f.name = ftDoc.name;
         f.fullName = ftDoc.fullName;

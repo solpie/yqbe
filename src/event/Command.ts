@@ -93,6 +93,7 @@ export enum CommandId{
     updateKingPlayer,
     cs_setCursorPlayer,
     setCursorPlayer,
+    cs_saveToTotalScore,//本轮积分加到总积分
 
         //---------------- player panel
 
