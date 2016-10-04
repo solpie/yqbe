@@ -22,6 +22,7 @@ import $route = vuejs.$route;
         rightFoul: {},
         cmdString: {},
         ftId: {},
+        cursorPlayerId: {},
         ftOptionArr: {},
         playerNumArr: {
             type: Array,
@@ -49,6 +50,7 @@ export class Stage1v1PanelView extends BasePanelView {
     leftFoul: number;
     rightFoul: number;
     bracketIdx: number;//双败制场次序号 1-14
+    cursorPlayerId: number;
     timerName: string;
     scorePanel: ScorePanel;
     playerPanel: PlayerPanel;
@@ -584,6 +586,15 @@ export class Stage1v1PanelView extends BasePanelView {
     onFtFadeInMixRank() {
         console.log('onFtFadeInMixRank');
         this.opReq(`${CommandId.cs_fadeInMixRank}`);
+    }
+
+
+    onSetCursor() {
+        var playerId = Number(this.cursorPlayerId);
+        console.log('onSetCursor', this.cursorPlayerId, playerId);
+        this.opReq(`${CommandId.cs_setCursorPlayer}`, {playerId: playerId},(res)=>{
+            alert(res);
+        });
     }
 
     private initAuto(io) {

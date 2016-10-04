@@ -91,6 +91,8 @@ export enum CommandId{
     updateWinScore,//
     cs_updateKingPlayer,
     updateKingPlayer,
+    cs_setCursorPlayer,
+    setCursorPlayer,
 
         //---------------- player panel
 

@@ -24,7 +24,7 @@ export class Stage1v1PanelHandle {
     //[playerId] = idx
     playerIdx: any = {};
     // playerCount: number;
-    nextPlayerIdArr = [-1, -1];
+    // nextPlayerIdArr = [-1, -1];
     nextPlayerIdArr2 = [0, 0];
     playerQue: Array<any> = [];
     hupuWsUrl: string;
@@ -56,7 +56,7 @@ export class Stage1v1PanelHandle {
         this.initHupuAuto()
     }
 
-    isInit;
+    isInit = false;
 
     init1v1() {
         if (this.isInit)
@@ -64,9 +64,18 @@ export class Stage1v1PanelHandle {
         this.isInit = true;
         var playerIdArr = this.getActDoc().gameDataArr[0].playerIdArr;
 
-
-        this.queInfo = new LinkerInfo(playerIdArr.concat());
+        var playerIdStateArr = [];
+        for (var i = 0; i < playerIdArr.length; i++) {
+            var playerDoc = db.player.dataMap[playerIdArr[i]];
+            var pis = {playerId: playerDoc.id, isDead: false};
+            if (playerDoc.state == PlayerState1v1.Dead) {
+                pis.isDead = true;
+            }
+            playerIdStateArr.push(pis);
+        }
+        this.queInfo = new LinkerInfo(playerIdStateArr);
         this.nextPlayerIdArr2 = this.queInfo.getPlayerIdArr(false);
+
 
         this.playerQue = playerIdArr.concat();
 
@@ -148,13 +157,13 @@ export class Stage1v1PanelHandle {
                 this.gameInfo.gameIdx = this.lastGameIdx + 1;
                 this.io.emit(`${CommandId.resetGame}`);
                 this.init1v1();
-                if (this.nextPlayerIdArr[0] < 0) {
-                    this.nextPlayerIdArr[0] = this.playerQue[0];
-                    this.nextPlayerIdArr[1] = this.playerQue[1];
-                }
-                cmdMap[`${CommandId.cs_updatePlayer}`]({playerId: this.nextPlayerIdArr[0], idx: 0});
-                cmdMap[`${CommandId.cs_updatePlayer}`]({playerId: this.nextPlayerIdArr[1], idx: 1});
-                console.log('player', this.nextPlayerIdArr);
+                // if (this.nextPlayerIdArr[0] < 0) {
+                //     this.nextPlayerIdArr[0] = this.playerQue[0];
+                //     this.nextPlayerIdArr[1] = this.playerQue[1];
+                // }
+                cmdMap[`${CommandId.cs_updatePlayer}`]({playerId: this.nextPlayerIdArr2[0], idx: 0});
+                cmdMap[`${CommandId.cs_updatePlayer}`]({playerId: this.nextPlayerIdArr2[1], idx: 1});
+                console.log('player', this.nextPlayerIdArr2);
             };
 
 
@@ -365,6 +374,9 @@ export class Stage1v1PanelHandle {
             cmdMap[`${CommandId.cs_saveGameRec}`] = (param)=> {
                 return this.cs_saveGameRec(param, res);
             };
+            cmdMap[`${CommandId.cs_setCursorPlayer}`] = (param)=> {
+                return this.cs_setCursorPlayer(param);
+            };
             ///  FT
             cmdMap[`${CommandId.cs_fadeInPlayerRank}`] = (param)=> {
                 return this.cs_fadeInPlayerRank(param);
@@ -413,6 +425,11 @@ export class Stage1v1PanelHandle {
             }
         }
         return playerDoc;
+    }
+
+    cs_setCursorPlayer(param) {
+        var playerId = param.playerId;
+        this.queInfo.setCursorByPlayerId(playerId);
     }
 
     cs_changeColor(param) {
@@ -543,24 +560,24 @@ export class Stage1v1PanelHandle {
                 this.gameInfo.loserPlayerInfo.playerData.state = PlayerState1v1.Dead;
                 this.quePlayer(this.gameInfo.loser_Idx[0], true);
                 // cmdMap[`${CommandId.cs_updatePlayerState}`]({playerDoc: playerDoc})
-                this.nextPlayerIdArr[0] = this.playerQue[0];
-                this.nextPlayerIdArr[1] = this.playerQue[1];
+                // this.nextPlayerIdArr[0] = this.playerQue[0];
+                // this.nextPlayerIdArr[1] = this.playerQue[1];
 
                 this.queInfo.setPlayerDead(this.gameInfo.loser_Idx[0]);
                 this.nextPlayerIdArr2 = this.queInfo.getPlayerIdArr(true);
             }
             else {
-                if (this.playerQue[0] != this.gameInfo.loser_Idx[0]) {
-                    this.nextPlayerIdArr[this.gameInfo.winner_Idx[1]] = this.playerQue[0];
-                }
-                else
-                    this.nextPlayerIdArr[this.gameInfo.winner_Idx[1]] = this.playerQue[1];
-                this.nextPlayerIdArr[this.gameInfo.loser_Idx[1]] = this.gameInfo.loser_Idx[0];
+                // if (this.playerQue[0] != this.gameInfo.loser_Idx[0]) {
+                //     this.nextPlayerIdArr[this.gameInfo.winner_Idx[1]] = this.playerQue[0];
+                // }
+                // else
+                //     this.nextPlayerIdArr[this.gameInfo.winner_Idx[1]] = this.playerQue[1];
+                // this.nextPlayerIdArr[this.gameInfo.loser_Idx[1]] = this.gameInfo.loser_Idx[0];
 
                 this.nextPlayerIdArr2[this.gameInfo.loser_Idx[1]] = this.gameInfo.loser_Idx[0];
                 this.nextPlayerIdArr2[this.gameInfo.winner_Idx[1]] = this.queInfo.getPlayerIdArr(false)[0];//loser_Idx[0];
             }
-            console.log('nextPlayerIdArr', this.nextPlayerIdArr);
+            // console.log('nextPlayerIdArr', this.nextPlayerIdArr);
             console.log('nextPlayerIdArr2', this.nextPlayerIdArr2);
 
             this.lastLoserPlayerInfo = this.gameInfo.loserPlayerInfo;

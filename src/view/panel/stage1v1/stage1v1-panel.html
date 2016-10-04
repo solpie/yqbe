@@ -64,25 +64,27 @@
                            @click="onUpdatePlayer($index)">↓</a>
                         <p>
                             <a class="waves-effect waves-light btn" style="width: 75px;height: 25px"
-                               @click="onFinalPlayer($index)">路人王</a>
-                        <p>
-                            <a class="waves-effect waves-light btn" style="width: 75px;height: 25px"
                                @click="onPickPlayer($index)">+</a>
                         <p>
                     </div>
                 </div>
                 <div class="col">
                     <div class="row">
-                        ```````````````````````````````
+                        ````````````````````````
                         <a class="waves-effect waves-light btn"
                            @click="onCreateGame">创建比赛</a>
                         <a class="waves-effect waves-light btn"
                            @click="onChangeColor">交换红蓝</a>
                         <a class="waves-effect waves-light btn"
                            @click="onStarting">出阵(球员信息)</a>
-                        <a class="waves-effect waves-light btn" @click="onHideStarting">隐藏</a>
-
-                        ```````````````````````````````
+                        <a class="waves-effect waves-light btn"
+                           @click="onHideStarting">隐藏</a>
+                        ```````````````````````
+                    </div>
+                    <div class="row">
+                        set cursor(先手动playerId上场后设置cursor)
+                        <input type="text" @keyup.enter="onSetCursor"
+                               v-model="cursorPlayerId" style="width: 75px">
                     </div>
                     <div class="row" style="display: inline-flex">
                         <div class="switch">

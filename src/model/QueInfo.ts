@@ -8,13 +8,15 @@ export class LinkerInfo {
     linkerArr: Array<Linker>;
     cursor: Linker;
 
-    constructor(playerIdArr) {
+    constructor(playerIdStateArr) {
         this.linkerArr = [];
-        // this.actPlayerIdArr = [null, null];
         var lastQueObj: Linker;
-        for (var i = 0; i < playerIdArr.length; i++) {
-            var playerId = playerIdArr[i];
+        for (var i = 0; i < playerIdStateArr.length; i++) {
+            var pis = playerIdStateArr[i];
+            var playerId = pis.playerId;
             var linker = new Linker();
+
+            linker.isDead = pis.isDead;
             linker.idx = i;
             linker.playerId = playerId;
             if (lastQueObj) {
@@ -52,21 +54,13 @@ export class LinkerInfo {
 
     _getLinkerByPlayerId(playerId) {
         for (var i = 0; i < this.linkerArr.length; i++) {
-            var linker:Linker = this.linkerArr[i];
+            var linker: Linker = this.linkerArr[i];
             if (linker.playerId == playerId) {
                 return linker;
             }
         }
         return null;
     }
-
-    // _getCursor() {
-    //     for (var i = 0; i < this.linkerArr.length; i++) {
-    //         var linker = this.linkerArr[i];
-    //         if (linker.isCursor)
-    //             return linker;
-    //     }
-    // }
 
     _findNextPlayerId() {
         for (var i = 0; i < this.linkerArr.length; i++) {
