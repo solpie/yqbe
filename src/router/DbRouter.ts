@@ -52,14 +52,3 @@ dbRouter.get('/ft', function (req: any, res: any) {
     var ftArr = mapToArr(db.ft.dataMap);
     res.send({ftArr: ftArr});
 });
-
-// dbRouter.post('/external/player', function (req: any, res: any) {
-//     res.send({playerInfoMap: db.playerHuiTi.dataMap})
-// });
-//
-// dbRouter.get('/external/import', function (req: any, res: any) {
-//     //https://github.com/SheetJS/js-xlsx
-//     console.log('/db/external');
-//     ExternalInfo.importHuiTi();
-//     res.sendStatus(200);
-// });

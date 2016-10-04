@@ -12,6 +12,7 @@ import {Game1v1Info, bracketMap} from "../model/Game1v1Info";
 import {mapToArr, ascendingProp, descendingProp} from "../utils/JsFunc";
 import {MatchSvg} from "../model/BracketInfo";
 import {FTInfo} from "../model/FTInfo";
+import {LinkerInfo} from "../model/QueInfo";
 import Server = SocketIO.Server;
 import Socket = SocketIO.Socket;
 export class Stage1v1PanelHandle {
@@ -24,8 +25,10 @@ export class Stage1v1PanelHandle {
     playerIdx: any = {};
     // playerCount: number;
     nextPlayerIdArr = [-1, -1];
+    nextPlayerIdArr2 = [0, 0];
     playerQue: Array<any> = [];
     hupuWsUrl: string;
+    queInfo: LinkerInfo;
 
     constructor(io: Server) {
         console.log('StagePanelHandle!!');
@@ -60,6 +63,11 @@ export class Stage1v1PanelHandle {
             return 0;
         this.isInit = true;
         var playerIdArr = this.getActDoc().gameDataArr[0].playerIdArr;
+
+
+        this.queInfo = new LinkerInfo(playerIdArr.concat());
+        this.nextPlayerIdArr2 = this.queInfo.getPlayerIdArr(false);
+
         this.playerQue = playerIdArr.concat();
 
         for (var i = 0; i < playerIdArr.length; i++) {
@@ -537,6 +545,9 @@ export class Stage1v1PanelHandle {
                 // cmdMap[`${CommandId.cs_updatePlayerState}`]({playerDoc: playerDoc})
                 this.nextPlayerIdArr[0] = this.playerQue[0];
                 this.nextPlayerIdArr[1] = this.playerQue[1];
+
+                this.queInfo.setPlayerDead(this.gameInfo.loser_Idx[0]);
+                this.nextPlayerIdArr2 = this.queInfo.getPlayerIdArr(true);
             }
             else {
                 if (this.playerQue[0] != this.gameInfo.loser_Idx[0]) {
@@ -545,8 +556,12 @@ export class Stage1v1PanelHandle {
                 else
                     this.nextPlayerIdArr[this.gameInfo.winner_Idx[1]] = this.playerQue[1];
                 this.nextPlayerIdArr[this.gameInfo.loser_Idx[1]] = this.gameInfo.loser_Idx[0];
+
+                this.nextPlayerIdArr2[this.gameInfo.loser_Idx[1]] = this.gameInfo.loser_Idx[0];
+                this.nextPlayerIdArr2[this.gameInfo.winner_Idx[1]] = this.queInfo.getPlayerIdArr(false)[0];//loser_Idx[0];
             }
             console.log('nextPlayerIdArr', this.nextPlayerIdArr);
+            console.log('nextPlayerIdArr2', this.nextPlayerIdArr2);
 
             this.lastLoserPlayerInfo = this.gameInfo.loserPlayerInfo;
             db.player.updatePlayerDoc(this.gameInfo.getPlayerDocArr(), null);

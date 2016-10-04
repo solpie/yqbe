@@ -1,6 +1,7 @@
 import Container = createjs.Container;
 import {GameRkbInfo} from "../../../model/GameRkbInfo";
 import {HEALTH_BAR_WIDTH} from "../../../model/PlayerRkbInfo";
+import {EventPanel} from "./EventPanel";
 import Shape = createjs.Shape;
 import Sprite = createjs.Sprite;
 import Bitmap = createjs.Bitmap;
@@ -16,19 +17,19 @@ class HealthBar extends Container {
         this.is1p = is1p;
 
         var bg = new Shape();
-        bg.graphics.f('#242424').drawRect(0, 0, HEALTH_BAR_WIDTH, 45);
+        bg.graphics.f('#242424').drawRect(0, 0, HEALTH_BAR_WIDTH, 40);
         this.addChild(bg);
 
         this.fxCtn = new Container();
         this.addChild(this.fxCtn);
 
         this.easeSp = new Shape();
-        this.easeSp.graphics.f('#c1242b').drawRect(0, 0, HEALTH_BAR_WIDTH, 45);
+        this.easeSp.graphics.f('#c1242b').drawRect(0, 0, HEALTH_BAR_WIDTH, 40);
         this.easeSp.alpha = .8;
         this.fxCtn.addChild(this.easeSp);
 
         this.healthSp = new Shape();
-        this.healthSp.graphics.f('#fAEf59').drawRect(0, 0, HEALTH_BAR_WIDTH, 45);
+        this.healthSp.graphics.f('#fAEf59').drawRect(0, 0, HEALTH_BAR_WIDTH, 40);
         this.fxCtn.addChild(this.healthSp);
 
         if (is1p) {
@@ -40,7 +41,7 @@ class HealthBar extends Container {
         }
 
         var mask = new Shape();
-        mask.graphics.f('#000').drawRect(0, 0, HEALTH_BAR_WIDTH, 45);
+        mask.graphics.f('#000').drawRect(0, 0, HEALTH_BAR_WIDTH, 40);
         this.fxCtn.mask = mask;
     }
 
@@ -60,6 +61,7 @@ export class HealthPanel {
     ctn: Container;
     hpBar1p: HealthBar;
     hpBar2p: HealthBar;
+    eventPanel: EventPanel;
 
     constructor(stage: any) {
         this.ctn = new Container();
@@ -74,9 +76,11 @@ export class HealthPanel {
         this.hpBar2p = new HealthBar(false);
         this.hpBar1p.x = 259;
         this.hpBar2p.x = 1014;
-        this.hpBar1p.y = this.hpBar2p.y = 66;
+        this.hpBar1p.y = this.hpBar2p.y = 69;
         this.ctn.addChild(this.hpBar1p);
         this.ctn.addChild(this.hpBar2p);
+
+        this.eventPanel = new EventPanel(this.ctn);
     }
 
     addHealth(param) {

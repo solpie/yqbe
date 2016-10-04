@@ -1,4 +1,4 @@
-export var HEALTH_BAR_WIDTH = 650;
+export var HEALTH_BAR_WIDTH = 647;
 export class PlayerRkbInfo {
     name: string;
     avatar: string;

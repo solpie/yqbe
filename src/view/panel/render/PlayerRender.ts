@@ -213,7 +213,8 @@ export class StagePlayerCard extends Container {
                 "9": 0
             },
             images: ["/img/panel/stage/scoreNum.png"],
-            frames: [[0, 0, 40, 54],
+            frames: [
+                [0, 0, 40, 54],
                 [41, 0, 40, 54],
                 [0, 55, 40, 54],
                 [41, 55, 40, 54],
@@ -226,4 +227,6 @@ export class StagePlayerCard extends Container {
         });
         return new createjs.BitmapText("0", sheet);
     }
+
+
 }

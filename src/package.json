@@ -6,7 +6,7 @@
   "server": {
     "autoIP": false,
     "king": 21,
-    "port": 8085,
+    "port": 80,
     "host": "localhost",
     "wsPort": "9697"
   }

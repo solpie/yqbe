@@ -80,7 +80,7 @@ export class Stage1v1PanelView extends BasePanelView {
         else
             this.initIO(io);
         console.log('router', this.$route.params);
-        // this.initConsoleCmd();
+        this.initConsoleCmd();
     }
 
     initConsoleCmd() {
