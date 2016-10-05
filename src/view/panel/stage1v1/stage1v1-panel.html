@@ -100,6 +100,11 @@
                         双败场次::::<input v-model="bracketIdx" style="width: 50px">
                         <a class="waves-effect waves-light btn" @click="onGetBracketInfo">获取球员</a>
                     </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
                     <div class="row">
                         <a class="waves-effect waves-light btn" @click="onUpdateWinScore(2)">2分胜</a>
                         <a class="waves-effect waves-light btn" @click="onUpdateWinScore(3)">3分胜</a>
@@ -128,8 +133,11 @@
                         <a class="waves-effect waves-light btn" @click="onRefresh">Refresh</a>
                     </div>
                 </div>
+                <div class="col">
+                    <span>{{gameInfoText}}</span>
+                    <p>{{deadPlayerArr | json}}
+                </div>
             </div>
-
             <div class="row">
                 <a class="waves-effect waves-light btn" @click="onShowActPre">上一页</a>
                 <a class="waves-effect waves-light btn" @click="onShowAct">赛况表</a>

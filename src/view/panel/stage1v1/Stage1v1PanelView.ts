@@ -23,8 +23,10 @@ declare var Materialize;
         rightFoul: {},
         cmdString: {},
         ftId: {},
+        gameInfoText: {},
         cursorPlayerId: {},
         ftOptionArr: {},
+        deadPlayerArr: {},
         playerNumArr: {
             type: Array,
             default: ['0', '0']
@@ -71,6 +73,8 @@ export class Stage1v1PanelView extends BasePanelView {
     pickUp8Map: any;
 
     //ft
+    gameInfoText: string;
+    deadPlayerArr: any;
     ftOptionArr: any;
     ftId: any;
 
@@ -111,6 +115,8 @@ export class Stage1v1PanelView extends BasePanelView {
                 this.kingPlayer = data.kingPlayer;
                 this.leftFoul = data.gameInfo.leftFoul;
                 this.rightFoul = data.gameInfo.rightFoul;
+                this.gameInfoText = data.gameInfo.infoText;
+                this.deadPlayerArr = data.gameInfo.deadPlayerArr;
                 // if (data.lastLoserPlayerInfo)
                 data.gameInfo.lastLoserPlayerInfo = data.lastLoserPlayerInfo;
                 if (this.op) {
@@ -337,7 +343,7 @@ export class Stage1v1PanelView extends BasePanelView {
                     //add right score
                         this.onAddRightScore();
                 }
-                else if (currKey == 59||currKey==186) {
+                else if (currKey == 59 || currKey == 186) {
                     if (isShift)
                         this.onMinLeftFoul();
                     else

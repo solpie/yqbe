@@ -123,6 +123,7 @@ export class Player extends VueEx {
         ($('#modal-player') as any).openModal();
         this.message = "添加球员";
         this.isOpen = true;
+        this.$broadcast(ViewEvent.PLAYER_ADD, {ftOptionArr: this.ftOptionArr.concat()});
     }
 
     onAddPlayerList() {

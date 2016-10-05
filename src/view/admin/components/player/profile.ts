@@ -22,6 +22,7 @@ var _this_: Profile;
             required: true,
         },
         ftId: {},
+        location: {},
         ftOptionArr: {
             type: Array,
             required: true,
@@ -69,6 +70,9 @@ export class Profile extends VueEx {
         this.isEdit = false;
         this.isChangeAvatar = false;
 
+        this.$on(ViewEvent.PLAYER_ADD, (param) => {
+            this.ftOptionArr = param.ftOptionArr.concat({text: "退团保平安", value: 0});
+        });
         this.$on(ViewEvent.PLAYER_EDIT, (param) => {
             var playerId = param.playerId;
             this.ftOptionArr = param.ftOptionArr.concat({text: "退团保平安", value: 0});
@@ -94,6 +98,7 @@ export class Profile extends VueEx {
         toObj.height = data.height;
         toObj.intro = data.intro;
         toObj.ftId = data.ftId;
+        toObj.location = data.location;
     }
 
 

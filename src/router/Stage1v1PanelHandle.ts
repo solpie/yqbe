@@ -40,6 +40,7 @@ export class Stage1v1PanelHandle {
                 var actDoc = db.activity.getDocArr([3])[0];
                 var matchArr = this.refreshBracket(actDoc);
                 var ftArr = mapToArr(db.ft.dataMap);
+
                 socket.emit(`${CommandId.initPanel}`, ScParam({
                     gameInfo: this.gameInfo,
                     isDev: ServerConf.isDev,
@@ -153,13 +154,7 @@ export class Stage1v1PanelHandle {
 
 
             cmdMap[`${CommandId.cs_resetGame}`] = (param) => {
-                this.gameInfo = new Game1v1Info();
-                this.gameInfo.gameIdx = this.lastGameIdx + 1;
-                this.io.emit(`${CommandId.resetGame}`);
-                this.init1v1();
-                cmdMap[`${CommandId.cs_updatePlayer}`]({playerId: this.nextPlayerIdArr2[0], idx: 0});
-                cmdMap[`${CommandId.cs_updatePlayer}`]({playerId: this.nextPlayerIdArr2[1], idx: 1});
-                console.log('player', this.nextPlayerIdArr2);
+                return this.cs_resetGame(param, cmdMap);
             };
 
 
@@ -483,6 +478,29 @@ export class Stage1v1PanelHandle {
         this.io.emit(`${CommandId.updateLeftScore}`, ScParam({leftScore: this.gameInfo.leftScore}));
         this.io.emit(`${CommandId.updateRightScore}`, ScParam({rightScore: this.gameInfo.rightScore}));
 
+    }
+
+    cs_resetGame(param, cmdMap) {
+        this.gameInfo = new Game1v1Info();
+        this.gameInfo.gameIdx = this.lastGameIdx + 1;
+        this.io.emit(`${CommandId.resetGame}`);
+
+        var deadNum = 0;
+        var playerIdArr = this.getActDoc().gameDataArr[0].playerIdArr;
+        this.gameInfo.deadPlayerArr = [];
+        for (var i = 0; i < playerIdArr.length; i++) {
+            var playerDoc = db.player.dataMap[playerIdArr[i]];
+            if (playerDoc.state == PlayerState1v1.Dead) {
+                deadNum++;
+                this.gameInfo.deadPlayerArr.push(playerDoc.name);
+                console.log('dead player', playerDoc.name);
+            }
+        }
+        this.gameInfo.infoText = '淘汰: ' + deadNum + '  总: ' + playerIdArr.length+"  剩："+(playerIdArr.length-deadNum);
+        this.init1v1();
+        cmdMap[`${CommandId.cs_updatePlayer}`]({playerId: this.nextPlayerIdArr2[0], idx: 0});
+        cmdMap[`${CommandId.cs_updatePlayer}`]({playerId: this.nextPlayerIdArr2[1], idx: 1});
+        console.log('player', this.nextPlayerIdArr2);
     }
 
     cs_saveGameRec(param, res) {

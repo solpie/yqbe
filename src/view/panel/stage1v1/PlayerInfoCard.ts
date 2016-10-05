@@ -180,7 +180,7 @@ export class PlayerInfoCard {
         locationText.textAlign = 'center';
         locationText.x = centerPx;
         locationText.y = 305;
-        // ctn.addChild(locationText);
+        ctn.addChild(locationText);
 
         var heightText: Text = new Text(`身高：${playerDoc.height} cm`, "18px Arial", '#fff');
         heightText.x = 35;

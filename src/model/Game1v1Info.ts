@@ -38,7 +38,9 @@ export class Game1v1Info {
     time: number = 0;
     loserPlayerInfo: PlayerInfo;
     _startDate;
-
+    //淘汰统计
+    infoText:string;
+    deadPlayerArr: Array<string>;
     constructor(gameDoc?: any) {
         this.rightScore = 0;
         this.leftScore = 0;

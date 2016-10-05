@@ -16,26 +16,28 @@
                 </div>
                 <div class="row">
                     <div class="input-field col s2">
-                        身高(CM)<input id="height" v-model="height"  type="text" class="validate">
+                        身高(CM)<input id="height" v-model="height" type="text" class="validate">
                         <!--<label for="height">身高(CM)</label>-->
                     </div>
 
                     <div class="input-field col s2">
-                        体重(KG) <input id="weight" v-model="weight"  type="text" class="validate">
-                        <!--<label for="weight">体重(KG)</label>-->
+                        体重(KG) <input id="weight" v-model="weight" type="text" class="validate">
+                    </div>
+                    <div class="input-field col s2">
+                        地区 <input v-model="location" type="text" class="validate">
                     </div>
                 </div>
                 <div class="row">
                     <div class="input-field col s12">
-                        一句话介绍 <input v-model="intro"  type="text" class="validate">
+                        一句话介绍 <input v-model="intro" type="text" class="validate">
                     </div>
 
                     战团： <select class="browser-default" v-model="ftId" @change="onFtSelected"
-                            style="width: 150px">
-                       <option v-for="option in ftOptionArr" v-bind:value="option.value">
-                            {{ option.text }}
-                        </option>
-                    </select>
+                                style="width: 150px">
+                    <option v-for="option in ftOptionArr" v-bind:value="option.value">
+                        {{ option.text }}
+                    </option>
+                </select>
                 </div>
             </div>
             <div class="col s6">

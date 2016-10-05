@@ -25,6 +25,7 @@ export const TimerState = {
 
 export const ViewEvent = {
     PLAYER_EDIT: 'edit player',
+    PLAYER_ADD: 'add player',
     STRAIGHT3_LEFT: 'STRAIGHT3_LEFT',
     STRAIGHT3_RIGHT: 'STRAIGHT3_RIGHT'
 };

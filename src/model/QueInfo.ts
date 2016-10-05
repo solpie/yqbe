@@ -27,10 +27,10 @@ export class LinkerInfo {
         }
         linker.next = this.linkerArr[0];
         //
-        for (var i = 0; i < this.linkerArr.length; i++) {
-            var queObj = this.linkerArr[i];
-            console.log('linker:', queObj.playerId, "next", queObj.next.playerId);
-        }
+        // for (var i = 0; i < this.linkerArr.length; i++) {
+        //     var queObj = this.linkerArr[i];
+        //     // console.log('linker:', queObj.playerId, "next", queObj.next.playerId);
+        // }
     }
 
 
