@@ -9,6 +9,7 @@ import {EventPanel} from "./EventPanel";
 import {loadImgArr, descendingProp, mapToArr} from "../../../utils/JsFunc";
 import {CountDownPanel} from "./CountDownPanel";
 import $route = vuejs.$route;
+import Tween = createjs.Tween;
 declare var Materialize;
 
 export var isAutoPanel: boolean;
@@ -684,23 +685,14 @@ export class Stage1v1PanelView extends BasePanelView {
                 console.log('init', data);
                 this.scorePanel.set35ScoreLight(data.winScore);
                 this.scorePanel.setGameIdx(data.gameIdx);
-
                 setPlayer(data.player.left, data.player.right);
-                // var leftPlayerInfo = new PlayerInfo();
-                // var playerData = data.player.left;
-                // leftPlayerInfo.name(playerData.name);
-                // leftPlayerInfo.avatar(playerData.avatar);
-                // leftPlayerInfo.winGameCount(playerData.winAmount);
-                // leftPlayerInfo.loseGameCount(playerData.loseAmount);
-                // this.playerPanel.setPlayer(0, leftPlayerInfo.playerData);
-                //
-                // var rightPlayerInfo = new PlayerInfo();
-                // playerData = data.player.right;
-                // rightPlayerInfo.name(playerData.name);
-                // rightPlayerInfo.avatar(playerData.avatar);
-                // rightPlayerInfo.winGameCount(playerData.winAmount);
-                // rightPlayerInfo.loseGameCount(playerData.loseAmount);
-                // this.playerPanel.setPlayer(1, rightPlayerInfo.playerData);
+
+                //test
+                // this.scorePanel.resetTimer();
+                // this.scorePanel.toggleTimer1(TimerState.RUNNING);
+                // Tween.get(this).wait(3000).call(()=> {
+                //     this.scorePanel.toggleTimer1(TimerState.PAUSE);
+                // });
             };
             eventMap['updateScore'] = ()=> {
                 console.log('updateScore', data);
@@ -716,39 +708,16 @@ export class Stage1v1PanelView extends BasePanelView {
                 this.scorePanel.setGameIdx(data.gameIdx);
                 setPlayer(data.player.left, data.player.right);
 
-                // var leftPlayerInfo = new PlayerInfo();
-                // var playerData = data.player.left;
-                // leftPlayerInfo.name(playerData.name);
-                // leftPlayerInfo.avatar(playerData.avatar);
-                // leftPlayerInfo.winGameCount(playerData.winAmount);
-                // leftPlayerInfo.loseGameCount(playerData.loseAmount);
-                // this.playerPanel.setPlayer(0, leftPlayerInfo.playerData);
-                //
-                // var rightPlayerInfo = new PlayerInfo();
-                // playerData = data.player.right;
-                // rightPlayerInfo.name(playerData.name);
-                // rightPlayerInfo.avatar(playerData.avatar);
-                // rightPlayerInfo.winGameCount(playerData.winAmount);
-                // rightPlayerInfo.loseGameCount(playerData.loseAmount);
-                // this.playerPanel.setPlayer(1, rightPlayerInfo.playerData);
-
                 window.location.reload();
                 this.scorePanel.resetTimer();
-                this.scorePanel.toggleTimer1(TimerState.START_STR);
+                this.scorePanel.toggleTimer1(TimerState.RUNNING);
             };
             eventMap['commitGame'] = ()=> {
                 var isBlue = data.idx == 0;
-                // var playerDoc: PlayerDoc = new PlayerDoc();
-                // playerDoc.name = data.player.name;
-                // playerDoc.avatar = data.player.avatar;
                 data.player.winGameCount = data.player.winAmount;
                 data.player.loseGameCount = data.player.loseAmount;
-                // playerDoc.weight = data.player.weight;
-                // playerDoc.height = data.player.height;
-                // playerDoc.intro = data.player.intro;
                 this.eventPanel.playerInfoCard.fadeInWinPlayer(isBlue, data.player);
                 this.scorePanel.toggleTimer1(TimerState.PAUSE);
-                // this.eventPanel.fadeInWinPanel()
             };
             eventMap['fadeInCountDown'] = ()=> {
                 var text = data.text;

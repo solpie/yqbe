@@ -4,6 +4,7 @@ import {loadImg, cnWrap} from "../../../utils/JsFunc";
 import {CreateJsEx} from "../CreateJsEx";
 import {fadeOutCtn} from "../../../utils/Fx";
 import {ViewConst} from "../../../event/Const";
+import {isAutoPanel} from "./Stage1v1PanelView";
 import Text = createjs.Text;
 import Bitmap = createjs.Bitmap;
 export class PlayerInfoCard {
@@ -48,18 +49,29 @@ export class PlayerInfoCard {
         }
     }
 
-    getWinPlayerCard(p: PlayerInfo, callback, isAuto?): any {
+    getWinPlayerCard(p: PlayerInfo, callback): any {
         // var isMvp = p.isMvp;
         var ctn = new createjs.Container();
         console.log("playerCard=======:", p.avatar());
-        loadImg(p.avatar(), function () {
+        loadImg(p.avatar(), (avtImg) => {
             var isFinal = (p as any).final;
-            var isKing = p['isKing'];
+            // var isKing = p['isKing'];
+            // if (isAutoPanel)
+            //     loadAutoAvatarShape(p.avatar(), (avt)=> {
+            //         console.log('winPlayerCard', avt, ctn);
+            //         // var scale = 80 / avt.height;
+            //         // avt.scaleX = avt.scaleY = 1.2 * scale;
+            //         // avt.x = (180 - 180 * 1.2) * .5 + 60;
+            //         // avt.y = 50 + 30;
+            //         // if (isFinal) {
+            //         //     avt.scaleX = avt.scaleY = 100 / avt.height;
+            //         //     avt.x = (180 - 180 * 1.2) * .5 + 63;
+            //         //     avt.y = 79;
+            //         // }
+            //         // ctn.addChildAt(avt, 0);
+            //         ctn.addChild(avt);
+            //     });
             var avatar = new createjs.Bitmap(p.avatar());
-            var autoAvatar = new createjs.Shape();
-            autoAvatar.graphics.beginBitmapFill(new Image(p.avatar()));
-            autoAvatar.graphics.drawRect(0, 0, 180, 76);
-
             var scale = 80 / avatar.getBounds().height;
             avatar.scaleX = avatar.scaleY = 1.2 * scale;
             avatar.x = (180 - 180 * 1.2) * .5 + 60;
@@ -69,8 +81,16 @@ export class PlayerInfoCard {
                 avatar.x = (180 - 180 * 1.2) * .5 + 63;
                 avatar.y = 79;
             }
+            if (isAutoPanel) {
+                avatar.sourceRect = new createjs.Rectangle((avtImg.width - 180) / 2, (avtImg.height - 76) / 2, 180, 76);
+                avatar.scaleX = avatar.scaleY = 1.2;
+                // avatar.x = (180 - 180 * 1.2) * .5 + 63;
+                // avatar.y = 79;
+                // var m = new createjs.Matrix2D();
+                // m.tx = 100;
+                // avatar.transformMatrix = m;
+            }
             ctn.addChild(avatar);
-            // ctn.addChild(autoAvatar);
 
 
             var bgPath = '/img/panel/stage/win/playerBgWin';
@@ -81,9 +101,9 @@ export class PlayerInfoCard {
             if (isFinal) {
                 bgPath = '/img/panel/stage1v1/finalPlayerBg';
             }
-            if (isKing) {
-                bgPath = '/img/panel/stage1v1/win/playerBgKing';
-            }
+            // if (isKing) {
+            //     bgPath = '/img/panel/stage1v1/win/playerBgKing';
+            // }
             bgPath += '.png';
             var bg = new createjs.Bitmap(bgPath);
             bg.x = -116;
@@ -102,9 +122,9 @@ export class PlayerInfoCard {
             } else {
                 col = "#e23f6b";
             }
-            if (isKing) {
-                col = '#f1c236';
-            }
+            // if (isKing) {
+            //     col = '#f1c236';
+            // }
             var nameCol = "#ddd";
             var nameText: Text;
             nameText = new createjs.Text(p.name(), "bold 30px Arial", col);

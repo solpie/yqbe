@@ -133,7 +133,7 @@ export class StagePlayerCard extends Container {
                         avatarBmp.alpha = 0;
                     }
                 }
-                avatarBmp.scaleX = avatarBmp.scaleY = avtHeight / avatarBmp.getBounds().height;
+                avatarBmp.scaleX = avatarBmp.scaleY = avtHeight / avatarBmp.height;
             });
         else
             loadImg(avatarPath, ()=> {

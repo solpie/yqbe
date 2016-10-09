@@ -49,7 +49,9 @@ export function arrUniqueFilter(el, i, a): boolean {
 
 export function loadImg(path1, callback) {
     var img = new Image();
-    img.onload = callback;
+    img.onload = ()=> {
+        callback(img);
+    };
     img.src = path1;
 }
 
@@ -138,7 +140,7 @@ export function getLength(str) {
 // }
 export function cnWrap(str, len, start = 0) {
     var str_line_length = 0;
-    var str_len= str.length;
+    var str_len = str.length;
     var str_cut = new String();
     var str_out = '';
     for (var i = start; i < str_len; i++) {
