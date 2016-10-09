@@ -48,7 +48,7 @@ export class PlayerInfoCard {
         }
     }
 
-    getWinPlayerCard(p: PlayerInfo, callback): any {
+    getWinPlayerCard(p: PlayerInfo, callback, isAuto?): any {
         // var isMvp = p.isMvp;
         var ctn = new createjs.Container();
         console.log("playerCard=======:", p.avatar());
@@ -56,6 +56,10 @@ export class PlayerInfoCard {
             var isFinal = (p as any).final;
             var isKing = p['isKing'];
             var avatar = new createjs.Bitmap(p.avatar());
+            var autoAvatar = new createjs.Shape();
+            autoAvatar.graphics.beginBitmapFill(new Image(p.avatar()));
+            autoAvatar.graphics.drawRect(0, 0, 180, 76);
+
             var scale = 80 / avatar.getBounds().height;
             avatar.scaleX = avatar.scaleY = 1.2 * scale;
             avatar.x = (180 - 180 * 1.2) * .5 + 60;
@@ -66,6 +70,7 @@ export class PlayerInfoCard {
                 avatar.y = 79;
             }
             ctn.addChild(avatar);
+            // ctn.addChild(autoAvatar);
 
 
             var bgPath = '/img/panel/stage/win/playerBgWin';
@@ -313,3 +318,25 @@ export class PlayerInfoCard {
         ctn.addChild(playerCard);
     }
 }
+
+export var loadAutoAvatarShape = (imgPath, callback)=> {
+    var autoAvatar = new createjs.Shape();
+    var img1 = new Image();
+    img1.onload = ()=> {
+        console.log('img1', img1.height, img1.width);
+        if (img1.width >= 180 && img1.height >= 76) {
+            var m = new createjs.Matrix2D();
+
+            m.tx = -(img1.width - 180) / 2;
+            m.ty = -(img1.height - 76) / 2;
+            autoAvatar.graphics.beginBitmapFill(img1, null, m);
+            autoAvatar.graphics.drawRect(0, 0, 180, 76);
+        }
+        else {
+            autoAvatar.graphics.beginBitmapFill(img1);
+            autoAvatar.graphics.drawRect(0, 0, 180, 76);
+        }
+        callback(autoAvatar);
+    };
+    img1.src = imgPath;
+};

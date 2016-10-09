@@ -10,6 +10,8 @@ import {loadImgArr, descendingProp, mapToArr} from "../../../utils/JsFunc";
 import {CountDownPanel} from "./CountDownPanel";
 import $route = vuejs.$route;
 declare var Materialize;
+
+export var isAutoPanel: boolean;
 @Component({
     template: require('./stage1v1-panel.html'),
     props: {
@@ -82,8 +84,10 @@ export class Stage1v1PanelView extends BasePanelView {
         if (!pid)
             pid = PanelId.stage1v1Panel;
         var io = super.ready(pid, isInitCanvas);
-        if (this.isAuto)
+        if (this.isAuto) {
+            isAutoPanel = this.isAuto;
             this.initAuto(io);
+        }
         else
             this.initIO(io);
         console.log('router', this.$route.params);
@@ -650,6 +654,23 @@ export class Stage1v1PanelView extends BasePanelView {
         // this.gameId = gameDoc.id;
         this.eventPanel = new EventPanel(this);
         this.countDownRender = new CountDownPanel(this.stage);
+        var setPlayer = (leftPlayer, rightPlayer)=> {
+            var leftPlayerInfo = new PlayerInfo();
+            var playerData = leftPlayer;
+            leftPlayerInfo.name(playerData.name);
+            leftPlayerInfo.avatar(playerData.avatar);
+            leftPlayerInfo.winGameCount(playerData.winAmount);
+            leftPlayerInfo.loseGameCount(playerData.loseAmount);
+            this.playerPanel.setPlayer(0, leftPlayerInfo.playerData);
+
+            var rightPlayerInfo = new PlayerInfo();
+            playerData = rightPlayer;
+            rightPlayerInfo.name(playerData.name);
+            rightPlayerInfo.avatar(playerData.avatar);
+            rightPlayerInfo.winGameCount(playerData.winAmount);
+            rightPlayerInfo.loseGameCount(playerData.loseAmount);
+            this.playerPanel.setPlayer(1, rightPlayerInfo.playerData);
+        };
         io.on('connect', ()=> {
             console.log('hupuAuto socket connected');
             io.emit('passerbyking', {
@@ -664,21 +685,22 @@ export class Stage1v1PanelView extends BasePanelView {
                 this.scorePanel.set35ScoreLight(data.winScore);
                 this.scorePanel.setGameIdx(data.gameIdx);
 
-                var leftPlayerInfo = new PlayerInfo();
-                var playerData = data.player.left;
-                leftPlayerInfo.name(playerData.name);
-                leftPlayerInfo.avatar(playerData.avatar);
-                leftPlayerInfo.winGameCount(playerData.winAmount);
-                leftPlayerInfo.loseGameCount(playerData.loseAmount);
-                this.playerPanel.setPlayer(0, leftPlayerInfo.playerData);
-
-                var rightPlayerInfo = new PlayerInfo();
-                playerData = data.player.right;
-                rightPlayerInfo.name(playerData.name);
-                rightPlayerInfo.avatar(playerData.avatar);
-                rightPlayerInfo.winGameCount(playerData.winAmount);
-                rightPlayerInfo.loseGameCount(playerData.loseAmount);
-                this.playerPanel.setPlayer(1, rightPlayerInfo.playerData);
+                setPlayer(data.player.left, data.player.right);
+                // var leftPlayerInfo = new PlayerInfo();
+                // var playerData = data.player.left;
+                // leftPlayerInfo.name(playerData.name);
+                // leftPlayerInfo.avatar(playerData.avatar);
+                // leftPlayerInfo.winGameCount(playerData.winAmount);
+                // leftPlayerInfo.loseGameCount(playerData.loseAmount);
+                // this.playerPanel.setPlayer(0, leftPlayerInfo.playerData);
+                //
+                // var rightPlayerInfo = new PlayerInfo();
+                // playerData = data.player.right;
+                // rightPlayerInfo.name(playerData.name);
+                // rightPlayerInfo.avatar(playerData.avatar);
+                // rightPlayerInfo.winGameCount(playerData.winAmount);
+                // rightPlayerInfo.loseGameCount(playerData.loseAmount);
+                // this.playerPanel.setPlayer(1, rightPlayerInfo.playerData);
             };
             eventMap['updateScore'] = ()=> {
                 console.log('updateScore', data);
@@ -692,22 +714,23 @@ export class Stage1v1PanelView extends BasePanelView {
             eventMap['startGame'] = ()=> {
                 this.scorePanel.set35ScoreLight(data.winScore);
                 this.scorePanel.setGameIdx(data.gameIdx);
+                setPlayer(data.player.left, data.player.right);
 
-                var leftPlayerInfo = new PlayerInfo();
-                var playerData = data.player.left;
-                leftPlayerInfo.name(playerData.name);
-                leftPlayerInfo.avatar(playerData.avatar);
-                leftPlayerInfo.winGameCount(playerData.winAmount);
-                leftPlayerInfo.loseGameCount(playerData.loseAmount);
-                this.playerPanel.setPlayer(0, leftPlayerInfo.playerData);
-
-                var rightPlayerInfo = new PlayerInfo();
-                playerData = data.player.right;
-                rightPlayerInfo.name(playerData.name);
-                rightPlayerInfo.avatar(playerData.avatar);
-                rightPlayerInfo.winGameCount(playerData.winAmount);
-                rightPlayerInfo.loseGameCount(playerData.loseAmount);
-                this.playerPanel.setPlayer(1, rightPlayerInfo.playerData);
+                // var leftPlayerInfo = new PlayerInfo();
+                // var playerData = data.player.left;
+                // leftPlayerInfo.name(playerData.name);
+                // leftPlayerInfo.avatar(playerData.avatar);
+                // leftPlayerInfo.winGameCount(playerData.winAmount);
+                // leftPlayerInfo.loseGameCount(playerData.loseAmount);
+                // this.playerPanel.setPlayer(0, leftPlayerInfo.playerData);
+                //
+                // var rightPlayerInfo = new PlayerInfo();
+                // playerData = data.player.right;
+                // rightPlayerInfo.name(playerData.name);
+                // rightPlayerInfo.avatar(playerData.avatar);
+                // rightPlayerInfo.winGameCount(playerData.winAmount);
+                // rightPlayerInfo.loseGameCount(playerData.loseAmount);
+                // this.playerPanel.setPlayer(1, rightPlayerInfo.playerData);
 
                 window.location.reload();
                 this.scorePanel.resetTimer();
@@ -724,6 +747,7 @@ export class Stage1v1PanelView extends BasePanelView {
                 // playerDoc.height = data.player.height;
                 // playerDoc.intro = data.player.intro;
                 this.eventPanel.playerInfoCard.fadeInWinPlayer(isBlue, data.player);
+                this.scorePanel.toggleTimer1(TimerState.PAUSE);
                 // this.eventPanel.fadeInWinPanel()
             };
             eventMap['fadeInCountDown'] = ()=> {

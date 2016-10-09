@@ -36,6 +36,7 @@ export class PlayerPanel {
             //         playerCard.parent.removeChild(playerCard);
             // }
         }
+
     }
 
     setEloScore(idx: number, eloScore: number) {

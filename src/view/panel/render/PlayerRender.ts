@@ -2,9 +2,11 @@ import {loadImg} from "../../../utils/JsFunc";
 import {PlayerInfo, PlayerDoc} from "../../../model/PlayerInfo";
 import {blink, delayCall} from "../../../utils/Fx";
 import {FTInfo} from "../../../model/FTInfo";
+import {loadAutoAvatarShape} from "../stage1v1/PlayerInfoCard";
 import Text = createjs.Text;
 import Container = createjs.Container;
 import Bitmap = createjs.Bitmap;
+import {isAutoPanel} from "../stage1v1/Stage1v1PanelView";
 export class StagePlayerCard extends Container {
     // _ctn:Container;
     nameText: Text;
@@ -17,6 +19,9 @@ export class StagePlayerCard extends Container {
     isDelayShow: boolean;
     _delayShowEnd: boolean = false;
     playerInfo: PlayerInfo;
+
+
+    _isAuto;
 
     constructor(playerInfo: PlayerInfo, scale = 1, isBlue = true, isDelayShow = false) {
         super();
@@ -113,22 +118,42 @@ export class StagePlayerCard extends Container {
         else
             avatarPath = '/img/panel/stage/red.png';
         avatarPath = playerDoc.avatar || avatarPath;
-        loadImg(avatarPath, ()=> {
-            var avatarBmp = new createjs.Bitmap(avatarPath);
-            avatarBmp.mask = avatarMask;
-            avatarCtn.addChild(avatarMask);
-            avatarCtn.addChild(avatarBmp);
-            this.avatarBmp = avatarBmp;
-            if (this.isDelayShow) {
-                if (this._delayShowEnd) {
-                    blink(avatarBmp)
+        if (isAutoPanel)
+            loadAutoAvatarShape(avatarPath, (avatarBmp)=> {
+                // var avatarBmp = new createjs.Bitmap(avatarPath);
+                avatarBmp.mask = avatarMask;
+                avatarCtn.addChild(avatarMask);
+                avatarCtn.addChild(avatarBmp);
+                this.avatarBmp = avatarBmp;
+                if (this.isDelayShow) {
+                    if (this._delayShowEnd) {
+                        blink(avatarBmp)
+                    }
+                    else {
+                        avatarBmp.alpha = 0;
+                    }
                 }
-                else {
-                    avatarBmp.alpha = 0;
+                avatarBmp.scaleX = avatarBmp.scaleY = avtHeight / avatarBmp.getBounds().height;
+            });
+        else
+            loadImg(avatarPath, ()=> {
+                var avatarBmp = new createjs.Bitmap(avatarPath);
+                avatarBmp.mask = avatarMask;
+                avatarCtn.addChild(avatarMask);
+                avatarCtn.addChild(avatarBmp);
+                this.avatarBmp = avatarBmp;
+                if (this.isDelayShow) {
+                    if (this._delayShowEnd) {
+                        blink(avatarBmp)
+                    }
+                    else {
+                        avatarBmp.alpha = 0;
+                    }
                 }
-            }
-            avatarBmp.scaleX = avatarBmp.scaleY = avtHeight / avatarBmp.getBounds().height;
-        });
+                avatarBmp.scaleX = avatarBmp.scaleY = avtHeight / avatarBmp.getBounds().height;
+            });
+
+
         ctn.addChildAt(avatarCtn, 0);
 
         var winLoseText = new createjs.Text(`${playerDoc.winGameCount}胜 ${playerDoc.loseGameCount}负  贡献值:${playerDoc.ftScore}`, "16px Arial", "#fff");
