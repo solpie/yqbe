@@ -662,6 +662,7 @@ export class Stage1v1PanelView extends BasePanelView {
             leftPlayerInfo.avatar(playerData.avatar);
             leftPlayerInfo.winGameCount(playerData.winAmount);
             leftPlayerInfo.loseGameCount(playerData.loseAmount);
+            leftPlayerInfo.playerData['ftDoc'] = {name: leftPlayer.group};
             this.playerPanel.setPlayer(0, leftPlayerInfo.playerData);
 
             var rightPlayerInfo = new PlayerInfo();
@@ -670,6 +671,7 @@ export class Stage1v1PanelView extends BasePanelView {
             rightPlayerInfo.avatar(playerData.avatar);
             rightPlayerInfo.winGameCount(playerData.winAmount);
             rightPlayerInfo.loseGameCount(playerData.loseAmount);
+            rightPlayerInfo.playerData['ftDoc'] = {name: rightPlayer.group};
             this.playerPanel.setPlayer(1, rightPlayerInfo.playerData);
         };
         io.on('connect', ()=> {
@@ -681,13 +683,22 @@ export class Stage1v1PanelView extends BasePanelView {
         io.on('wall', (data: any)=> {
             var event = data.et;
             var eventMap = {};
+            console.log('event:', event, data);
+
             eventMap['init'] = ()=> {
                 console.log('init', data);
                 this.scorePanel.set35ScoreLight(data.winScore);
                 this.scorePanel.setGameIdx(data.gameIdx);
                 setPlayer(data.player.left, data.player.right);
-
+                this.scorePanel.setLeftScore(data.player.left.leftScore);
+                this.scorePanel.setRightScore(data.player.right.rightScore);
+                if (data.status == 0) {//status字段吧 0 进行中 1已结束
+                    this.scorePanel.resetTimer();
+                    this.scorePanel.toggleTimer1(TimerState.RUNNING);
+                }
                 //test
+                // this.eventPanel.playerInfoCard.fadeInWinPlayer(true, data.player);
+
                 // this.scorePanel.resetTimer();
                 // this.scorePanel.toggleTimer1(TimerState.RUNNING);
                 // Tween.get(this).wait(3000).call(()=> {
@@ -704,11 +715,12 @@ export class Stage1v1PanelView extends BasePanelView {
                 }
             };
             eventMap['startGame'] = ()=> {
+                console.log('startGame', data);
                 this.scorePanel.set35ScoreLight(data.winScore);
                 this.scorePanel.setGameIdx(data.gameIdx);
                 setPlayer(data.player.left, data.player.right);
-
-                window.location.reload();
+                // window.location.reload();
+                this.scorePanel.resetScore();
                 this.scorePanel.resetTimer();
                 this.scorePanel.toggleTimer1(TimerState.RUNNING);
             };

@@ -288,6 +288,10 @@ export class PlayerInfoCard {
             $playerIntro.show();
         });
         ctn.addChild(playerCard);
+
+        createjs.Tween.get(playerCard).wait(5000).call(()=>{
+            this.fadeOutWinPlayer();
+        })
     }
 
     fadeOutWinPlayer() {

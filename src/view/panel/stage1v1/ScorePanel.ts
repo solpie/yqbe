@@ -248,7 +248,11 @@ export class ScorePanel {
         // this.leftAvgEloScoreText.text = "1969";
         // this.rightAvgEloScoreText.text = data.right + "";
     }
-
+    resetScore()
+    {
+        this.setLeftScore(0);
+        this.setRightScore(0);
+    }
     resetTimer() {
         this.timeOnSec = 0;
         this.timerState = TimerState.PAUSE;//0
