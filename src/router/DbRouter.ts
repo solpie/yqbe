@@ -41,10 +41,24 @@ dbRouter.get('/act/1v1', function (req: any, res: any) {
         playerIdArr: playerIdArr,
     });
 });
+dbRouter.get('/game/', function (req: any, res: any) {
+    var g = mapToArr(db.game.dataMap);
+    var data = {
+        gameRecArr: g
+    };
+    res.send(data);
+});
 
 dbRouter.post('/game/', function (req: any, res: any) {
     if (!req.body) return res.sendStatus(400);
-    res.send({gameMap: db.game.dataMap});
+    db.game.ds().find({}, (err, docs)=> {
+        var g = mapToArr(docs);
+        var data = {
+            gameRecArr: g
+        };
+        res.send(data);
+    });
+    // res.send({gameMap: db.game.dataMap});
 });
 
 ////  /db/ft

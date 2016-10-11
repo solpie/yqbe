@@ -21,10 +21,15 @@ export class ScorePanel {
     rightCircleArr: any;
     leftCircleBgArr: any;
     rightCircleBgArr: any;
+
+    leftFoulCircleArr: any;
+    rightFoulCircleArr: any;
+
     timeOnSec: number;
 
     timerId: any;
     timerState: number;
+
     ctn: Container;
 
     constructor(parent: any, is2v2: boolean = false) {
@@ -94,6 +99,8 @@ export class ScorePanel {
         this.rightCircleBgArr = [];
         this.set35ScoreLight(2);
 
+        this.initFoulCircle();
+
         px = 770;
 
         var gameThText = new createjs.Text("第x场", "23px Arial", "#fff");
@@ -105,8 +112,61 @@ export class ScorePanel {
         this.gameThText = gameThText;
     }
 
+    initFoulCircle() {
+        var circle;
+        this.leftFoulCircleArr = [];
+        this.rightFoulCircleArr = [];
+
+        for (var i = 0; i < 4; i++) {
+            circle = new createjs.Bitmap('/img/panel/stage1v1/foul.png');
+            circle.x = 604 + i * 9;
+            circle.y = 120 - i * 15;
+            circle.alpha = 0;
+            this.ctn.addChild(circle);
+            this.leftFoulCircleArr.push(circle);
+
+            circle = new createjs.Bitmap('/img/panel/stage1v1/foul.png');
+            circle.x = 1318 - i * 9;
+            circle.scaleX = -1;
+            circle.y = 120 - i * 15;
+            circle.alpha = 0;
+            this.ctn.addChild(circle);
+            this.rightFoulCircleArr.push(circle);
+        }
+    }
+
     get isBlueWin(): boolean {
         return Number(this.leftScoreText.text) > Number(this.rightScoreText.text);
+    }
+
+    setLeftFoul(leftFoul) {
+        if(leftFoul>4)
+            leftFoul = 4;
+        var circleArr = this.leftFoulCircleArr;
+        for (var i = 0; i < circleArr.length; i++) {
+            if (i < leftFoul) {
+                if (circleArr[i].alpha == 0)
+                    blink(circleArr[i]);
+            }
+            else {
+                createjs.Tween.get(circleArr[i]).to({alpha: 0}, 200);
+            }
+        }
+    }
+
+    setRightFoul(rightFoul) {
+        if(rightFoul>4)
+            rightFoul = 4;
+        var circleArr = this.rightFoulCircleArr;
+        for (var i = 0; i < circleArr.length; i++) {
+            if (i < rightFoul) {
+                if (circleArr[i].alpha == 0)
+                    blink(circleArr[i]);
+            }
+            else {
+                createjs.Tween.get(circleArr[i]).to({alpha: 0}, 200);
+            }
+        }
     }
 
     setLeftScore(leftScore) {
@@ -248,11 +308,12 @@ export class ScorePanel {
         // this.leftAvgEloScoreText.text = "1969";
         // this.rightAvgEloScoreText.text = data.right + "";
     }
-    resetScore()
-    {
+
+    resetScore() {
         this.setLeftScore(0);
         this.setRightScore(0);
     }
+
     resetTimer() {
         this.timeOnSec = 0;
         this.timerState = TimerState.PAUSE;//0
@@ -314,6 +375,8 @@ export class ScorePanel {
     init(gameInfo: any) {
         this.setLeftScore(gameInfo.leftScore);
         this.setRightScore(gameInfo.rightScore);
+        this.setLeftFoul(gameInfo.leftFoul);
+        this.setRightFoul(gameInfo.rightFoul);
         var gameInfoClone: GameInfo = new GameInfo(gameInfo);
         this.setAvgEloScore(gameInfoClone.getAvgEloScore());
         this.setGameIdx(gameInfo.gameTh);

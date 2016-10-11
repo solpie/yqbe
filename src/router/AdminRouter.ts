@@ -3,6 +3,7 @@ import {db} from "../model/DbInfo";
 import {base64ToPng} from "../utils/NodeJsFunc";
 import {ServerConst} from "../event/Const";
 import {syncInfo} from "../utils/rtmpServer/rtmpServer2";
+import {mapToArr} from "../utils/JsFunc";
 export var adminRouter = require('express').Router();
 
 adminRouter.get('/', function (req: any, res: any) {
@@ -113,6 +114,7 @@ adminRouter.get('/game/delete/:gameId', function (req: any, res: any) {
     });
 });
 
+
 ////////////// rtmp admin
 adminRouter.get('/stream/state', function (req: any, res: any) {
     var data = {
@@ -122,3 +124,5 @@ adminRouter.get('/stream/state', function (req: any, res: any) {
     };
     res.send(data);
 });
+
+/////////

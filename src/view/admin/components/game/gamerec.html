@@ -1,0 +1,18 @@
+<div>
+    <table class="table centered striped">
+        <thead>
+        <tr>
+            <th width="150px">时间</th>
+            <th>场次</th>
+            <th>比分</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="gameRec in gameRecArr">
+            <td v-text="gameRec.timeStr"></td>
+            <td v-text="gameRec.idx"></td>
+            <td v-text="gameRec.loser.name+':'+gameRec.loser.score+' - '+gameRec.winner.name+':'+gameRec.winner.score "></td>
+        </tr>
+        </tbody>
+    </table>
+</div>

@@ -151,10 +151,12 @@ export class Stage1v1PanelView extends BasePanelView {
             .on(`${CommandId.updateLeftFoul}`, (data) => {
                 console.log('updateLeftFoul', data);
                 this.leftFoul = data.leftFoul;
+                this.scorePanel.setLeftFoul(this.leftFoul);
             })
             .on(`${CommandId.updateRightFoul}`, (data) => {
                 console.log('updateRightFoul', data);
                 this.rightFoul = data.rightFoul;
+                this.scorePanel.setRightFoul(this.rightFoul);
             })
             .on(`${CommandId.updatePlayer}`, (data) => {
                 console.log('updatePlayer', data);
@@ -692,6 +694,8 @@ export class Stage1v1PanelView extends BasePanelView {
                 setPlayer(data.player.left, data.player.right);
                 this.scorePanel.setLeftScore(data.player.left.leftScore);
                 this.scorePanel.setRightScore(data.player.right.rightScore);
+                this.scorePanel.setLeftFoul(data.player.left.leftFoul);
+                this.scorePanel.setRightFoul(data.player.right.rightFoul);
                 if (data.status == 0) {//status字段吧 0 进行中 1已结束
                     this.scorePanel.resetTimer();
                     this.scorePanel.toggleTimer1(TimerState.RUNNING);
@@ -712,6 +716,12 @@ export class Stage1v1PanelView extends BasePanelView {
                 }
                 if (data.rightScore != null) {
                     this.scorePanel.setRightScore(data.rightScore);
+                }
+                if (data.rightFoul != null) {
+                    this.scorePanel.setRightFoul(data.rightFoul);
+                }
+                if (data.leftFoul != null) {
+                    this.scorePanel.setLeftFoul(data.leftFoul);
                 }
             };
             eventMap['startGame'] = ()=> {

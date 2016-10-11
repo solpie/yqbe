@@ -5,6 +5,7 @@ import {Player} from "./components/player/player";
 import {Activity} from "./components/activity/activity";
 import {Rank} from "./components/rank/rank";
 import {StreamServerView} from "./components/streamserver/StreamServerView";
+import {GameRec} from "./components/game/GameRec";
 export function configureRouter(router: vuejs.Router<App>) {
     router.map({
         '/': {
@@ -14,6 +15,10 @@ export function configureRouter(router: vuejs.Router<App>) {
         '/player': {
             component: Player,
             name: 'player'
+        },
+        '/game': {
+            component: GameRec,
+            name: 'game'
         },
         '/stream': {
             component: StreamServerView,
