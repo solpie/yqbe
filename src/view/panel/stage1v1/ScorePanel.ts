@@ -6,6 +6,8 @@ import {formatSecond} from "../../../utils/JsFunc";
 import {GameInfo} from "../../../model/GameInfo";
 import {blink} from "../../../utils/Fx";
 import {TimerState} from "../../../event/Const";
+import Ease = createjs.Ease;
+import Tween = createjs.Tween;
 
 export class ScorePanel {
     timeText: Text;
@@ -24,6 +26,8 @@ export class ScorePanel {
 
     leftFoulCircleArr: any;
     rightFoulCircleArr: any;
+    leftFoulHint: any;
+    rightFoulHint: any;
 
     timeOnSec: number;
 
@@ -133,6 +137,19 @@ export class ScorePanel {
             this.ctn.addChild(circle);
             this.rightFoulCircleArr.push(circle);
         }
+        this.leftFoulHint = new createjs.Bitmap('/img/panel/stage1v1/foulHint.png')
+        this.leftFoulHint.x = 590;
+        this.leftFoulHint.y = 62;
+        this.ctn.addChild(this.leftFoulHint);
+
+        this.rightFoulHint = new createjs.Bitmap('/img/panel/stage1v1/foulHint.png')
+        this.rightFoulHint.scaleX = -1;
+        this.rightFoulHint.x = 1332;
+        this.rightFoulHint.y = 62//this.leftFoulHint.y;
+        this.ctn.addChild(this.rightFoulHint);
+
+        this.rightFoulHint.alpha = this.leftFoulHint.alpha = 0;
+
     }
 
     get isBlueWin(): boolean {
@@ -140,11 +157,16 @@ export class ScorePanel {
     }
 
     setLeftFoul(leftFoul) {
-        if(leftFoul>4)
-            leftFoul = 4;
-        var circleArr = this.leftFoulCircleArr;
+        this._setFoul(leftFoul, this.leftFoulCircleArr, this.leftFoulHint);
+    }
+
+    _setFoul(foul, circleArr, hint) {
+        foul = Number(foul);
+        if (foul > 4)
+            foul = 4;
+        // var circleArr = this.leftFoulCircleArr;
         for (var i = 0; i < circleArr.length; i++) {
-            if (i < leftFoul) {
+            if (i < foul) {
                 if (circleArr[i].alpha == 0)
                     blink(circleArr[i]);
             }
@@ -152,21 +174,24 @@ export class ScorePanel {
                 createjs.Tween.get(circleArr[i]).to({alpha: 0}, 200);
             }
         }
+
+        if (foul > 3) {
+
+            createjs.Tween.get(hint, {loop: true})
+            // .to({alpha: 1}, 100,Ease.backIn)
+            // .to({alpha: 0}, 100,Ease.backOut)
+            // .to({alpha: 1}, 100,Ease.bounceIn)
+            // .to({alpha: 0}, 100,Ease.bounceOut)
+                .to({alpha: 1}, 150, Ease.circIn)
+                .to({alpha: 0}, 150, Ease.circOut);
+        }
+        else
+            Tween.get(hint, {loop: false}, null, true).to({alpha: 0});
+
     }
 
     setRightFoul(rightFoul) {
-        if(rightFoul>4)
-            rightFoul = 4;
-        var circleArr = this.rightFoulCircleArr;
-        for (var i = 0; i < circleArr.length; i++) {
-            if (i < rightFoul) {
-                if (circleArr[i].alpha == 0)
-                    blink(circleArr[i]);
-            }
-            else {
-                createjs.Tween.get(circleArr[i]).to({alpha: 0}, 200);
-            }
-        }
+        this._setFoul(rightFoul, this.rightFoulCircleArr, this.rightFoulHint);
     }
 
     setLeftScore(leftScore) {
@@ -312,6 +337,8 @@ export class ScorePanel {
     resetScore() {
         this.setLeftScore(0);
         this.setRightScore(0);
+        this.setLeftFoul(0);
+        this.setRightFoul(0);
     }
 
     resetTimer() {
